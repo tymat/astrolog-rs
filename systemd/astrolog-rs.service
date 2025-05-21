@@ -1,0 +1,23 @@
+[Unit]
+Description=Astrolog-rs Astrological Calculation Server
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/astrolog-rs
+ExecStart=%h/astrolog-rs/target/release/astrolog-rs
+Restart=always
+RestartSec=3
+
+# Server configuration
+Environment=PORT=8808
+Environment=RUST_LOG=info
+
+# Swiss Ephemeris configuration
+Environment=SE_EPHE_PATH=%h/.swisseph/ephe
+Environment=LD_LIBRARY_PATH=%h/.swisseph/lib
+Environment=CPATH=%h/.swisseph/include
+
+[Install]
+WantedBy=multi-user.target 

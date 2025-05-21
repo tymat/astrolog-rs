@@ -573,5 +573,67 @@ Changes in the last version Astrolog 5.41G
 
 18th. May. 2002
 
+## Running as a Systemd Service
+
+The server can be run as a systemd service, allowing it to start automatically on boot and be managed by systemd. The service runs as a regular user and supports configurable ports.
+
+### Installation
+
+1. Navigate to the systemd directory:
+```bash
+cd systemd
+```
+
+2. Run the installation script:
+```bash
+./install-service.sh
+```
+
+The service will be installed and started automatically. By default, it runs on port 8808.
+
+### Configuration
+
+The service can be configured by editing the service file at `/etc/systemd/system/astrolog-rs.service`. Key configuration options:
+
+- `PORT`: The port number the server listens on (default: 8808)
+- `RUST_LOG`: Logging level (default: info)
+- `EPHE_PATH`: Path to the Swiss Ephemeris files
+
+To apply configuration changes:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart astrolog-rs@username
+```
+
+### Service Management
+
+Check service status:
+```bash
+systemctl status astrolog-rs@username
+```
+
+View service logs:
+```bash
+journalctl -u astrolog-rs@username
+```
+
+Stop the service:
+```bash
+sudo systemctl stop astrolog-rs@username
+```
+
+Start the service:
+```bash
+sudo systemctl start astrolog-rs@username
+```
+
+### Uninstallation
+
+To remove the service:
+```bash
+cd systemd
+./uninstall-service.sh
+```
+
 
 
