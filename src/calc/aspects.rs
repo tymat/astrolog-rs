@@ -318,7 +318,7 @@ mod tests {
         assert!(sextile.is_some());
         if let Some(sextile) = sextile {
             assert_eq!(sextile.planet1, "Sun");
-            assert_eq!(sextile.planet2, "Planet2");
+            assert_eq!(sextile.planet2, "Moon");
             assert!(sextile.orb <= 8.0); // Sextile orb is 8°
         }
     }
@@ -347,6 +347,8 @@ mod tests {
         let conjunction = aspects.iter().find(|a| a.aspect_type == AspectType::Conjunction);
         assert!(conjunction.is_some());
         if let Some(conjunction) = conjunction {
+            assert_eq!(conjunction.planet1, "Sun");
+            assert_eq!(conjunction.planet2, "Moon");
             assert!(conjunction.orb <= 10.0); // Conjunction orb is 10°
         }
     }
@@ -399,7 +401,7 @@ mod tests {
         assert!(quintile.is_some());
         if let Some(quintile) = quintile {
             assert_eq!(quintile.planet1, "Sun");
-            assert_eq!(quintile.planet2, "Planet2");
+            assert_eq!(quintile.planet2, "Moon");
             assert!(quintile.orb <= 3.0); // Quintile orb is 3°
         }
     }
@@ -430,7 +432,7 @@ mod tests {
         assert!(septile.is_some());
         if let Some(septile) = septile {
             assert_eq!(septile.planet1, "Sun");
-            assert_eq!(septile.planet2, "Planet2");
+            assert_eq!(septile.planet2, "Moon");
             assert!(septile.orb <= 2.0); // Septile orb is 2°
         }
     }
@@ -461,7 +463,7 @@ mod tests {
         assert!(novile.is_some());
         if let Some(novile) = novile {
             assert_eq!(novile.planet1, "Sun");
-            assert_eq!(novile.planet2, "Planet2");
+            assert_eq!(novile.planet2, "Moon");
             assert!(novile.orb <= 2.0); // Novile orb is 2°
         }
     }

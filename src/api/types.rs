@@ -65,6 +65,28 @@ pub struct ChartResponse {
     pub aspects: Vec<AspectInfo>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TransitResponse {
+    pub chart_type: String,
+    pub natal_date: DateTime<Utc>,
+    pub transit_date: DateTime<Utc>,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub house_system: String,
+    pub ayanamsa: String,
+    pub natal_planets: Vec<PlanetInfo>,
+    pub transit_planets: Vec<PlanetInfo>,
+    pub aspects: Vec<AspectInfo>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct SynastryResponse {
+    pub chart_type: String,
+    pub chart1: ChartResponse,
+    pub chart2: ChartResponse,
+    pub aspects: Vec<AspectInfo>,
+}
+
 impl From<PlanetPosition> for PlanetInfo {
     fn from(position: PlanetPosition) -> Self {
         Self {

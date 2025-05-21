@@ -152,6 +152,170 @@ curl -X POST http://localhost:8080/api/chart/synastry \
 }
 ```
 
+## API Documentation
+
+### Endpoints
+
+#### 1. Natal Chart
+Generate a natal chart for a given location and birth date/time.
+
+```http
+POST /api/chart/natal
+```
+
+Request body:
+```json
+{
+    "date": "2000-01-01T12:00:00Z",  // Birth date/time in ISO 8601 format
+    "latitude": 40.7128,             // Birth location latitude
+    "longitude": -74.0060,           // Birth location longitude
+    "house_system": "placidus",      // House system (placidus, koch, equal, wholesign, etc.)
+    "ayanamsa": "tropical"           // Ayanamsa system (tropical, lahiri, etc.)
+}
+```
+
+Response:
+```json
+{
+    "planets": [
+        {
+            "name": "Sun",
+            "longitude": 280.5,
+            "latitude": 0.0,
+            "speed": 1.0,
+            "is_retrograde": false,
+            "house": 10
+        },
+        // ... other planets
+    ],
+    "houses": [
+        {
+            "number": 1,
+            "longitude": 0.0,
+            "latitude": 0.0
+        },
+        // ... other houses
+    ],
+    "aspects": [
+        {
+            "planet1": "Sun",
+            "planet2": "Moon",
+            "aspect": "Conjunction",
+            "orb": 2.5
+        },
+        // ... other aspects
+    ]
+}
+```
+
+#### 2. Transit Chart
+Generate a transit chart comparing current or future planetary positions to a natal chart.
+
+```http
+POST /api/chart/transit
+```
+
+Request body:
+```json
+{
+    "natal_date": "2000-01-01T12:00:00Z",    // Birth date/time
+    "transit_date": "2024-01-01T12:00:00Z",  // Current/future date to check
+    "latitude": 40.7128,                     // Location latitude
+    "longitude": -74.0060,                   // Location longitude
+    "house_system": "placidus",              // House system
+    "ayanamsa": "tropical"                   // Ayanamsa system
+}
+```
+
+Response:
+```json
+{
+    "natal_planets": [
+        // Same format as natal chart planets
+    ],
+    "transit_planets": [
+        // Same format as natal chart planets
+    ],
+    "aspects": [
+        {
+            "planet1": "Sun",
+            "planet2": "Moon",
+            "aspect": "Conjunction",
+            "orb": 2.5
+        },
+        // ... other aspects
+    ]
+}
+```
+
+#### 3. Synastry Chart
+Generate a synastry chart comparing two natal charts.
+
+```http
+POST /api/chart/synastry
+```
+
+Request body:
+```json
+{
+    "chart1": {
+        "date": "2000-01-01T12:00:00Z",    // Person A's birth date/time
+        "latitude": 40.7128,                // Person A's birth location latitude
+        "longitude": -74.0060,              // Person A's birth location longitude
+        "house_system": "placidus",         // House system
+        "ayanamsa": "tropical"              // Ayanamsa system
+    },
+    "chart2": {
+        "date": "1995-01-01T12:00:00Z",    // Person B's birth date/time
+        "latitude": 34.0522,                // Person B's birth location latitude
+        "longitude": -118.2437,             // Person B's birth location longitude
+        "house_system": "placidus",         // House system
+        "ayanamsa": "tropical"              // Ayanamsa system
+    }
+}
+```
+
+Response:
+```json
+{
+    "chart1_planets": [
+        // Person A's planets
+    ],
+    "chart2_planets": [
+        // Person B's planets
+    ],
+    "aspects": [
+        {
+            "planet1": "Sun",
+            "planet2": "Moon",
+            "aspect": "Conjunction",
+            "orb": 2.5
+        },
+        // ... other aspects
+    ]
+}
+```
+
+### Error Responses
+
+All endpoints return standard HTTP status codes:
+- 200: Success
+- 400: Bad Request (invalid input)
+- 500: Internal Server Error
+
+Error response format:
+```json
+{
+    "error": "Error message description"
+}
+```
+
+### Notes
+- All dates should be in ISO 8601 format
+- Latitude and longitude should be in decimal degrees
+- Supported house systems: placidus, koch, equal, wholesign, campanus, regiomontanus
+- Supported ayanamsa systems: tropical, lahiri, raman, krishnamurti, etc.
+
 ## Development
 
 ### Building

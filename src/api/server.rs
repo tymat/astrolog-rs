@@ -2,7 +2,7 @@ use actix_web::{web, HttpResponse, Responder};
 use crate::calc::planets::calculate_planet_positions;
 use crate::calc::houses::calculate_houses;
 use crate::calc::aspects::calculate_aspects;
-use crate::api::types::{ChartRequest, TransitRequest, SynastryRequest, ChartResponse, PlanetInfo, HouseInfo, AspectInfo};
+use crate::api::types::{ChartRequest, TransitRequest, SynastryRequest, ChartResponse, TransitResponse, SynastryResponse, PlanetInfo, HouseInfo, AspectInfo};
 use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
 
@@ -96,19 +96,19 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = format!("Natal {}", match i {
-                        0 => "Sun",
-                        1 => "Moon",
-                        2 => "Mercury",
-                        3 => "Venus",
-                        4 => "Mars",
-                        5 => "Jupiter",
-                        6 => "Saturn",
-                        7 => "Uranus",
-                        8 => "Neptune",
-                        9 => "Pluto",
-                        _ => "Planet",
-                    });
+                    info.name = match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet {}", i + 1),
+                    };
                     info
                 })
                 .collect();
@@ -117,19 +117,19 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = format!("Transit {}", match i {
-                        0 => "Sun",
-                        1 => "Moon",
-                        2 => "Mercury",
-                        3 => "Venus",
-                        4 => "Mars",
-                        5 => "Jupiter",
-                        6 => "Saturn",
-                        7 => "Uranus",
-                        8 => "Neptune",
-                        9 => "Pluto",
-                        _ => "Planet",
-                    });
+                    info.name = match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet {}", i + 1),
+                    };
                     info
                 })
                 .collect();
@@ -157,15 +157,16 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 })
                 .collect();
 
-            let response = ChartResponse {
+            let response = TransitResponse {
                 chart_type: "transit".to_string(),
-                date: req.natal_date,
+                natal_date: req.natal_date,
+                transit_date: req.transit_date,
                 latitude: req.latitude,
                 longitude: req.longitude,
                 house_system: req.house_system.clone(),
                 ayanamsa: req.ayanamsa.clone(),
-                planets: [natal_planets, transit_planets].concat(),
-                houses: house_info,
+                natal_planets,
+                transit_planets,
                 aspects: aspect_info,
             };
 
@@ -186,19 +187,19 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = format!("Chart1 {}", match i {
-                        0 => "Sun",
-                        1 => "Moon",
-                        2 => "Mercury",
-                        3 => "Venus",
-                        4 => "Mars",
-                        5 => "Jupiter",
-                        6 => "Saturn",
-                        7 => "Uranus",
-                        8 => "Neptune",
-                        9 => "Pluto",
-                        _ => "Planet",
-                    });
+                    info.name = match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet {}", i + 1),
+                    };
                     info
                 })
                 .collect();
@@ -207,29 +208,39 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = format!("Chart2 {}", match i {
-                        0 => "Sun",
-                        1 => "Moon",
-                        2 => "Mercury",
-                        3 => "Venus",
-                        4 => "Mars",
-                        5 => "Jupiter",
-                        6 => "Saturn",
-                        7 => "Uranus",
-                        8 => "Neptune",
-                        9 => "Pluto",
-                        _ => "Planet",
-                    });
+                    info.name = match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet {}", i + 1),
+                    };
                     info
                 })
                 .collect();
 
-            // Calculate houses for the first chart
-            let houses = match calculate_houses(jd1, req.chart1.latitude, req.chart1.longitude, house_system) {
+            // Calculate houses for both charts
+            let houses1 = match calculate_houses(jd1, req.chart1.latitude, req.chart1.longitude, house_system) {
                 Ok(h) => h,
                 Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
             };
-            let house_info: Vec<HouseInfo> = houses.iter().map(|h| HouseInfo {
+            let houses2 = match calculate_houses(jd2, req.chart2.latitude, req.chart2.longitude, house_system) {
+                Ok(h) => h,
+                Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+            };
+
+            let house_info1: Vec<HouseInfo> = houses1.iter().map(|h| HouseInfo {
+                number: h.number,
+                longitude: h.longitude,
+                latitude: h.latitude,
+            }).collect();
+            let house_info2: Vec<HouseInfo> = houses2.iter().map(|h| HouseInfo {
                 number: h.number,
                 longitude: h.longitude,
                 latitude: h.latitude,
@@ -247,15 +258,34 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 })
                 .collect();
 
-            let response = ChartResponse {
-                chart_type: "synastry".to_string(),
+            let chart1 = ChartResponse {
+                chart_type: "natal".to_string(),
                 date: req.chart1.date,
                 latitude: req.chart1.latitude,
                 longitude: req.chart1.longitude,
                 house_system: req.chart1.house_system.clone(),
                 ayanamsa: req.chart1.ayanamsa.clone(),
-                planets: [planets1, planets2].concat(),
-                houses: house_info,
+                planets: planets1,
+                houses: house_info1,
+                aspects: vec![],
+            };
+
+            let chart2 = ChartResponse {
+                chart_type: "natal".to_string(),
+                date: req.chart2.date,
+                latitude: req.chart2.latitude,
+                longitude: req.chart2.longitude,
+                house_system: req.chart2.house_system.clone(),
+                ayanamsa: req.chart2.ayanamsa.clone(),
+                planets: planets2,
+                houses: house_info2,
+                aspects: vec![],
+            };
+
+            let response = SynastryResponse {
+                chart_type: "synastry".to_string(),
+                chart1,
+                chart2,
                 aspects: aspect_info,
             };
 
