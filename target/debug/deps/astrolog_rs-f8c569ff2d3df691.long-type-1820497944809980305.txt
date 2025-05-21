@@ -1,0 +1,1 @@
+fn(axum::Json<core::ChartInfo>) -> impl Future<Output = Result<axum::Json<types::Chart>, axum::http::StatusCode>> {handlers::generate_chart}

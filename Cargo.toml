@@ -1,0 +1,50 @@
+[package]
+name = "astrolog-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Original by Walter D. Pullen", "Rust port by Your Name"]
+description = "A modern Rust port of the Astrolog astrology program as a backend service"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Core dependencies
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = { version = "=1.0.50" }
+log = { version = "=0.4.20" }
+env_logger = { version = "=0.10.0" }
+
+# Web framework
+axum = "0.6.20"
+tokio = { version = "1.0", features = ["full"] }
+tower = { version = "=0.4.13" }
+tower-http = { version = "0.4.4", features = ["cors"] }
+
+# CLI for development
+clap = { version = "=4.3.24", features = ["derive"], optional = true }
+
+# Optional dependencies for different features
+# These will be enabled via feature flags
+[features]
+default = ["api"]
+api = []  # API server mode
+cli = ["clap"]  # Command line interface mode
+gui = ["eframe"]  # GUI interface
+graphics = ["image"]  # Graphics output
+postscript = []  # PostScript output
+metafile = []  # Windows metafile output
+
+[dependencies.eframe]
+version = "=0.22.0"
+optional = true
+
+[dependencies.image]
+version = "=0.24.7"
+optional = true
+
+[dev-dependencies]
+approx = "0.5"
+tokio-test = "0.4"
