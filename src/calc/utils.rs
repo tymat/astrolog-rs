@@ -1,6 +1,7 @@
 use std::f64::consts::PI;
 use chrono::{DateTime, Utc};
 
+#[allow(dead_code)]
 pub fn normalize_angle(angle: f64) -> f64 {
     let mut normalized = angle % 360.0;
     if normalized < 0.0 {
@@ -9,10 +10,12 @@ pub fn normalize_angle(angle: f64) -> f64 {
     normalized
 }
 
+#[allow(dead_code)]
 pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
 }
 
+#[allow(dead_code)]
 pub fn radians_to_degrees(radians: f64) -> f64 {
     radians * 180.0 / PI
 }
@@ -24,6 +27,7 @@ pub fn date_to_julian(date: DateTime<Utc>) -> f64 {
 }
 
 /// Calculate Julian centuries since J2000.0
+#[allow(dead_code)]
 pub fn julian_centuries(julian_date: f64) -> f64 {
     (julian_date - 2451545.0) / 36525.0
 }

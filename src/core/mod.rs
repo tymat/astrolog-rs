@@ -6,6 +6,7 @@ pub use types::*;
 pub use calc::HouseSystem;
 
 /// Information needed to generate an astrological chart
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ChartInfo {
     /// The date and time for the chart
@@ -21,6 +22,7 @@ pub struct ChartInfo {
 }
 
 /// Positions of celestial bodies and house cusps in a chart
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ChartPositions {
     /// Longitudes of celestial bodies in degrees

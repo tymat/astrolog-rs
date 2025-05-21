@@ -1,6 +1,7 @@
 use crate::core::types::{AstrologError, Chart, ChartInfo, ChartPositions};
 
 /// Generate a new chart with the given information
+#[allow(dead_code)]
 pub fn generate_chart(_info: &ChartInfo) -> Result<Chart, AstrologError> {
     Err(AstrologError::NotImplemented { 
         message: "Chart generation not yet implemented".into() 
@@ -8,6 +9,7 @@ pub fn generate_chart(_info: &ChartInfo) -> Result<Chart, AstrologError> {
 }
 
 /// Update an existing chart with new positions
+#[allow(dead_code)]
 pub fn update_chart_positions(_chart: &mut Chart, _positions: &ChartPositions) -> Result<(), AstrologError> {
     Err(AstrologError::NotImplemented { 
         message: "Chart position update not yet implemented".into() 
@@ -15,6 +17,7 @@ pub fn update_chart_positions(_chart: &mut Chart, _positions: &ChartPositions) -
 }
 
 /// Calculate aspects for a chart
+#[allow(dead_code)]
 pub fn calculate_chart_aspects(_chart: &Chart) -> Result<Vec<(String, String, f64)>, AstrologError> {
     Err(AstrologError::NotImplemented { 
         message: "Chart aspect calculation not yet implemented".into() 

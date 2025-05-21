@@ -24,13 +24,14 @@ pub enum AspectType {
 }
 
 /// Aspect configuration
-#[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct AspectConfig {
     pub orb: f64,
     pub applying: bool,
 }
 
 /// Calculate aspects between two positions
+#[allow(dead_code)]
 pub fn calculate_aspect(
     pos1: f64,
     pos2: f64,
@@ -52,6 +53,7 @@ pub fn calculate_aspect(
 }
 
 /// Get the angle for a given aspect type
+#[allow(dead_code)]
 fn get_aspect_angle(aspect_type: AspectType) -> f64 {
     match aspect_type {
         AspectType::Conjunction => 0.0,
@@ -75,6 +77,7 @@ fn get_aspect_angle(aspect_type: AspectType) -> f64 {
 }
 
 /// Check if an aspect is applying (planets moving towards exact aspect)
+#[allow(dead_code)]
 fn is_aspect_applying(pos1: f64, pos2: f64, aspect_type: AspectType) -> bool {
     let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2) % 360.0;
@@ -101,6 +104,7 @@ fn is_aspect_applying(pos1: f64, pos2: f64, aspect_type: AspectType) -> bool {
 }
 
 /// Calculate all aspects between a set of positions
+#[allow(dead_code)]
 pub fn calculate_all_aspects(
     positions: &[f64],
     orbs: &[f64],
@@ -127,6 +131,7 @@ pub fn calculate_all_aspects(
 }
 
 /// Calculate the exact time of an aspect
+#[allow(dead_code)]
 pub fn calculate_aspect_time(
     pos1: f64,
     vel1: f64,

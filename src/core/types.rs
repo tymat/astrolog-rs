@@ -4,9 +4,11 @@ use std::str::FromStr;
 use chrono::{DateTime, Utc};
 
 /// Maximum number of objects that can be tracked
+#[allow(dead_code)]
 pub const OBJ_MAX: usize = 100;
 
 /// Number of zodiac signs
+#[allow(dead_code)]
 pub const SIGN_COUNT: usize = 12;
 
 /// Represents errors that can occur during astrological calculations
@@ -117,6 +119,7 @@ pub struct ChartPositions {
     pub house_placements: Vec<u8>,
 }
 
+#[allow(dead_code)]
 impl ChartPositions {
     pub fn new() -> Self {
         Self {

@@ -1,7 +1,7 @@
 use std::f64::consts::PI;
 
 /// Planet identification for VSOP87 calculations
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[allow(dead_code)]
 pub enum Planet {
     Mercury,
     Venus,
@@ -16,6 +16,7 @@ pub enum Planet {
 
 impl Planet {
     /// Get the mean motion for a planet in degrees per day
+    #[allow(dead_code)]
     pub fn mean_motion(&self) -> f64 {
         match self {
             Planet::Mercury => 4.092334436,
@@ -31,6 +32,7 @@ impl Planet {
     }
 
     /// Get the semi-major axis for a planet in AU
+    #[allow(dead_code)]
     pub fn semi_major_axis(&self) -> f64 {
         match self {
             Planet::Mercury => 0.387098,
@@ -52,6 +54,7 @@ pub fn julian_centuries(julian_date: f64) -> f64 {
 }
 
 /// Calculate the mean anomaly for a planet
+#[allow(dead_code)]
 pub fn mean_anomaly(t: f64, a: f64, b: f64, c: f64) -> f64 {
     // Calculate mean anomaly using the VSOP87 formula
     // Input angles are in degrees, convert to radians at the end
@@ -68,16 +71,19 @@ pub fn mean_anomaly(t: f64, a: f64, b: f64, c: f64) -> f64 {
 }
 
 /// Calculate the eccentricity of a planet's orbit
+#[allow(dead_code)]
 pub fn eccentricity(t: f64, a: f64, b: f64, c: f64) -> f64 {
     a + b * t + c * t * t
 }
 
 /// Calculate the inclination of a planet's orbit
+#[allow(dead_code)]
 pub fn inclination(t: f64, a: f64, b: f64, c: f64) -> f64 {
     a + b * t + c * t * t
 }
 
 /// Calculate the longitude of the ascending node
+#[allow(dead_code)]
 pub fn ascending_node(t: f64, a: f64, b: f64, c: f64) -> f64 {
     let mut node = a + b * t + c * t * t;
     node = node % (2.0 * PI);
@@ -88,6 +94,7 @@ pub fn ascending_node(t: f64, a: f64, b: f64, c: f64) -> f64 {
 }
 
 /// Calculate the argument of perihelion
+#[allow(dead_code)]
 pub fn perihelion(t: f64, a: f64, b: f64, c: f64) -> f64 {
     let mut peri = a + b * t + c * t * t;
     peri = peri % (2.0 * PI);

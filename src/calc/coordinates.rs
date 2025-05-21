@@ -1,8 +1,8 @@
 use crate::core::AstrologError;
 use crate::calc::utils::{degrees_to_radians, radians_to_degrees};
-use crate::calc::angles::calculate_obliquity;
 
 /// Convert ecliptic coordinates to equatorial coordinates
+#[allow(dead_code)]
 pub fn ecliptic_to_equatorial(
     longitude: f64,
     latitude: f64,
@@ -43,6 +43,7 @@ pub fn ecliptic_to_equatorial(
 }
 
 /// Convert equatorial coordinates to ecliptic coordinates
+#[allow(dead_code)]
 pub fn equatorial_to_ecliptic(
     right_ascension: f64,
     declination: f64,
@@ -69,17 +70,18 @@ pub fn equatorial_to_ecliptic(
 }
 
 /// Convert equatorial coordinates to horizontal coordinates
+#[allow(dead_code)]
 pub fn equatorial_to_horizontal(
-    right_ascension: f64,
-    declination: f64,
+    ra: f64,
+    dec: f64,
+    _longitude: f64,
     latitude: f64,
-    longitude: f64,
-    sidereal_time: f64,
+    lst: f64,
 ) -> (f64, f64) {
-    let ra_rad = right_ascension.to_radians();
-    let dec_rad = declination.to_radians();
+    let ra_rad = ra.to_radians();
+    let dec_rad = dec.to_radians();
     let lat_rad = latitude.to_radians();
-    let lst_rad = sidereal_time.to_radians();
+    let lst_rad = lst.to_radians();
 
     let sin_dec = dec_rad.sin();
     let cos_dec = dec_rad.cos();
@@ -99,6 +101,7 @@ pub fn equatorial_to_horizontal(
 }
 
 /// Calculate the sidereal time for a given Julian date and longitude
+#[allow(dead_code)]
 pub fn calculate_sidereal_time(julian_date: f64, longitude: f64) -> f64 {
     let t = (julian_date - 2451545.0) / 36525.0;
     
@@ -114,6 +117,7 @@ pub fn calculate_sidereal_time(julian_date: f64, longitude: f64) -> f64 {
 }
 
 /// Calculate the Julian date for a given date and time
+#[allow(dead_code)]
 pub fn calculate_julian_date(
     year: i32,
     month: u32,
@@ -144,6 +148,7 @@ pub fn calculate_julian_date(
     jd + time / 24.0
 }
 
+#[allow(dead_code)]
 pub fn normalize_coordinates(
     longitude: f64,
     latitude: f64,
@@ -173,6 +178,7 @@ pub fn normalize_coordinates(
 /// * `x` - Output x coordinate
 /// * `y` - Output y coordinate
 /// * `z` - Output z coordinate
+#[allow(dead_code)]
 pub fn spherical_to_rectangular(
     r: f64,
     azimuth: f64,
@@ -196,6 +202,7 @@ pub fn spherical_to_rectangular(
 /// * `r` - Output radius
 /// * `azimuth` - Output azimuth angle in radians
 /// * `altitude` - Output altitude angle in radians
+#[allow(dead_code)]
 pub fn rectangular_to_spherical(
     x: f64,
     y: f64,

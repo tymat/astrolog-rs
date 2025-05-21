@@ -742,6 +742,7 @@ fn calculate_geocentric_planet_position(
 }
 
 /// Calculate planetary aspects for a given set of positions
+#[allow(dead_code)]
 pub fn calculate_planetary_aspects(
     positions: &[PlanetPosition],
     orbs: &[f64],
@@ -771,11 +772,13 @@ pub fn calculate_planetary_aspects(
 }
 
 /// Calculate planetary retrogrades
+#[allow(dead_code)]
 pub fn calculate_retrogrades(positions: &[PlanetPosition]) -> Vec<bool> {
     positions.iter().map(|p| p.speed < 0.0).collect()
 }
 
 /// Calculate planetary stations
+#[allow(dead_code)]
 pub fn calculate_stations(
     positions: &[PlanetPosition],
     prev_positions: &[PlanetPosition],

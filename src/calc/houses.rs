@@ -532,6 +532,7 @@ fn calculate_null_houses(
 }
 
 /// Calculate house placements for a given set of positions
+#[allow(dead_code)]
 pub fn calculate_house_placements(
     positions: &[f64],
     cusps: &[f64],
@@ -564,6 +565,7 @@ pub fn calculate_house_placements(
 
 /// Determine which house a given position falls in.
 /// Returns the house number (1-12) for the given position.
+#[allow(dead_code)]
 pub fn house_place_in(position: f64, house_cusps: &[f64; 12]) -> usize {
     let position = normalize_angle(position);
     
@@ -629,11 +631,6 @@ mod tests {
         ].iter() {
             let houses = calculate_houses(julian_date, latitude, longitude, *system).unwrap();
             
-            println!("\nTesting house system: {:?}", system);
-            for (i, house) in houses.iter().enumerate() {
-                println!("House {}: longitude = {:.6}", i + 1, house.longitude);
-            }
-            
             // Verify we have exactly 12 houses
             assert_eq!(houses.len(), 12, "House system {:?} should return 12 houses", system);
             
@@ -654,11 +651,6 @@ mod tests {
                 for i in 1..12 {
                     let diff = normalize_angle(houses[i].longitude - houses[i-1].longitude);
                     let min_diff = diff.min(360.0 - diff);
-                    println!("House {} to {}: diff = {:.6}", i, i + 1, min_diff);
-                    if (min_diff - 30.0).abs() > 0.1 {
-                        println!("FAILURE: House system {:?} - Houses {} and {} are not 30° apart (diff = {:.6}°)",
-                            system, i, i + 1, min_diff);
-                    }
                     assert!((min_diff - 30.0).abs() <= 0.1,
                         "House system {:?} should have houses 30° apart, found difference of {:.6}° between houses {} and {}",
                         system, min_diff, i, i + 1);
@@ -670,11 +662,6 @@ mod tests {
                 for i in 0..6 {
                     let diff = normalize_angle(houses[i].longitude - houses[i + 6].longitude);
                     let min_diff = diff.min(360.0 - diff);
-                    println!("Opposite houses {} and {}: diff = {:.6}", i + 1, i + 7, min_diff);
-                    if (min_diff - 180.0).abs() > 0.1 {
-                        println!("FAILURE: House system {:?} - Houses {} and {} are not 180° apart (diff = {:.6}°)",
-                            system, i + 1, i + 7, min_diff);
-                    }
                     assert!((min_diff - 180.0).abs() <= 0.1,
                         "House system {:?} should have opposite houses 180° apart, found difference of {:.6}° between houses {} and {}",
                         system, min_diff, i + 1, i + 7);
@@ -690,11 +677,6 @@ mod tests {
         let longitude = -74.0;
 
         let houses = calculate_houses(julian_date, latitude, longitude, HouseSystem::Vedic).unwrap();
-        
-        println!("\nTesting Vedic houses:");
-        for (i, house) in houses.iter().enumerate() {
-            println!("House {}: longitude = {:.6}", i + 1, house.longitude);
-        }
         
         // Verify we have exactly 12 houses
         assert_eq!(houses.len(), 12, "Vedic system should return 12 houses");
@@ -715,7 +697,6 @@ mod tests {
         for i in 1..12 {
             let diff = normalize_angle(houses[i].longitude - houses[i-1].longitude);
             let min_diff = diff.min(360.0 - diff);
-            println!("House {} to {}: diff = {:.6}", i, i + 1, min_diff);
             assert!((min_diff - 30.0).abs() <= 0.1,
                 "Vedic houses should be 30° apart, found difference of {:.6}° between houses {} and {}",
                 min_diff, i, i + 1);
@@ -726,8 +707,6 @@ mod tests {
         let expected_first_house = normalize_angle(ascendant - 15.0);
         let diff = normalize_angle(houses[0].longitude - expected_first_house);
         let min_diff = diff.min(360.0 - diff);
-        println!("First house position: actual = {:.6}, expected = {:.6}, diff = {:.6}",
-            houses[0].longitude, expected_first_house, min_diff);
         assert!(min_diff <= 0.1,
             "First house should start at Ascendant - 15°, found difference of {:.6}°",
             min_diff);
