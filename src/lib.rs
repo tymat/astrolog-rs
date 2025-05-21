@@ -1,6 +1,7 @@
 pub mod calc;
 pub mod core;
 pub mod io;
+pub mod api;
 
 pub use calc::houses::HousePosition;
 pub use core::types::HouseSystem;
