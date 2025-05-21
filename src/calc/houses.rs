@@ -1,4 +1,5 @@
 use crate::core::{AstrologError, ChartInfo, ChartPositions};
+use serde::{Serialize, Deserialize};
 
 /// House system types
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -18,8 +19,40 @@ pub enum HouseSystem {
     Vedic = 12,
 }
 
-/// Calculate house cusps for a given chart
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HousePosition {
+    pub cusps: [f64; 12],  // House cusps in degrees (1-12)
+    pub system: HouseSystem, // House system used
+}
+
+impl HousePosition {
+    pub fn new(cusps: [f64; 12], system: HouseSystem) -> Self {
+        Self { cusps, system }
+    }
+
+    pub fn get_cusp(&self, house: u8) -> Option<f64> {
+        if house >= 1 && house <= 12 {
+            Some(self.cusps[(house - 1) as usize])
+        } else {
+            None
+        }
+    }
+}
+
+/// Calculate house cusps for a given date, time, and location
 pub fn calculate_houses(
+    julian_date: f64,
+    latitude: f64,
+    longitude: f64,
+    system: HouseSystem,
+) -> Result<HousePosition, AstrologError> {
+    // TODO: Implement house calculation based on the selected system
+    // For now, return a placeholder implementation
+    Ok(HousePosition::new([0.0; 12], system))
+}
+
+/// Calculate house cusps for a given chart
+pub fn calculate_houses_for_chart(
     chart_info: &ChartInfo,
     positions: &mut ChartPositions,
     system: HouseSystem,
@@ -142,4 +175,32 @@ fn calculate_krusinski(chart_info: &ChartInfo, positions: &mut ChartPositions) -
 fn calculate_vedic(chart_info: &ChartInfo, positions: &mut ChartPositions) -> Result<(), AstrologError> {
     // TODO: Implement Vedic house system
     Err(AstrologError::NotImplemented("Vedic house system not yet implemented".into()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn test_house_position_creation() {
+        let cusps = [0.0, 30.0, 60.0, 90.0, 120.0, 150.0, 180.0, 210.0, 240.0, 270.0, 300.0, 330.0];
+        let position = HousePosition::new(cusps, HouseSystem::Placidus);
+        
+        for i in 0..12 {
+            assert_relative_eq!(position.cusps[i], (i as f64) * 30.0);
+        }
+        assert_eq!(position.system, HouseSystem::Placidus);
+    }
+
+    #[test]
+    fn test_get_cusp() {
+        let cusps = [0.0, 30.0, 60.0, 90.0, 120.0, 150.0, 180.0, 210.0, 240.0, 270.0, 300.0, 330.0];
+        let position = HousePosition::new(cusps, HouseSystem::Placidus);
+        
+        assert_eq!(position.get_cusp(1), Some(0.0));
+        assert_eq!(position.get_cusp(12), Some(330.0));
+        assert_eq!(position.get_cusp(0), None);
+        assert_eq!(position.get_cusp(13), None);
+    }
 } 
