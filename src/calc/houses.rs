@@ -142,6 +142,7 @@ pub fn calculate_houses(
         .collect())
 }
 
+#[allow(dead_code)]
 fn calculate_placidus_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -177,6 +178,7 @@ fn calculate_placidus_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_koch_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -221,12 +223,14 @@ fn calculate_koch_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_equal_houses(asc_longitude: f64) -> Vec<f64> {
     (0..12)
         .map(|i| normalize_angle(asc_longitude + (i as f64) * 30.0))
         .collect()
 }
 
+#[allow(dead_code)]
 fn calculate_whole_sign_houses(asc_longitude: f64) -> Vec<f64> {
     // In whole sign houses, each house starts at the beginning of a sign
     let asc_sign = (asc_longitude / 30.0).floor() * 30.0;
@@ -235,6 +239,7 @@ fn calculate_whole_sign_houses(asc_longitude: f64) -> Vec<f64> {
         .collect()
 }
 
+#[allow(dead_code)]
 fn calculate_campanus_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -277,6 +282,7 @@ fn calculate_campanus_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_regiomontanus_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -321,6 +327,7 @@ fn calculate_regiomontanus_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_meridian_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -363,6 +370,7 @@ fn calculate_meridian_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_alcabitius_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -425,6 +433,7 @@ fn calculate_alcabitius_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_topocentric_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -469,6 +478,7 @@ fn calculate_topocentric_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_morinus_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -513,6 +523,7 @@ fn calculate_morinus_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_porphyrius_houses(
     mc_longitude: f64,
     asc_longitude: f64,
@@ -550,6 +561,7 @@ fn calculate_porphyrius_houses(
     houses
 }
 
+#[allow(dead_code)]
 fn calculate_krusinski_houses(
     mc_longitude: f64,
     asc_longitude: f64,

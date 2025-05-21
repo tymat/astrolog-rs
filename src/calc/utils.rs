@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::NaiveDateTime;
 use std::f64::consts::PI;
 
 /// Converts a date to Julian date.
