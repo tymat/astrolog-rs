@@ -115,7 +115,7 @@ The server provides a REST API for generating astrological charts. Here are some
 
 #### Generate a Natal Chart
 ```bash
-curl -X POST http://localhost:8080/api/chart/natal \
+curl -X POST http://localhost:4008/api/chart/natal \
   -H "Content-Type: application/json" \
   -d '{
     "date": "2024-01-14T12:00:00Z",
@@ -128,7 +128,7 @@ curl -X POST http://localhost:8080/api/chart/natal \
 
 #### Generate a Transit Chart
 ```bash
-curl -X POST http://localhost:8080/api/chart/transit \
+curl -X POST http://localhost:4008/api/chart/transit \
   -H "Content-Type: application/json" \
   -d '{
     "natal_date": "1990-01-01T12:00:00Z",
@@ -142,7 +142,7 @@ curl -X POST http://localhost:8080/api/chart/transit \
 
 #### Generate a Synastry Chart
 ```bash
-curl -X POST http://localhost:8080/api/chart/synastry \
+curl -X POST http://localhost:4008/api/chart/synastry \
   -H "Content-Type: application/json" \
   -d '{
     "chart1": {

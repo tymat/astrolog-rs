@@ -48,7 +48,7 @@ systemctl enable "$SERVICE_NAME"
 systemctl start "$SERVICE_NAME"
 
 echo "Astrolog-rs service has been installed and started for user $CURRENT_USER"
-echo "The service will run on port 8808 by default"
+echo "The service will run on port 4008 by default"
 echo "You can change the port by editing the service file and setting the PORT environment variable"
 echo "You can check the status with: systemctl status $SERVICE_NAME"
 echo "View logs with: journalctl -u $SERVICE_NAME" 

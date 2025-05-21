@@ -11,6 +11,7 @@ use actix_web::{App, HttpServer};
 use astrolog_rs::api::server::config;
 use astrolog_rs::calc::swiss_ephemeris;
 use env_logger::Env;
+use actix_web::middleware::Logger;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -22,10 +23,15 @@ async fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
 
-    println!("Starting Astrolog-rs server on http://127.0.0.1:8080");
+    println!("Starting Astrolog-rs server on http://127.0.0.1:4008");
 
-    HttpServer::new(|| App::new().wrap(Cors::permissive()).configure(config))
-        .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .wrap(Cors::permissive())
+            .wrap(Logger::default())
+            .configure(config)
+    })
+    .bind("127.0.0.1:4008")?
+    .run()
+    .await
 }
