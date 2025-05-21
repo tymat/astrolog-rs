@@ -39,6 +39,22 @@ async fn test_natal_chart_endpoint() {
     assert!(response.get("planets").is_some());
     assert!(response.get("houses").is_some());
     assert!(response.get("aspects").is_some());
+    
+    // Check aspects format
+    let aspects = response["aspects"].as_array().unwrap();
+    for aspect in aspects {
+        assert!(aspect.get("planet1").is_some());
+        assert!(aspect.get("planet2").is_some());
+        assert!(aspect.get("aspect").is_some());
+        assert!(aspect.get("orb").is_some());
+        
+        // Verify planet names are actual planet names
+        let planet1 = aspect["planet1"].as_str().unwrap();
+        let planet2 = aspect["planet2"].as_str().unwrap();
+        assert!(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"].contains(&planet1));
+        assert!(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"].contains(&planet2));
+    }
+    
     let planets = response["planets"].as_array().unwrap();
     assert!(!planets.is_empty());
     let houses = response["houses"].as_array().unwrap();

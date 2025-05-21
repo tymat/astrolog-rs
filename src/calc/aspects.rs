@@ -250,8 +250,32 @@ pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
                 let orb = aspect_type.orb();
                 if (min_diff - _aspect_angle).abs() <= orb {
                     aspects.push(Aspect {
-                        planet1: format!("Planet{}", i + 1),
-                        planet2: format!("Planet{}", j + 1),
+                        planet1: match i {
+                            0 => "Sun".to_string(),
+                            1 => "Moon".to_string(),
+                            2 => "Mercury".to_string(),
+                            3 => "Venus".to_string(),
+                            4 => "Mars".to_string(),
+                            5 => "Jupiter".to_string(),
+                            6 => "Saturn".to_string(),
+                            7 => "Uranus".to_string(),
+                            8 => "Neptune".to_string(),
+                            9 => "Pluto".to_string(),
+                            _ => format!("Planet{}", i + 1),
+                        },
+                        planet2: match j {
+                            0 => "Sun".to_string(),
+                            1 => "Moon".to_string(),
+                            2 => "Mercury".to_string(),
+                            3 => "Venus".to_string(),
+                            4 => "Mars".to_string(),
+                            5 => "Jupiter".to_string(),
+                            6 => "Saturn".to_string(),
+                            7 => "Uranus".to_string(),
+                            8 => "Neptune".to_string(),
+                            9 => "Pluto".to_string(),
+                            _ => format!("Planet{}", j + 1),
+                        },
                         aspect_type: *aspect_type,
                         orb: (min_diff - _aspect_angle).abs(),
                     });
@@ -293,7 +317,7 @@ mod tests {
         let sextile = aspects.iter().find(|a| a.aspect_type == AspectType::Sextile);
         assert!(sextile.is_some());
         if let Some(sextile) = sextile {
-            assert_eq!(sextile.planet1, "Planet1");
+            assert_eq!(sextile.planet1, "Sun");
             assert_eq!(sextile.planet2, "Planet2");
             assert!(sextile.orb <= 8.0); // Sextile orb is 8°
         }
@@ -374,7 +398,7 @@ mod tests {
         let quintile = aspects.iter().find(|a| a.aspect_type == AspectType::Quintile);
         assert!(quintile.is_some());
         if let Some(quintile) = quintile {
-            assert_eq!(quintile.planet1, "Planet1");
+            assert_eq!(quintile.planet1, "Sun");
             assert_eq!(quintile.planet2, "Planet2");
             assert!(quintile.orb <= 3.0); // Quintile orb is 3°
         }
@@ -405,7 +429,7 @@ mod tests {
         let septile = aspects.iter().find(|a| a.aspect_type == AspectType::Septile);
         assert!(septile.is_some());
         if let Some(septile) = septile {
-            assert_eq!(septile.planet1, "Planet1");
+            assert_eq!(septile.planet1, "Sun");
             assert_eq!(septile.planet2, "Planet2");
             assert!(septile.orb <= 2.0); // Septile orb is 2°
         }
@@ -436,7 +460,7 @@ mod tests {
         let novile = aspects.iter().find(|a| a.aspect_type == AspectType::Novile);
         assert!(novile.is_some());
         if let Some(novile) = novile {
-            assert_eq!(novile.planet1, "Planet1");
+            assert_eq!(novile.planet1, "Sun");
             assert_eq!(novile.planet2, "Planet2");
             assert!(novile.orb <= 2.0); // Novile orb is 2°
         }
