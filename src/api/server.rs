@@ -146,14 +146,89 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
             }).collect();
 
             // Calculate aspects between natal and transit planets
-            let all_positions = [natal_positions, transit_positions].concat();
+            let all_positions = [natal_positions.clone(), transit_positions].concat();
             let aspects = calculate_aspects(&all_positions);
             let aspect_info: Vec<AspectInfo> = aspects.iter()
-                .map(|a| AspectInfo {
-                    aspect: format!("{:?}", a.aspect_type),
-                    orb: a.orb,
-                    planet1: a.planet1.clone(),
-                    planet2: a.planet2.clone(),
+                .map(|a| {
+                    // Map indices to correct planet names based on which chart they come from
+                    let planet1 = if a.planet1.starts_with("Planet") {
+                        let idx = a.planet1[6..].parse::<usize>().unwrap() - 1;
+                        if idx < natal_positions.len() {
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        } else {
+                            let idx = idx - natal_positions.len();
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        }
+                    } else {
+                        a.planet1.clone()
+                    };
+
+                    let planet2 = if a.planet2.starts_with("Planet") {
+                        let idx = a.planet2[6..].parse::<usize>().unwrap() - 1;
+                        if idx < natal_positions.len() {
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        } else {
+                            let idx = idx - natal_positions.len();
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        }
+                    } else {
+                        a.planet2.clone()
+                    };
+
+                    AspectInfo {
+                        aspect: format!("{:?}", a.aspect_type),
+                        orb: a.orb,
+                        planet1,
+                        planet2,
+                    }
                 })
                 .collect();
 
@@ -247,14 +322,89 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
             }).collect();
 
             // Calculate aspects between both charts' planets
-            let all_positions = [positions1, positions2].concat();
+            let all_positions = [positions1.clone(), positions2].concat();
             let aspects = calculate_aspects(&all_positions);
             let aspect_info: Vec<AspectInfo> = aspects.iter()
-                .map(|a| AspectInfo {
-                    aspect: format!("{:?}", a.aspect_type),
-                    orb: a.orb,
-                    planet1: a.planet1.clone(),
-                    planet2: a.planet2.clone(),
+                .map(|a| {
+                    // Map indices to correct planet names based on which chart they come from
+                    let planet1 = if a.planet1.starts_with("Planet") {
+                        let idx = a.planet1[6..].parse::<usize>().unwrap() - 1;
+                        if idx < positions1.len() {
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        } else {
+                            let idx = idx - positions1.len();
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        }
+                    } else {
+                        a.planet1.clone()
+                    };
+
+                    let planet2 = if a.planet2.starts_with("Planet") {
+                        let idx = a.planet2[6..].parse::<usize>().unwrap() - 1;
+                        if idx < positions1.len() {
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        } else {
+                            let idx = idx - positions1.len();
+                            match idx {
+                                0 => "Sun".to_string(),
+                                1 => "Moon".to_string(),
+                                2 => "Mercury".to_string(),
+                                3 => "Venus".to_string(),
+                                4 => "Mars".to_string(),
+                                5 => "Jupiter".to_string(),
+                                6 => "Saturn".to_string(),
+                                7 => "Uranus".to_string(),
+                                8 => "Neptune".to_string(),
+                                9 => "Pluto".to_string(),
+                                _ => format!("Planet{}", idx + 1),
+                            }
+                        }
+                    } else {
+                        a.planet2.clone()
+                    };
+
+                    AspectInfo {
+                        aspect: format!("{:?}", a.aspect_type),
+                        orb: a.orb,
+                        planet1,
+                        planet2,
+                    }
                 })
                 .collect();
 

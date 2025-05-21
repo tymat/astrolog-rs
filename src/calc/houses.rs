@@ -75,7 +75,7 @@ pub fn calculate_houses(
     }
 
     // Use Swiss Ephemeris for more accurate calculations
-    let (cusps, ascmc) = calculate_house_cusps_swiss(julian_date, latitude, longitude, house_system)?;
+    let (cusps, _ascmc) = calculate_house_cusps_swiss(julian_date, latitude, longitude, house_system)?;
 
     // Convert house cusps to HousePosition structs
     Ok(cusps[1..13].iter()

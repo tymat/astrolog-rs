@@ -4,7 +4,7 @@ use crate::calc::vsop87;
 use crate::calc::utils::{radians_to_degrees, degrees_to_radians};
 use crate::calc::swiss_ephemeris::{self, map_planet_to_swe};
 use std::f64::consts::PI;
-use chrono::{DateTime, NaiveDateTime, NaiveDate, NaiveTime, Utc, Datelike, Timelike};
+use chrono::{DateTime, NaiveDateTime, Utc, Datelike, Timelike};
 
 /// Planet types
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
