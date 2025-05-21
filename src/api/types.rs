@@ -84,7 +84,7 @@ pub struct SynastryResponse {
     pub chart_type: String,
     pub chart1: ChartResponse,
     pub chart2: ChartResponse,
-    pub aspects: Vec<AspectInfo>,
+    pub synastries: Vec<AspectInfo>,
 }
 
 impl From<PlanetPosition> for PlanetInfo {

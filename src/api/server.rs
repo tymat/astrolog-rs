@@ -436,7 +436,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 chart_type: "synastry".to_string(),
                 chart1,
                 chart2,
-                aspects: aspect_info,
+                synastries: aspect_info,
             };
 
             HttpResponse::Ok().json(response)

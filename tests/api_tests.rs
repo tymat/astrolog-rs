@@ -215,8 +215,8 @@ async fn test_synastry_chart_endpoint() {
     assert_eq!(chart2["ayanamsa"], "tropical");
     
     // Check aspects
-    let aspects = response["aspects"].as_array().unwrap();
-    for aspect in aspects {
+    let synastries = response["synastries"].as_array().unwrap();
+    for aspect in synastries {
         assert!(aspect.get("planet1").is_some());
         assert!(aspect.get("planet2").is_some());
         assert!(aspect.get("aspect").is_some());
