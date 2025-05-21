@@ -1,15 +1,22 @@
 use actix_web::{test, web, App};
 use serde_json::json;
 use astrolog_rs::api::server::config;
+use astrolog_rs::calc::swiss_ephemeris;
+
+async fn ensure_swiss_ephemeris_initialized() {
+    // Ignore error if already initialized
+    let _ = swiss_ephemeris::init_swiss_ephemeris();
+}
 
 #[actix_web::test]
 async fn test_natal_chart_endpoint() {
+    ensure_swiss_ephemeris_initialized().await;
     let app = test::init_service(
         App::new().configure(config)
     ).await;
 
     let request = json!({
-        "date": "2000-01-01 12:00:00",
+        "date": "2000-01-01T12:00:00Z",
         "latitude": 40.7128,
         "longitude": -74.0060,
         "house_system": "placidus",
@@ -40,13 +47,14 @@ async fn test_natal_chart_endpoint() {
 
 #[actix_web::test]
 async fn test_transit_chart_endpoint() {
+    ensure_swiss_ephemeris_initialized().await;
     let app = test::init_service(
         App::new().configure(config)
     ).await;
 
     let request = json!({
-        "natal_date": "2000-01-01 12:00:00",
-        "transit_date": "2024-01-01 12:00:00",
+        "natal_date": "2000-01-01T12:00:00Z",
+        "transit_date": "2024-01-01T12:00:00Z",
         "latitude": 40.7128,
         "longitude": -74.0060,
         "house_system": "placidus",
@@ -73,20 +81,21 @@ async fn test_transit_chart_endpoint() {
 
 #[actix_web::test]
 async fn test_synastry_chart_endpoint() {
+    ensure_swiss_ephemeris_initialized().await;
     let app = test::init_service(
         App::new().configure(config)
     ).await;
 
     let request = json!({
         "chart1": {
-            "date": "2000-01-01 12:00:00",
+            "date": "2000-01-01T12:00:00Z",
             "latitude": 40.7128,
             "longitude": -74.0060,
             "house_system": "placidus",
             "ayanamsa": "tropical"
         },
         "chart2": {
-            "date": "1995-01-01 12:00:00",
+            "date": "1995-01-01T12:00:00Z",
             "latitude": 34.0522,
             "longitude": -118.2437,
             "house_system": "placidus",
@@ -155,6 +164,7 @@ async fn test_invalid_input_handling() {
 
 #[actix_web::test]
 async fn test_different_house_systems() {
+    ensure_swiss_ephemeris_initialized().await;
     let app = test::init_service(
         App::new().configure(config)
     ).await;
@@ -162,7 +172,7 @@ async fn test_different_house_systems() {
     let house_systems = ["placidus", "koch", "equal", "wholesign", "campanus", "regiomontanus"];
     for system in house_systems.iter() {
         let request = json!({
-            "date": "2000-01-01 12:00:00",
+            "date": "2000-01-01T12:00:00Z",
             "latitude": 40.7128,
             "longitude": -74.0060,
             "house_system": system,
@@ -187,6 +197,7 @@ async fn test_different_house_systems() {
 
 #[actix_web::test]
 async fn test_specific_natal_chart() {
+    ensure_swiss_ephemeris_initialized().await;
     let app = test::init_service(
         App::new().configure(config)
     ).await;
