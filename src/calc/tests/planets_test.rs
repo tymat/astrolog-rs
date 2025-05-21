@@ -25,13 +25,13 @@ fn test_planet_enum() {
 fn test_calculate_planet_positions() {
     // Test J2000.0 epoch
     let positions = calculate_planet_positions(2451545.0).unwrap();
-    assert_eq!(positions.len(), 15);
+    assert_eq!(positions.len(), 10); // Only Sun through Pluto
     
     // Test that all positions have valid values
     for pos in positions {
         assert!(pos.longitude >= 0.0 && pos.longitude < 360.0);
         assert!(pos.latitude >= -90.0 && pos.latitude <= 90.0);
-        assert!(pos.distance > 0.0);
+        // Removed: assert!(pos.distance > 0.0); // Not present in main struct
     }
 }
 

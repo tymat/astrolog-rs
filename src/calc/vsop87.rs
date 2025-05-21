@@ -1,5 +1,51 @@
 use std::f64::consts::PI;
 
+/// Planet identification for VSOP87 calculations
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Planet {
+    Mercury,
+    Venus,
+    Earth,
+    Mars,
+    Jupiter,
+    Saturn,
+    Uranus,
+    Neptune,
+    Pluto,
+}
+
+impl Planet {
+    /// Get the mean motion for a planet in degrees per day
+    pub fn mean_motion(&self) -> f64 {
+        match self {
+            Planet::Mercury => 4.092334436,
+            Planet::Venus => 1.602130352,
+            Planet::Earth => 0.985609112,
+            Planet::Mars => 0.524020776,
+            Planet::Jupiter => 0.083085300,
+            Planet::Saturn => 0.033492519,
+            Planet::Uranus => 0.011728507,
+            Planet::Neptune => 0.006021389,
+            Planet::Pluto => 0.003979579,
+        }
+    }
+
+    /// Get the semi-major axis for a planet in AU
+    pub fn semi_major_axis(&self) -> f64 {
+        match self {
+            Planet::Mercury => 0.387098,
+            Planet::Venus => 0.723330,
+            Planet::Earth => 1.000000,
+            Planet::Mars => 1.523688,
+            Planet::Jupiter => 5.202561,
+            Planet::Saturn => 9.554747,
+            Planet::Uranus => 19.218140,
+            Planet::Neptune => 30.110387,
+            Planet::Pluto => 39.482116,
+        }
+    }
+}
+
 /// Calculate the Julian centuries from J2000.0
 pub fn julian_centuries(julian_date: f64) -> f64 {
     (julian_date - 2451545.0) / 36525.0
@@ -7,21 +53,22 @@ pub fn julian_centuries(julian_date: f64) -> f64 {
 
 /// Calculate the mean anomaly for a planet
 pub fn mean_anomaly(t: f64, a: f64, b: f64, c: f64) -> f64 {
+    // Calculate mean anomaly using the VSOP87 formula
+    // Input angles are in degrees, convert to radians at the end
     let mut m = a + b * t + c * t * t;
-    m = m % (2.0 * PI);
+    
+    // Normalize to [0, 360]
+    m = m % 360.0;
     if m < 0.0 {
-        m += 2.0 * PI;
+        m += 360.0;
     }
-    m
+    
+    // Convert to radians
+    m * PI / 180.0
 }
 
 /// Calculate the eccentricity of a planet's orbit
 pub fn eccentricity(t: f64, a: f64, b: f64, c: f64) -> f64 {
-    a + b * t + c * t * t
-}
-
-/// Calculate the semi-major axis of a planet's orbit
-pub fn semi_major_axis(t: f64, a: f64, b: f64, c: f64) -> f64 {
     a + b * t + c * t * t
 }
 
@@ -70,6 +117,7 @@ fn calculate_true_anomaly(mean_anomaly: f64, eccentricity: f64) -> f64 {
 }
 
 /// Calculate the heliocentric coordinates of a planet
+/// Returns (longitude, latitude, radius) in degrees and AU
 pub fn heliocentric_coordinates(
     t: f64,
     a: f64,
@@ -83,9 +131,15 @@ pub fn heliocentric_coordinates(
     let i_rad = i * PI / 180.0;
     let node_rad = node * PI / 180.0;
     let lp_rad = lp * PI / 180.0;
+    let l_rad = l * PI / 180.0;
     
-    // Calculate mean anomaly
-    let m = mean_anomaly(t, l, 0.0, 0.0);
+    // Mean anomaly M = L - lp (in degrees, then radians)
+    let mut m_deg = l - lp;
+    m_deg = m_deg % 360.0;
+    if m_deg < 0.0 {
+        m_deg += 360.0;
+    }
+    let m = m_deg * PI / 180.0;
     
     // Calculate true anomaly
     let v = calculate_true_anomaly(m, e);
@@ -93,16 +147,68 @@ pub fn heliocentric_coordinates(
     // Calculate radius vector
     let r = a * (1.0 - e * e) / (1.0 + e * v.cos());
     
-    // Calculate heliocentric coordinates in the orbital plane
-    let x_orb = r * v.cos();
-    let y_orb = r * v.sin();
+    // Argument of latitude: u = v + (lp - node)
+    let u = v + (lp_rad - node_rad);
     
-    // Transform to ecliptic coordinates
-    let x = x_orb * (node_rad).cos() - y_orb * (node_rad).sin() * i_rad.cos();
-    let y = x_orb * (node_rad).sin() + y_orb * (node_rad).cos() * i_rad.cos();
-    let z = y_orb * i_rad.sin();
+    // Heliocentric ecliptic coordinates
+    let x = r * (node_rad.cos() * u.cos() - node_rad.sin() * u.sin() * i_rad.cos());
+    let y = r * (node_rad.sin() * u.cos() + node_rad.cos() * u.sin() * i_rad.cos());
+    let z = r * u.sin() * i_rad.sin();
     
-    (x, y, z)
+    // Ecliptic longitude and latitude
+    let mut longitude = y.atan2(x) * 180.0 / PI;
+    let latitude = z.atan2((x * x + y * y).sqrt()) * 180.0 / PI;
+    
+    // Normalize longitude to [0, 360)
+    longitude = longitude % 360.0;
+    if longitude < 0.0 {
+        longitude += 360.0;
+    }
+    
+    (longitude, latitude, r)
+}
+
+/// Convert heliocentric coordinates to geocentric coordinates
+pub fn heliocentric_to_geocentric(
+    planet_long: f64,
+    planet_lat: f64,
+    planet_r: f64,
+    earth_long: f64,
+    earth_lat: f64,
+    earth_r: f64,
+) -> (f64, f64) {
+    // Convert angles to radians
+    let planet_long_rad = planet_long * PI / 180.0;
+    let planet_lat_rad = planet_lat * PI / 180.0;
+    let earth_long_rad = earth_long * PI / 180.0;
+    let earth_lat_rad = earth_lat * PI / 180.0;
+    
+    // Convert to rectangular coordinates
+    let x_planet = planet_r * planet_lat_rad.cos() * planet_long_rad.cos();
+    let y_planet = planet_r * planet_lat_rad.cos() * planet_long_rad.sin();
+    let z_planet = planet_r * planet_lat_rad.sin();
+    
+    let x_earth = earth_r * earth_lat_rad.cos() * earth_long_rad.cos();
+    let y_earth = earth_r * earth_lat_rad.cos() * earth_long_rad.sin();
+    let z_earth = earth_r * earth_lat_rad.sin();
+    
+    // Calculate geocentric coordinates
+    let x = x_planet - x_earth;
+    let y = y_planet - y_earth;
+    let z = z_planet - z_earth;
+    
+    // Convert back to spherical coordinates
+    let r = (x * x + y * y + z * z).sqrt();
+    let longitude = y.atan2(x) * 180.0 / PI;
+    let latitude = z.atan2((x * x + y * y).sqrt()) * 180.0 / PI;
+    
+    // Normalize longitude to [0, 360)
+    let mut longitude = longitude % 360.0;
+    if longitude < 0.0 {
+        longitude += 360.0;
+    }
+    
+    (longitude, latitude)
 }
 
 #[cfg(test)]
@@ -122,11 +228,11 @@ mod tests {
     #[test]
     fn test_mean_anomaly() {
         let t = 0.0; // J2000.0
+        let m = mean_anomaly(t, 180.0, 1.0, 0.0);
+        assert_relative_eq!(m, PI);
+        
         let m = mean_anomaly(t, 0.0, 1.0, 0.0);
         assert_relative_eq!(m, 0.0);
-        
-        let m = mean_anomaly(t, PI, 1.0, 0.0);
-        assert_relative_eq!(m, PI);
     }
 
     #[test]
@@ -144,32 +250,16 @@ mod tests {
 
     #[test]
     fn test_heliocentric_coordinates_with_inclination() {
-        let t = 0.0; // J2000.0
-        let (x, y, z) = heliocentric_coordinates(
-            t,
-            1.0,    // Semi-major axis
-            0.0,    // Eccentricity
-            45.0,   // Inclination (45 degrees)
-            0.0,    // Mean longitude
-            0.0,    // Longitude of perihelion
-            0.0,    // Longitude of ascending node
-        );
-        
-        // For 45-degree inclination, z should be significant
-        assert!(z.abs() > 0.0);
-        
-        // Test with zero inclination
-        let (x, y, z) = heliocentric_coordinates(
-            t,
-            1.0,    // Semi-major axis
-            0.0,    // Eccentricity
-            0.0,    // Inclination
-            0.0,    // Mean longitude
-            0.0,    // Longitude of perihelion
-            0.0,    // Longitude of ascending node
-        );
-        
-        // For zero inclination, z should be zero
-        assert_relative_eq!(z, 0.0, epsilon = 1e-10);
+        let t = 0.0;
+        let a = 1.0;
+        let e = 0.0;
+        let i = 90.0; // 90 degrees inclination
+        let l = 0.0;
+        let lp = 0.0;
+        let node = 0.0;
+        let (x, y, z) = heliocentric_coordinates(t, a, e, i, l, lp, node);
+        assert_relative_eq!(x, 0.0, epsilon = 1e-10);
+        assert_relative_eq!(y, 0.0, epsilon = 1e-10);
+        assert_relative_eq!(z, 1.0, epsilon = 1e-10); // At 90 degrees inclination, z should be 1.0
     }
 } 

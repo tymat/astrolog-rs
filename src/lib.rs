@@ -5,8 +5,6 @@ pub mod io;
 #[cfg(test)]
 mod tests {
     use crate::calc::planets::{Planet, calculate_planet_position};
-    use crate::core::types::HouseSystem;
-    use crate::calc::aspects::calculate_aspect;
 
     #[test]
     fn test_basic_calculations() {
