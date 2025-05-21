@@ -17,4 +17,4 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 #[allow(dead_code)]
 pub fn radians_to_degrees(radians: f64) -> f64 {
     radians * 180.0 / PI
-} 
+}

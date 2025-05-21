@@ -59,13 +59,13 @@ pub fn mean_anomaly(t: f64, a: f64, b: f64, c: f64) -> f64 {
     // Calculate mean anomaly using the VSOP87 formula
     // Input angles are in degrees, convert to radians at the end
     let mut m = a + b * t + c * t * t;
-    
+
     // Normalize to [0, 360]
     m = m % 360.0;
     if m < 0.0 {
         m += 360.0;
     }
-    
+
     // Convert to radians
     m * PI / 180.0
 }
@@ -109,15 +109,16 @@ fn calculate_true_anomaly(mean_anomaly: f64, eccentricity: f64) -> f64 {
     let mut eccentric_anomaly = mean_anomaly;
     let mut delta: f64 = 1.0;
     let mut iterations = 0;
-    
+
     while delta.abs() > 1e-12 && iterations < 50 {
-        let next = eccentric_anomaly - (eccentric_anomaly - eccentricity * eccentric_anomaly.sin() - mean_anomaly) 
-            / (1.0 - eccentricity * eccentric_anomaly.cos());
+        let next = eccentric_anomaly
+            - (eccentric_anomaly - eccentricity * eccentric_anomaly.sin() - mean_anomaly)
+                / (1.0 - eccentricity * eccentric_anomaly.cos());
         delta = next - eccentric_anomaly;
         eccentric_anomaly = next;
         iterations += 1;
     }
-    
+
     // Calculate true anomaly
     2.0 * ((1.0 + eccentricity).sqrt() * (eccentric_anomaly / 2.0).sin())
         .atan2((1.0 - eccentricity).sqrt() * (eccentric_anomaly / 2.0).cos())
@@ -139,7 +140,7 @@ pub fn heliocentric_coordinates(
     let node_rad = node * PI / 180.0;
     let lp_rad = lp * PI / 180.0;
     let _l_rad = l * PI / 180.0;
-    
+
     // Mean anomaly M = L - lp (in degrees, then radians)
     let mut m_deg = l - lp;
     m_deg = m_deg % 360.0;
@@ -147,31 +148,31 @@ pub fn heliocentric_coordinates(
         m_deg += 360.0;
     }
     let m = m_deg * PI / 180.0;
-    
+
     // Calculate true anomaly
     let v = calculate_true_anomaly(m, e);
-    
+
     // Calculate radius vector
     let _r = a * (1.0 - e * e) / (1.0 + e * v.cos());
-    
+
     // Argument of latitude: u = v + (lp - node)
     let u = v + (lp_rad - node_rad);
-    
+
     // Heliocentric ecliptic coordinates
     let x = _r * (node_rad.cos() * u.cos() - node_rad.sin() * u.sin() * i_rad.cos());
     let y = _r * (node_rad.sin() * u.cos() + node_rad.cos() * u.sin() * i_rad.cos());
     let z = _r * u.sin() * i_rad.sin();
-    
+
     // Ecliptic longitude and latitude
     let mut longitude = y.atan2(x) * 180.0 / PI;
     let latitude = z.atan2((x * x + y * y).sqrt()) * 180.0 / PI;
-    
+
     // Normalize longitude to [0, 360)
     longitude = longitude % 360.0;
     if longitude < 0.0 {
         longitude += 360.0;
     }
-    
+
     (longitude, latitude, _r)
 }
 
@@ -189,32 +190,32 @@ pub fn heliocentric_to_geocentric(
     let planet_lat_rad = planet_lat * PI / 180.0;
     let earth_long_rad = earth_long * PI / 180.0;
     let earth_lat_rad = earth_lat * PI / 180.0;
-    
+
     // Convert to rectangular coordinates
     let x_planet = planet_r * planet_lat_rad.cos() * planet_long_rad.cos();
     let y_planet = planet_r * planet_lat_rad.cos() * planet_long_rad.sin();
     let z_planet = planet_r * planet_lat_rad.sin();
-    
+
     let x_earth = earth_r * earth_lat_rad.cos() * earth_long_rad.cos();
     let y_earth = earth_r * earth_lat_rad.cos() * earth_long_rad.sin();
     let z_earth = earth_r * earth_lat_rad.sin();
-    
+
     // Calculate geocentric coordinates
     let x = x_planet - x_earth;
     let y = y_planet - y_earth;
     let z = z_planet - z_earth;
-    
+
     // Convert back to spherical coordinates
     let _r = (x * x + y * y + z * z).sqrt();
     let longitude = y.atan2(x) * 180.0 / PI;
     let latitude = z.atan2((x * x + y * y).sqrt()) * 180.0 / PI;
-    
+
     // Normalize longitude to [0, 360)
     let mut longitude = longitude % 360.0;
     if longitude < 0.0 {
         longitude += 360.0;
     }
-    
+
     (longitude, latitude)
 }
 
@@ -227,7 +228,7 @@ mod tests {
     fn test_julian_centuries() {
         let jd = 2451545.0; // J2000.0
         assert_relative_eq!(julian_centuries(jd), 0.0);
-        
+
         let jd = 2451545.0 + 36525.0; // One century later
         assert_relative_eq!(julian_centuries(jd), 1.0);
     }
@@ -237,7 +238,7 @@ mod tests {
         let t = 0.0; // J2000.0
         let m = mean_anomaly(t, 180.0, 1.0, 0.0);
         assert_relative_eq!(m, PI);
-        
+
         let m = mean_anomaly(t, 0.0, 1.0, 0.0);
         assert_relative_eq!(m, 0.0);
     }
@@ -248,7 +249,7 @@ mod tests {
         let e = 0.0;
         let v = calculate_true_anomaly(m, e);
         assert_relative_eq!(v, 0.0);
-        
+
         let m = PI;
         let e = 0.0;
         let v = calculate_true_anomaly(m, e);
@@ -269,4 +270,4 @@ mod tests {
         assert_relative_eq!(y, 0.0, epsilon = 1e-10);
         assert_relative_eq!(z, 1.0, epsilon = 1e-10); // At 90 degrees inclination, z should be 1.0
     }
-} 
+}

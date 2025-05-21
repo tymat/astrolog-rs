@@ -1,7 +1,7 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
-use chrono::{DateTime, Utc};
 
 /// Maximum number of objects that can be tracked
 #[allow(dead_code)]
@@ -15,14 +15,9 @@ pub const SIGN_COUNT: usize = 12;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AstrologError {
     /// Error during calculation of planetary positions
-    CalculationError {
-        message: String,
-    },
+    CalculationError { message: String },
     /// Error during house system calculations
-    HouseSystemError {
-        message: String,
-        system: String,
-    },
+    HouseSystemError { message: String, system: String },
     /// Error during coordinate transformations
     CoordinateError {
         message: String,
@@ -46,14 +41,9 @@ pub enum AstrologError {
         longitude: Option<f64>,
     },
     /// Error for unimplemented features
-    NotImplemented {
-        message: String,
-    },
+    NotImplemented { message: String },
     /// Error for invalid input parameters
-    InvalidInput {
-        message: String,
-        parameter: String,
-    },
+    InvalidInput { message: String, parameter: String },
     /// Error for invalid latitude
     InvalidLatitude(String),
 }
@@ -68,10 +58,18 @@ impl fmt::Display for AstrologError {
                 write!(f, "House system error ({}): {}", system, message)
             }
             AstrologError::CoordinateError { message, from, to } => {
-                write!(f, "Coordinate transformation error ({} to {}): {}", from, to, message)
+                write!(
+                    f,
+                    "Coordinate transformation error ({} to {}): {}",
+                    from, to, message
+                )
             }
             AstrologError::AspectError { message, planets } => {
-                write!(f, "Aspect error between {} and {}: {}", planets.0, planets.1, message)
+                write!(
+                    f,
+                    "Aspect error between {} and {}: {}",
+                    planets.0, planets.1, message
+                )
             }
             AstrologError::DateTimeError { message, date } => {
                 if let Some(dt) = date {
@@ -80,7 +78,11 @@ impl fmt::Display for AstrologError {
                     write!(f, "Date/time error: {}", message)
                 }
             }
-            AstrologError::LocationError { message, latitude, longitude } => {
+            AstrologError::LocationError {
+                message,
+                latitude,
+                longitude,
+            } => {
                 if let (Some(lat), Some(lon)) = (latitude, longitude) {
                     write!(f, "Location error at ({}, {}): {}", lat, lon, message)
                 } else {
@@ -320,4 +322,4 @@ pub enum AspectType {
     Quintile = 8,
     Biquintile = 9,
     Quincunx = 10,
-} 
+}

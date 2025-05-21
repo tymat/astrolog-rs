@@ -1,5 +1,5 @@
-use std::f64::consts::PI;
 use chrono::{DateTime, Utc};
+use std::f64::consts::PI;
 
 #[allow(dead_code)]
 pub fn normalize_angle(angle: f64) -> f64 {
@@ -51,8 +51,13 @@ mod tests {
 
         for (input, expected) in test_cases.iter() {
             let result = normalize_angle(*input);
-            assert!((result - expected).abs() < 1e-10, 
-                "normalize_angle({}) = {}, expected {}", input, result, expected);
+            assert!(
+                (result - expected).abs() < 1e-10,
+                "normalize_angle({}) = {}, expected {}",
+                input,
+                result,
+                expected
+            );
         }
     }
 
@@ -68,8 +73,13 @@ mod tests {
 
         for (degrees, expected) in test_cases.iter() {
             let result = degrees_to_radians(*degrees);
-            assert!((result - expected).abs() < 1e-10,
-                "degrees_to_radians({}) = {}, expected {}", degrees, result, expected);
+            assert!(
+                (result - expected).abs() < 1e-10,
+                "degrees_to_radians({}) = {}, expected {}",
+                degrees,
+                result,
+                expected
+            );
         }
     }
 
@@ -85,8 +95,13 @@ mod tests {
 
         for (radians, expected) in test_cases.iter() {
             let result = radians_to_degrees(*radians);
-            assert!((result - expected).abs() < 1e-10,
-                "radians_to_degrees({}) = {}, expected {}", radians, result, expected);
+            assert!(
+                (result - expected).abs() < 1e-10,
+                "radians_to_degrees({}) = {}, expected {}",
+                radians,
+                result,
+                expected
+            );
         }
     }
 
@@ -95,8 +110,11 @@ mod tests {
         for degrees in 0..360 {
             let radians = degrees_to_radians(degrees as f64);
             let back_to_degrees = radians_to_degrees(radians);
-            assert!((back_to_degrees - degrees as f64).abs() < 1e-10,
-                "Roundtrip conversion failed for {} degrees", degrees);
+            assert!(
+                (back_to_degrees - degrees as f64).abs() < 1e-10,
+                "Roundtrip conversion failed for {} degrees",
+                degrees
+            );
         }
     }
-} 
+}

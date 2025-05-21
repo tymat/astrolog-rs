@@ -32,4 +32,4 @@ impl FromStr for HouseSystem {
             _ => Err(format!("Invalid house system: {}", s)),
         }
     }
-} 
+}

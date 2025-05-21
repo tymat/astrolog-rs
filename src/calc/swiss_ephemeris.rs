@@ -1,11 +1,11 @@
-use swisseph::{self, Planet as SwePlanet};
+use crate::calc::swiss_ephemeris_ffi;
 use crate::core::types::AstrologError;
 use crate::core::types::HouseSystem;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 use std::sync::Once;
-use std::sync::atomic::{AtomicBool, Ordering};
-use crate::calc::swiss_ephemeris_ffi;
+use swisseph::{self, Planet as SwePlanet};
 
 // Use a local path for ephemeris files
 const EPHE_PATH: &str = "./ephe";
@@ -93,26 +93,33 @@ pub fn calculate_planet_position_swiss(
         });
     }
 
-    let guard = SWISSEPH.lock().map_err(|_| AstrologError::CalculationError {
-        message: "Failed to acquire Swiss Ephemeris lock".to_string(),
-    })?;
+    let guard = SWISSEPH
+        .lock()
+        .map_err(|_| AstrologError::CalculationError {
+            message: "Failed to acquire Swiss Ephemeris lock".to_string(),
+        })?;
 
-    let swe = guard.as_ref().ok_or_else(|| AstrologError::CalculationError {
-        message: "Swiss Ephemeris instance not available".to_string(),
-    })?;
-    
+    let swe = guard
+        .as_ref()
+        .ok_or_else(|| AstrologError::CalculationError {
+            message: "Swiss Ephemeris instance not available".to_string(),
+        })?;
+
     let jd = swe.julday(year, month, day, hour, true); // true = Gregorian
-    
+
     // Use default flags for geocentric positions
     let flags = swisseph::Flags::default();
-    let pos = swe.calc_ut(jd, planet, flags)
-        .map_err(|e| AstrologError::CalculationError { message: format!("Swiss Ephemeris error: {e}") })?;
-    
+    let pos = swe
+        .calc_ut(jd, planet, flags)
+        .map_err(|e| AstrologError::CalculationError {
+            message: format!("Swiss Ephemeris error: {e}"),
+        })?;
+
     // Convert to zodiacal longitude (0-360 degrees)
     let longitude = pos[0].rem_euclid(360.0);
     let latitude = pos[1];
     let distance = pos[2];
-    
+
     Ok((longitude, latitude, distance))
 }
 
@@ -143,7 +150,7 @@ pub fn calculate_house_cusps_swiss(
 ) -> Result<([f64; 13], [f64; 10]), AstrologError> {
     let mut cusps = [0.0f64; 13];
     let mut ascmc = [0.0f64; 10];
-    
+
     // Map our house systems to Swiss Ephemeris codes
     let hsys = match house_system {
         HouseSystem::Placidus => b'P',
@@ -159,7 +166,7 @@ pub fn calculate_house_cusps_swiss(
         HouseSystem::Porphyrius => b'O',
         HouseSystem::Krusinski => b'U',
         HouseSystem::Vedic => b'W', // Use whole sign for Vedic
-        HouseSystem::Null => b'A', // Use equal for Null
+        HouseSystem::Null => b'A',  // Use equal for Null
     };
 
     let ret = unsafe {
@@ -178,4 +185,4 @@ pub fn calculate_house_cusps_swiss(
         });
     }
     Ok((cusps, ascmc))
-} 
+}

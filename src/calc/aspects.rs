@@ -4,23 +4,23 @@ use crate::calc::PlanetPosition;
 /// Aspect types
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum AspectType {
-    Conjunction,    // 0°
-    SemiSextile,    // 30°
-    SemiSquare,     // 45°
-    Sextile,        // 60°
-    Quintile,       // 72°
-    Square,         // 90°
-    BiQuintile,     // 144°
-    Trine,          // 120°
-    Sesquisquare,   // 135°
-    Quincunx,       // 150°
-    Opposition,     // 180°
-    Septile,        // 51.428571°
-    BiSeptile,      // 102.857143°
-    TriSeptile,     // 154.285714°
-    Novile,         // 40°
-    BiNovile,       // 80°
-    QuadNovile,     // 160°
+    Conjunction,  // 0°
+    SemiSextile,  // 30°
+    SemiSquare,   // 45°
+    Sextile,      // 60°
+    Quintile,     // 72°
+    Square,       // 90°
+    BiQuintile,   // 144°
+    Trine,        // 120°
+    Sesquisquare, // 135°
+    Quincunx,     // 150°
+    Opposition,   // 180°
+    Septile,      // 51.428571°
+    BiSeptile,    // 102.857143°
+    TriSeptile,   // 154.285714°
+    Novile,       // 40°
+    BiNovile,     // 80°
+    QuadNovile,   // 160°
 }
 
 /// Aspect configuration
@@ -41,7 +41,7 @@ pub fn calculate_aspect(
     let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2).abs() % 360.0;
     let aspect_diff = (diff - _aspect_angle).abs();
-    
+
     if aspect_diff <= orb {
         Some(AspectConfig {
             orb: aspect_diff,
@@ -81,7 +81,7 @@ fn get_aspect_angle(aspect_type: AspectType) -> f64 {
 fn is_aspect_applying(pos1: f64, pos2: f64, aspect_type: AspectType) -> bool {
     let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2) % 360.0;
-    
+
     match aspect_type {
         AspectType::Conjunction => diff > 0.0 && diff < 180.0,
         AspectType::Opposition => diff > 0.0 && diff < 180.0,
@@ -111,7 +111,7 @@ pub fn calculate_all_aspects(
     aspect_types: &[AspectType],
 ) -> Vec<(usize, usize, AspectType, AspectConfig)> {
     let mut aspects = Vec::new();
-    
+
     for i in 0..positions.len() {
         for j in (i + 1)..positions.len() {
             for &aspect_type in aspect_types {
@@ -126,7 +126,7 @@ pub fn calculate_all_aspects(
             }
         }
     }
-    
+
     aspects
 }
 
@@ -142,11 +142,11 @@ pub fn calculate_aspect_time(
     let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2) % 360.0;
     let vel_diff = vel1 - vel2;
-    
+
     if vel_diff == 0.0 {
         return None;
     }
-    
+
     let time = (diff - _aspect_angle) / vel_diff;
     if time >= 0.0 {
         Some(time)
@@ -212,20 +212,20 @@ impl AspectType {
 /// Calculate aspects between planets
 pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
     let mut aspects = Vec::new();
-    
+
     for i in 0..positions.len() {
         for j in (i + 1)..positions.len() {
             let pos1 = &positions[i];
             let pos2 = &positions[j];
-            
+
             // Skip if either planet is retrograde
             if pos1.is_retrograde || pos2.is_retrograde {
                 continue;
             }
-            
+
             let diff = (pos1.longitude - pos2.longitude).abs() % 360.0;
             let min_diff = diff.min(360.0 - diff);
-            
+
             // Check each aspect type
             for aspect_type in [
                 AspectType::Conjunction,
@@ -245,7 +245,9 @@ pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
                 AspectType::Novile,
                 AspectType::BiNovile,
                 AspectType::QuadNovile,
-            ].iter() {
+            ]
+            .iter()
+            {
                 let _aspect_angle = aspect_type.angle();
                 let orb = aspect_type.orb();
                 if (min_diff - _aspect_angle).abs() <= orb {
@@ -283,7 +285,7 @@ pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
             }
         }
     }
-    
+
     aspects
 }
 
@@ -314,7 +316,9 @@ mod tests {
         println!("test_aspect_calculations: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a sextile aspect
-        let sextile = aspects.iter().find(|a| a.aspect_type == AspectType::Sextile);
+        let sextile = aspects
+            .iter()
+            .find(|a| a.aspect_type == AspectType::Sextile);
         assert!(sextile.is_some());
         if let Some(sextile) = sextile {
             assert_eq!(sextile.planet1, "Sun");
@@ -344,7 +348,9 @@ mod tests {
         let aspects = calculate_aspects(&positions);
         assert!(!aspects.is_empty());
         // Should find a conjunction aspect
-        let conjunction = aspects.iter().find(|a| a.aspect_type == AspectType::Conjunction);
+        let conjunction = aspects
+            .iter()
+            .find(|a| a.aspect_type == AspectType::Conjunction);
         assert!(conjunction.is_some());
         if let Some(conjunction) = conjunction {
             assert_eq!(conjunction.planet1, "Sun");
@@ -397,7 +403,9 @@ mod tests {
         println!("test_harmonic_aspects: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a quintile aspect
-        let quintile = aspects.iter().find(|a| a.aspect_type == AspectType::Quintile);
+        let quintile = aspects
+            .iter()
+            .find(|a| a.aspect_type == AspectType::Quintile);
         assert!(quintile.is_some());
         if let Some(quintile) = quintile {
             assert_eq!(quintile.planet1, "Sun");
@@ -428,7 +436,9 @@ mod tests {
         println!("test_septile_aspects: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a septile aspect
-        let septile = aspects.iter().find(|a| a.aspect_type == AspectType::Septile);
+        let septile = aspects
+            .iter()
+            .find(|a| a.aspect_type == AspectType::Septile);
         assert!(septile.is_some());
         if let Some(septile) = septile {
             assert_eq!(septile.planet1, "Sun");
@@ -467,4 +477,4 @@ mod tests {
             assert!(novile.orb <= 2.0); // Novile orb is 2°
         }
     }
-} 
+}

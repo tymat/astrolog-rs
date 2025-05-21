@@ -1,5 +1,5 @@
-use crate::core::AstrologError;
 use crate::calc::utils::{degrees_to_radians, radians_to_degrees};
+use crate::core::AstrologError;
 
 /// Convert ecliptic coordinates to equatorial coordinates
 #[allow(dead_code)]
@@ -30,7 +30,8 @@ pub fn ecliptic_to_equatorial(
     let ra = y.atan2(x);
 
     // Calculate declination
-    let dec = (lat_rad.sin() * obl_rad.cos() + lat_rad.cos() * obl_rad.sin() * lon_rad.sin()).asin();
+    let dec =
+        (lat_rad.sin() * obl_rad.cos() + lat_rad.cos() * obl_rad.sin() * lon_rad.sin()).asin();
 
     // Convert back to degrees
     let ra_deg = radians_to_degrees(ra);
@@ -104,14 +105,15 @@ pub fn equatorial_to_horizontal(
 #[allow(dead_code)]
 pub fn calculate_sidereal_time(julian_date: f64, longitude: f64) -> f64 {
     let t = (julian_date - 2451545.0) / 36525.0;
-    
+
     // Calculate Greenwich Mean Sidereal Time
-    let gmst = 280.46061837 + 360.98564736629 * (julian_date - 2451545.0) +
-               t * t * (0.000387933 - t / 38710000.0);
-    
+    let gmst = 280.46061837
+        + 360.98564736629 * (julian_date - 2451545.0)
+        + t * t * (0.000387933 - t / 38710000.0);
+
     // Add longitude to get Local Sidereal Time
     let lst = gmst + longitude;
-    
+
     // Normalize to 0-360 degrees
     lst % 360.0
 }
@@ -129,30 +131,26 @@ pub fn calculate_julian_date(
 ) -> f64 {
     let mut y = year as f64;
     let mut m = month as f64;
-    
+
     if m <= 2.0 {
         y -= 1.0;
         m += 12.0;
     }
-    
+
     let a = (y / 100.0).floor();
     let b = 2.0 - a + (a / 4.0).floor();
-    
-    let jd = (365.25 * (y + 4716.0)).floor() +
-             (30.6001 * (m + 1.0)).floor() +
-             day as f64 + b - 1524.5;
-    
+
+    let jd =
+        (365.25 * (y + 4716.0)).floor() + (30.6001 * (m + 1.0)).floor() + day as f64 + b - 1524.5;
+
     // Add time of day
     let time = hour + minute / 60.0 + second / 3600.0 - timezone;
-    
+
     jd + time / 24.0
 }
 
 #[allow(dead_code)]
-pub fn normalize_coordinates(
-    longitude: f64,
-    latitude: f64,
-) -> (f64, f64) {
+pub fn normalize_coordinates(longitude: f64, latitude: f64) -> (f64, f64) {
     // Normalize longitude to 0-360 range
     let mut normalized_longitude = longitude % 360.0;
     if normalized_longitude < 0.0 {
@@ -161,7 +159,11 @@ pub fn normalize_coordinates(
 
     // Handle edge cases for latitude
     let normalized_latitude = if latitude.abs() >= 90.0 {
-        if latitude > 0.0 { 90.0 } else { -90.0 }
+        if latitude > 0.0 {
+            90.0
+        } else {
+            -90.0
+        }
     } else {
         latitude
     };
@@ -170,7 +172,7 @@ pub fn normalize_coordinates(
 }
 
 /// Convert spherical coordinates to rectangular coordinates.
-/// 
+///
 /// # Arguments
 /// * `r` - Radius (distance from origin)
 /// * `azimuth` - Azimuth angle in radians
@@ -194,7 +196,7 @@ pub fn spherical_to_rectangular(
 }
 
 /// Convert rectangular coordinates to spherical coordinates.
-/// 
+///
 /// # Arguments
 /// * `x` - X coordinate
 /// * `y` - Y coordinate
@@ -276,25 +278,25 @@ mod tests {
         let r = 1.0;
         let azimuth = PI / 4.0; // 45 degrees
         let altitude = PI / 6.0; // 30 degrees
-        
+
         let mut x = 0.0;
         let mut y = 0.0;
         let mut z = 0.0;
-        
+
         spherical_to_rectangular(r, azimuth, altitude, &mut x, &mut y, &mut z);
-        
+
         // Convert back to spherical
         let mut r2 = 0.0;
         let mut azimuth2 = 0.0;
         let mut altitude2 = 0.0;
-        
+
         rectangular_to_spherical(x, y, z, &mut r2, &mut azimuth2, &mut altitude2);
-        
+
         // Check that we get back the original values
         assert_relative_eq!(r, r2, epsilon = 1e-10);
         assert_relative_eq!(azimuth, azimuth2, epsilon = 1e-10);
         assert_relative_eq!(altitude, altitude2, epsilon = 1e-10);
-        
+
         // Check specific values
         assert_relative_eq!(x, 0.6123724356957945, epsilon = 1e-10);
         assert_relative_eq!(y, 0.6123724356957945, epsilon = 1e-10);
@@ -307,7 +309,7 @@ mod tests {
         let mut x = 0.0;
         let mut y = 0.0;
         let mut z = 0.0;
-        spherical_to_rectangular(0.0, PI/4.0, PI/6.0, &mut x, &mut y, &mut z);
+        spherical_to_rectangular(0.0, PI / 4.0, PI / 6.0, &mut x, &mut y, &mut z);
         assert_relative_eq!(x, 0.0, epsilon = 1e-10);
         assert_relative_eq!(y, 0.0, epsilon = 1e-10);
         assert_relative_eq!(z, 0.0, epsilon = 1e-10);
@@ -316,7 +318,7 @@ mod tests {
         let mut x = 0.0;
         let mut y = 0.0;
         let mut z = 0.0;
-        spherical_to_rectangular(1.0, PI/4.0, PI/2.0, &mut x, &mut y, &mut z);
+        spherical_to_rectangular(1.0, PI / 4.0, PI / 2.0, &mut x, &mut y, &mut z);
         assert_relative_eq!(x, 0.0, epsilon = 1e-10);
         assert_relative_eq!(y, 0.0, epsilon = 1e-10);
         assert_relative_eq!(z, 1.0, epsilon = 1e-10);
@@ -325,9 +327,9 @@ mod tests {
         let mut x = 0.0;
         let mut y = 0.0;
         let mut z = 0.0;
-        spherical_to_rectangular(-1.0, PI/4.0, PI/6.0, &mut x, &mut y, &mut z);
+        spherical_to_rectangular(-1.0, PI / 4.0, PI / 6.0, &mut x, &mut y, &mut z);
         assert_relative_eq!(x, -0.6123724356957945, epsilon = 1e-10);
         assert_relative_eq!(y, -0.6123724356957945, epsilon = 1e-10);
         assert_relative_eq!(z, -0.5, epsilon = 1e-10);
     }
-} 
+}

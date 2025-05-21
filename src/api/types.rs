@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
-use chrono::{DateTime, Utc};
 use crate::calc::planets::PlanetPosition;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChartRequest {
@@ -98,4 +98,4 @@ impl From<PlanetPosition> for PlanetInfo {
             house: position.house,
         }
     }
-} 
+}

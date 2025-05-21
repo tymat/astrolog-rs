@@ -1,9 +1,9 @@
-pub mod types;
 pub mod calc;
+pub mod types;
 
+pub use calc::HouseSystem;
 use chrono::{DateTime, Utc};
 pub use types::*;
-pub use calc::HouseSystem;
 
 /// Information needed to generate an astrological chart
 #[allow(dead_code)]
@@ -53,4 +53,4 @@ mod tests {
         assert_eq!(info.timezone, 0.0);
         assert_eq!(info.house_system, HouseSystem::Placidus);
     }
-} 
+}
