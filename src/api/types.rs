@@ -41,6 +41,7 @@ pub struct PlanetInfo {
 pub struct HouseInfo {
     pub number: u8,
     pub longitude: f64,
+    pub latitude: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

@@ -52,6 +52,8 @@ pub enum AstrologError {
         message: String,
         parameter: String,
     },
+    /// Error for invalid latitude
+    InvalidLatitude(String),
 }
 
 impl fmt::Display for AstrologError {
@@ -88,6 +90,9 @@ impl fmt::Display for AstrologError {
             }
             AstrologError::InvalidInput { message, parameter } => {
                 write!(f, "Invalid input for {}: {}", parameter, message)
+            }
+            AstrologError::InvalidLatitude(message) => {
+                write!(f, "Invalid latitude: {}", message)
             }
         }
     }
@@ -236,20 +241,43 @@ pub struct Position {
     pub retrograde: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum HouseSystem {
-    Placidus = 0,
-    Koch = 1,
-    Equal = 2,
-    WholeSign = 3,
-    Campanus = 4,
-    Regiomontanus = 5,
-    Meridian = 6,
-    Alcabitius = 7,
-    Topocentric = 8,
-    Morinus = 9,
-    Porphyrius = 10,
-    Krusinski = 11,
+    Placidus,
+    Koch,
+    Equal,
+    WholeSign,
+    Campanus,
+    Regiomontanus,
+    Meridian,
+    Alcabitius,
+    Topocentric,
+    Morinus,
+    Porphyrius,
+    Krusinski,
+    Vedic,
+    Null,
+}
+
+impl std::fmt::Display for HouseSystem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            HouseSystem::Placidus => write!(f, "Placidus"),
+            HouseSystem::Koch => write!(f, "Koch"),
+            HouseSystem::Equal => write!(f, "Equal"),
+            HouseSystem::WholeSign => write!(f, "Whole Sign"),
+            HouseSystem::Campanus => write!(f, "Campanus"),
+            HouseSystem::Regiomontanus => write!(f, "Regiomontanus"),
+            HouseSystem::Meridian => write!(f, "Meridian"),
+            HouseSystem::Alcabitius => write!(f, "Alcabitius"),
+            HouseSystem::Topocentric => write!(f, "Topocentric"),
+            HouseSystem::Morinus => write!(f, "Morinus"),
+            HouseSystem::Porphyrius => write!(f, "Porphyrius"),
+            HouseSystem::Krusinski => write!(f, "Krusinski"),
+            HouseSystem::Vedic => write!(f, "Vedic"),
+            HouseSystem::Null => write!(f, "Null"),
+        }
+    }
 }
 
 impl FromStr for HouseSystem {
@@ -269,6 +297,8 @@ impl FromStr for HouseSystem {
             "morinus" => Ok(HouseSystem::Morinus),
             "porphyrius" => Ok(HouseSystem::Porphyrius),
             "krusinski" => Ok(HouseSystem::Krusinski),
+            "vedic" => Ok(HouseSystem::Vedic),
+            "null" => Ok(HouseSystem::Null),
             _ => Err(format!("Invalid house system: {}", s)),
         }
     }

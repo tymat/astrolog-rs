@@ -37,9 +37,9 @@ pub fn calculate_aspect(
     aspect_type: AspectType,
     orb: f64,
 ) -> Option<AspectConfig> {
-    let aspect_angle = get_aspect_angle(aspect_type);
+    let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2).abs() % 360.0;
-    let aspect_diff = (diff - aspect_angle).abs();
+    let aspect_diff = (diff - _aspect_angle).abs();
     
     if aspect_diff <= orb {
         Some(AspectConfig {
@@ -76,7 +76,7 @@ fn get_aspect_angle(aspect_type: AspectType) -> f64 {
 
 /// Check if an aspect is applying (planets moving towards exact aspect)
 fn is_aspect_applying(pos1: f64, pos2: f64, aspect_type: AspectType) -> bool {
-    let aspect_angle = get_aspect_angle(aspect_type);
+    let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2) % 360.0;
     
     match aspect_type {
@@ -134,7 +134,7 @@ pub fn calculate_aspect_time(
     vel2: f64,
     aspect_type: AspectType,
 ) -> Option<f64> {
-    let aspect_angle = get_aspect_angle(aspect_type);
+    let _aspect_angle = get_aspect_angle(aspect_type);
     let diff = (pos1 - pos2) % 360.0;
     let vel_diff = vel1 - vel2;
     
@@ -142,7 +142,7 @@ pub fn calculate_aspect_time(
         return None;
     }
     
-    let time = (aspect_angle - diff) / vel_diff;
+    let time = (diff - _aspect_angle) / vel_diff;
     if time >= 0.0 {
         Some(time)
     } else {
@@ -241,14 +241,14 @@ pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
                 AspectType::BiNovile,
                 AspectType::QuadNovile,
             ].iter() {
-                let aspect_angle = aspect_type.angle();
+                let _aspect_angle = aspect_type.angle();
                 let orb = aspect_type.orb();
-                if (min_diff - aspect_angle).abs() <= orb {
+                if (min_diff - _aspect_angle).abs() <= orb {
                     aspects.push(Aspect {
                         planet1: format!("Planet{}", i + 1),
                         planet2: format!("Planet{}", j + 1),
                         aspect_type: *aspect_type,
-                        orb: (min_diff - aspect_angle).abs(),
+                        orb: (min_diff - _aspect_angle).abs(),
                     });
                 }
             }

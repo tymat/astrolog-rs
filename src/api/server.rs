@@ -46,13 +46,15 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 .collect();
 
             // Calculate houses
-            let houses = calculate_houses(jd, req.latitude, req.longitude, house_system);
-            let house_info: Vec<HouseInfo> = houses.iter()
-                .map(|h| HouseInfo {
-                    number: h.number,
-                    longitude: h.longitude,
-                })
-                .collect();
+            let houses = match calculate_houses(jd, req.latitude, req.longitude, house_system) {
+                Ok(h) => h,
+                Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+            };
+            let house_info: Vec<HouseInfo> = houses.iter().map(|h| HouseInfo {
+                number: h.number,
+                longitude: h.longitude,
+                latitude: h.latitude,
+            }).collect();
 
             // Calculate aspects
             let aspects = calculate_aspects(&positions);
@@ -133,13 +135,15 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .collect();
 
             // Calculate houses for the natal chart
-            let houses = calculate_houses(natal_jd, req.latitude, req.longitude, house_system);
-            let house_info: Vec<HouseInfo> = houses.iter()
-                .map(|h| HouseInfo {
-                    number: h.number,
-                    longitude: h.longitude,
-                })
-                .collect();
+            let houses = match calculate_houses(natal_jd, req.latitude, req.longitude, house_system) {
+                Ok(h) => h,
+                Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+            };
+            let house_info: Vec<HouseInfo> = houses.iter().map(|h| HouseInfo {
+                number: h.number,
+                longitude: h.longitude,
+                latitude: h.latitude,
+            }).collect();
 
             // Calculate aspects between natal and transit planets
             let all_positions = [natal_positions, transit_positions].concat();
@@ -221,13 +225,15 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .collect();
 
             // Calculate houses for the first chart
-            let houses = calculate_houses(jd1, req.chart1.latitude, req.chart1.longitude, house_system);
-            let house_info: Vec<HouseInfo> = houses.iter()
-                .map(|h| HouseInfo {
-                    number: h.number,
-                    longitude: h.longitude,
-                })
-                .collect();
+            let houses = match calculate_houses(jd1, req.chart1.latitude, req.chart1.longitude, house_system) {
+                Ok(h) => h,
+                Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+            };
+            let house_info: Vec<HouseInfo> = houses.iter().map(|h| HouseInfo {
+                number: h.number,
+                longitude: h.longitude,
+                latitude: h.latitude,
+            }).collect();
 
             // Calculate aspects between both charts' planets
             let all_positions = [positions1, positions2].concat();
