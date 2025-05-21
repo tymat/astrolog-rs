@@ -4,10 +4,15 @@ use crate::core::types::HouseSystem;
 use crate::core::AstrologError;
 use approx::{AbsDiffEq, RelativeEq};
 
+/// Represents a house cusp position in the astrological chart.
+/// Houses are divisions of the zodiac that represent different areas of life.
 #[derive(Debug, Clone, PartialEq)]
 pub struct HousePosition {
+    /// House number (1-12) in the chart
     pub number: u8,
+    /// Longitude in degrees (0-360) where the house begins
     pub longitude: f64,
+    /// Latitude in degrees (-90 to 90) of the house cusp
     pub latitude: f64,
 }
 
@@ -46,7 +51,40 @@ impl RelativeEq for HousePosition {
     }
 }
 
-/// Calculate house cusps for a given Julian date and location
+/// Calculates house cusps for a given date, time, and location using the specified house system.
+///
+/// # Arguments
+///
+/// * `julian_date` - The Julian date for the calculation
+/// * `latitude` - The geographical latitude in degrees (-90 to 90)
+/// * `longitude` - The geographical longitude in degrees (-180 to 180)
+/// * `house_system` - The house system to use for the calculation
+///
+/// # Returns
+///
+/// A Result containing a vector of HousePosition structs representing the house cusps,
+/// or an AstrologError if the calculation fails.
+///
+/// # Examples
+///
+/// ```
+/// use astrolog_rs::calc::houses::calculate_houses;
+/// use astrolog_rs::core::types::HouseSystem;
+/// use astrolog_rs::core::types::AstrologError;
+///
+/// let julian_date = 2451545.0; // 2000-01-01
+/// let latitude = 40.0;
+/// let longitude = -74.0;
+/// let house_system = HouseSystem::Placidus;
+///
+/// match calculate_houses(julian_date, latitude, longitude, house_system) {
+///     Ok(houses) => {
+///         assert_eq!(houses.len(), 12);
+///         // Process house positions...
+///     },
+///     Err(e) => println!("Error calculating houses: {}", e),
+/// }
+/// ```
 #[allow(dead_code)]
 pub fn calculate_houses(
     julian_date: f64,
@@ -592,7 +630,34 @@ fn calculate_null_houses(
     (0..12).map(|i| i as f64 * 30.0).collect()
 }
 
-/// Calculate house placements for a given set of positions
+/// Calculates house placements for a given set of positions and house cusps.
+///
+/// # Arguments
+///
+/// * `positions` - A slice of longitudes to find house placements for
+/// * `cusps` - A slice of house cusp longitudes
+///
+/// # Returns
+///
+/// A Result containing a vector of house numbers (1-12) corresponding to each position,
+/// or an AstrologError if the calculation fails.
+///
+/// # Examples
+///
+/// ```
+/// use astrolog_rs::calc::houses::calculate_house_placements;
+///
+/// let positions = vec![45.0, 90.0, 135.0];
+/// let cusps = vec![0.0, 30.0, 60.0, 90.0, 120.0, 150.0, 180.0, 210.0, 240.0, 270.0, 300.0, 330.0];
+///
+/// match calculate_house_placements(&positions, &cusps) {
+///     Ok(placements) => {
+///         assert_eq!(placements.len(), positions.len());
+///         // Process house placements...
+///     },
+///     Err(e) => println!("Error calculating house placements: {}", e),
+/// }
+/// ```
 #[allow(dead_code)]
 pub fn calculate_house_placements(
     positions: &[f64],
@@ -641,6 +706,38 @@ pub fn house_place_in(position: f64, house_cusps: &[f64; 12]) -> usize {
     // If we get here, the position must be in the last house
     12
 }
+
+/// Calculates house placements for planets.
+///
+/// This function determines which house each planet is located in based on
+/// their zodiacal positions and the house cusps.
+///
+/// # Arguments
+///
+/// * `positions` - A vector of planet positions in degrees (0-360)
+/// * `cusps` - A vector of 12 house cusp positions in degrees (0-360)
+///
+/// # Returns
+///
+/// A Result containing a vector of house numbers (1-12) for each planet
+///
+/// # Examples
+///
+/// ```
+/// use crate::calc::houses::calculate_house_placements;
+///
+/// let positions = vec![0.0, 30.0, 60.0]; // Example planet positions
+/// let cusps = vec![0.0, 30.0, 60.0, 90.0, 120.0, 150.0, 180.0, 210.0, 240.0, 270.0, 300.0, 330.0];
+///
+/// match calculate_house_placements(&positions, &cusps) {
+///     Ok(house_placements) => {
+///         for (i, house) in house_placements.iter().enumerate() {
+///             println!("Planet {} is in house {}", i + 1, house);
+///         }
+///     },
+///     Err(e) => println!("Error calculating house placements: {}", e),
+/// }
+/// ```
 
 #[cfg(test)]
 mod tests {

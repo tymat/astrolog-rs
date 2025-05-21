@@ -6,44 +6,85 @@ use chrono::{DateTime, Datelike, NaiveDateTime, TimeZone, Timelike, Utc};
 use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
 
-/// Planet types
+/// Represents the celestial bodies that can be calculated in the astrological chart.
+/// This includes the traditional planets, nodes, and other significant points.
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum Planet {
+    /// The Sun - represents vitality, ego, and basic personality
     Sun,
+    /// The Moon - represents emotions, instincts, and subconscious
     Moon,
+    /// Mercury - represents communication, intellect, and learning
     Mercury,
+    /// Venus - represents love, beauty, and values
     Venus,
+    /// Mars - represents energy, action, and desire
     Mars,
+    /// Jupiter - represents expansion, wisdom, and opportunity
     Jupiter,
+    /// Saturn - represents structure, limitations, and responsibility
     Saturn,
+    /// Uranus - represents change, innovation, and rebellion
     Uranus,
+    /// Neptune - represents dreams, spirituality, and illusion
     Neptune,
+    /// Pluto - represents transformation, power, and regeneration
     Pluto,
+    /// Mean Lunar Node - represents karmic lessons and life path
     MeanNode,
+    /// True Lunar Node - more accurate position of the lunar node
     TrueNode,
+    /// Mean Black Moon Lilith - represents primal instincts and hidden desires
     MeanLilith,
+    /// True Black Moon Lilith - more accurate position of Black Moon Lilith
     TrueLilith,
+    /// Chiron - represents healing, wisdom, and mentoring
     Chiron,
+    /// Ceres - represents nurturing, growth, and natural cycles
     Ceres,
+    /// Pallas - represents wisdom, strategy, and creative intelligence
     Pallas,
+    /// Juno - represents partnership, commitment, and equality
     Juno,
+    /// Vesta - represents dedication, focus, and spiritual service
     Vesta,
+    /// Part of Fortune - represents luck, prosperity, and material well-being
     Fortune,
+    /// Vertex - represents fated encounters and significant relationships
     Vertex,
+    /// East Point - represents the intersection of the prime vertical and ecliptic
     EastPoint,
 }
 
-/// Planetary position
+/// Represents the calculated position of a celestial body in the astrological chart.
+/// This includes both the zodiacal position and additional astronomical data.
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct PlanetPosition {
-    pub longitude: f64,      // Longitude in degrees
-    pub latitude: f64,       // Latitude in degrees
-    pub speed: f64,          // Daily motion in degrees
-    pub is_retrograde: bool, // Whether the planet is retrograde
-    pub house: Option<u8>,   // House number (1-12) if applicable
+    /// Longitude in degrees (0-360) along the ecliptic
+    pub longitude: f64,
+    /// Latitude in degrees (-90 to 90) perpendicular to the ecliptic
+    pub latitude: f64,
+    /// Daily motion in degrees, indicating the speed of the planet
+    pub speed: f64,
+    /// Whether the planet is moving backwards (retrograde)
+    pub is_retrograde: bool,
+    /// House number (1-12) where the planet is located, if applicable
+    pub house: Option<u8>,
 }
 
 impl PlanetPosition {
+    /// Creates a new PlanetPosition with the given coordinates and motion data.
+    ///
+    /// # Arguments
+    ///
+    /// * `longitude` - The zodiacal longitude in degrees (0-360)
+    /// * `latitude` - The ecliptic latitude in degrees (-90 to 90)
+    /// * `speed` - The daily motion in degrees
+    /// * `is_retrograde` - Whether the planet is moving backwards
+    ///
+    /// # Returns
+    ///
+    /// A new PlanetPosition instance with the specified values and no house assignment
     pub fn new(longitude: f64, latitude: f64, speed: f64, is_retrograde: bool) -> Self {
         Self {
             longitude,
@@ -123,7 +164,7 @@ pub fn calculate_planet_position(
     let swe_planet = map_planet_to_swe(planet).ok_or_else(|| "Invalid planet".to_string())?;
 
     // Calculate position using Swiss Ephemeris
-    let (longitude, latitude, _distance) =
+    let (longitude, latitude, _distance, _speed) =
         swiss_ephemeris::calculate_planet_position_swiss(swe_planet, year, month, day, hour)
             .map_err(|e| e.to_string())?;
 
@@ -132,11 +173,11 @@ pub fn calculate_planet_position(
     let hour_before = hour - dt * 24.0;
     let hour_after = hour + dt * 24.0;
 
-    let (long_before, _, _) =
+    let (long_before, _, _, _) =
         swiss_ephemeris::calculate_planet_position_swiss(swe_planet, year, month, day, hour_before)
             .map_err(|e| e.to_string())?;
 
-    let (long_after, _, _) =
+    let (long_after, _, _, _) =
         swiss_ephemeris::calculate_planet_position_swiss(swe_planet, year, month, day, hour_after)
             .map_err(|e| e.to_string())?;
 
