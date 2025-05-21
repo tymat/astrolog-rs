@@ -246,8 +246,10 @@ pub enum HouseSystem {
     Regiomontanus = 5,
     Meridian = 6,
     Alcabitius = 7,
-    Morinus = 8,
-    Krusinski = 9,
+    Topocentric = 8,
+    Morinus = 9,
+    Porphyrius = 10,
+    Krusinski = 11,
 }
 
 impl FromStr for HouseSystem {
@@ -263,7 +265,9 @@ impl FromStr for HouseSystem {
             "regiomontanus" => Ok(HouseSystem::Regiomontanus),
             "meridian" => Ok(HouseSystem::Meridian),
             "alcabitius" => Ok(HouseSystem::Alcabitius),
+            "topocentric" => Ok(HouseSystem::Topocentric),
             "morinus" => Ok(HouseSystem::Morinus),
+            "porphyrius" => Ok(HouseSystem::Porphyrius),
             "krusinski" => Ok(HouseSystem::Krusinski),
             _ => Err(format!("Invalid house system: {}", s)),
         }

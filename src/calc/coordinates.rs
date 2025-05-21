@@ -8,14 +8,14 @@ pub fn ecliptic_to_equatorial(
     obliquity: f64,
 ) -> Result<(f64, f64), AstrologError> {
     // Normalize longitude to 0-360 range
-    let mut longitude = longitude % 360.0;
-    if longitude < 0.0 {
-        longitude += 360.0;
+    let mut _longitude = longitude % 360.0;
+    if _longitude < 0.0 {
+        _longitude += 360.0;
     }
 
     // Handle edge cases for latitude
     if latitude.abs() >= 90.0 {
-        return Ok((longitude, latitude));
+        return Ok((_longitude, latitude));
     }
 
     // Convert angles to radians

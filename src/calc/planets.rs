@@ -96,7 +96,7 @@ pub fn calculate_planet_position(
     let t = vsop87::julian_centuries(julian_date);
     
     // Calculate Earth's position first
-    let (earth_long, earth_lat, earth_r) = vsop87::heliocentric_coordinates(
+    let (earth_long, _earth_lat, _earth_r) = vsop87::heliocentric_coordinates(
         t,
         1.00000261, // Earth's semi-major axis
         0.01671123 - 0.00004392 * t, // Earth's eccentricity
@@ -373,6 +373,7 @@ pub fn calculate_planet_position(
 }
 
 /// Calculate Sun's position
+#[allow(dead_code)]
 fn calculate_sun_position(t: f64) -> Result<PlanetPosition, String> {
     // Earth orbital elements (Meeus Table 31.A)
     let a = 1.00000261; // AU
@@ -389,6 +390,7 @@ fn calculate_sun_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Moon's position
+#[allow(dead_code)]
 fn calculate_moon_position(t: f64) -> Result<PlanetPosition, String> {
     // Simplified lunar model
     let mean_longitude = 218.316 + 13.176396 * t;
@@ -408,6 +410,7 @@ fn calculate_moon_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Mercury's position
+#[allow(dead_code)]
 fn calculate_mercury_position(t: f64) -> Result<PlanetPosition, String> {
     // Mercury orbital elements (Meeus Table 31.A)
     let a = 0.38709843; // AU
@@ -443,6 +446,7 @@ fn calculate_mercury_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Venus's position
+#[allow(dead_code)]
 fn calculate_venus_position(t: f64) -> Result<PlanetPosition, String> {
     // Venus orbital elements (Meeus Table 31.A)
     let a = 0.72332102; // AU
@@ -478,6 +482,7 @@ fn calculate_venus_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Mars's position
+#[allow(dead_code)]
 fn calculate_mars_position(t: f64) -> Result<PlanetPosition, String> {
     // Mars orbital elements (Meeus Table 31.A)
     let a = 1.52371243; // AU
@@ -513,6 +518,7 @@ fn calculate_mars_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Jupiter's position
+#[allow(dead_code)]
 fn calculate_jupiter_position(t: f64) -> Result<PlanetPosition, String> {
     // Jupiter orbital elements (Meeus Table 31.A)
     let a = 5.20248019; // AU
@@ -548,6 +554,7 @@ fn calculate_jupiter_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Saturn's position
+#[allow(dead_code)]
 fn calculate_saturn_position(t: f64) -> Result<PlanetPosition, String> {
     // Saturn orbital elements (Meeus Table 31.A)
     let a = 9.54149883; // AU
@@ -583,6 +590,7 @@ fn calculate_saturn_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Uranus's position
+#[allow(dead_code)]
 fn calculate_uranus_position(t: f64) -> Result<PlanetPosition, String> {
     // Uranus orbital elements (Meeus Table 31.A)
     let a = 19.18797948; // AU
@@ -618,6 +626,7 @@ fn calculate_uranus_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Neptune's position
+#[allow(dead_code)]
 fn calculate_neptune_position(t: f64) -> Result<PlanetPosition, String> {
     // Neptune orbital elements (Meeus Table 31.A)
     let a = 30.06952752; // AU
@@ -653,6 +662,7 @@ fn calculate_neptune_position(t: f64) -> Result<PlanetPosition, String> {
 }
 
 /// Calculate Pluto's position
+#[allow(dead_code)]
 fn calculate_pluto_position(t: f64) -> Result<PlanetPosition, String> {
     // Pluto orbital elements (Meeus Table 31.A)
     let a = 39.48686035; // AU
@@ -687,6 +697,7 @@ fn calculate_pluto_position(t: f64) -> Result<PlanetPosition, String> {
     Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
+#[allow(dead_code)]
 fn calculate_geocentric_planet_position(
     t: f64,
     a: f64,
@@ -724,7 +735,7 @@ fn calculate_geocentric_planet_position(
     let y = y_p - y_e;
     let z = z_p - z_e;
     // Convert to ecliptic longitude and latitude
-    let r = (x * x + y * y + z * z).sqrt();
+    let _r = (x * x + y * y + z * z).sqrt();
     let longitude = radians_to_degrees(y.atan2(x)).rem_euclid(360.0);
     let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     PlanetPosition::new(longitude, latitude, 0.0, false)

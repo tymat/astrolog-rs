@@ -6,13 +6,29 @@ use axum::{
     http::StatusCode,
 };
 use crate::calc::planets::calculate_planet_positions;
-use crate::api::types::{ChartRequest, TransitRequest, SynastryRequest, ChartResponse, PlanetInfo};
+use crate::calc::houses::calculate_houses;
+use crate::calc::aspects::calculate_aspects;
+use crate::api::types::{ChartRequest, TransitRequest, SynastryRequest, ChartResponse, PlanetInfo, HouseInfo, AspectInfo};
 use crate::calc::utils::date_to_julian;
+use crate::core::types::HouseSystem;
+
+fn parse_house_system(system: &str) -> HouseSystem {
+    match system.to_lowercase().as_str() {
+        "placidus" => HouseSystem::Placidus,
+        "koch" => HouseSystem::Koch,
+        "equal" => HouseSystem::Equal,
+        "wholesign" => HouseSystem::WholeSign,
+        "campanus" => HouseSystem::Campanus,
+        "regiomontanus" => HouseSystem::Regiomontanus,
+        _ => HouseSystem::Placidus, // Default to Placidus
+    }
+}
 
 async fn generate_natal_chart(
     Json(req): Json<ChartRequest>,
 ) -> impl IntoResponse {
     let jd = date_to_julian(req.date);
+    let house_system = parse_house_system(&req.house_system);
     
     match calculate_planet_positions(jd) {
         Ok(positions) => {
@@ -37,6 +53,26 @@ async fn generate_natal_chart(
                 })
                 .collect();
 
+            // Calculate houses
+            let houses = calculate_houses(jd, req.latitude, req.longitude, house_system);
+            let house_info: Vec<HouseInfo> = houses.iter()
+                .map(|h| HouseInfo {
+                    number: h.number,
+                    longitude: h.longitude,
+                })
+                .collect();
+
+            // Calculate aspects
+            let aspects = calculate_aspects(&positions);
+            let aspect_info: Vec<AspectInfo> = aspects.iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
+
             let response = ChartResponse {
                 chart_type: "natal".to_string(),
                 date: req.date,
@@ -45,8 +81,8 @@ async fn generate_natal_chart(
                 house_system: req.house_system.clone(),
                 ayanamsa: req.ayanamsa.clone(),
                 planets,
-                houses: vec![], // TODO: Implement house calculations
-                aspects: vec![], // TODO: Implement aspect calculations
+                houses: house_info,
+                aspects: aspect_info,
             };
 
             Json(response).into_response()
@@ -60,6 +96,7 @@ async fn generate_transit_chart(
 ) -> impl IntoResponse {
     let natal_jd = date_to_julian(req.natal_date);
     let transit_jd = date_to_julian(req.transit_date);
+    let house_system = parse_house_system(&req.house_system);
     
     match (calculate_planet_positions(natal_jd), calculate_planet_positions(transit_jd)) {
         (Ok(natal_positions), Ok(transit_positions)) => {
@@ -105,6 +142,27 @@ async fn generate_transit_chart(
                 })
                 .collect();
 
+            // Calculate houses for the transit time
+            let houses = calculate_houses(transit_jd, req.latitude, req.longitude, house_system);
+            let house_info: Vec<HouseInfo> = houses.iter()
+                .map(|h| HouseInfo {
+                    number: h.number,
+                    longitude: h.longitude,
+                })
+                .collect();
+
+            // Calculate aspects between natal and transit planets
+            let all_positions = [natal_positions, transit_positions].concat();
+            let aspects = calculate_aspects(&all_positions);
+            let aspect_info: Vec<AspectInfo> = aspects.iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
+
             let response = ChartResponse {
                 chart_type: "transit".to_string(),
                 date: req.transit_date,
@@ -113,8 +171,8 @@ async fn generate_transit_chart(
                 house_system: req.house_system.clone(),
                 ayanamsa: req.ayanamsa.clone(),
                 planets: [natal_planets, transit_planets].concat(),
-                houses: vec![], // TODO: Implement house calculations
-                aspects: vec![], // TODO: Implement aspect calculations
+                houses: house_info,
+                aspects: aspect_info,
             };
 
             Json(response).into_response()
@@ -128,6 +186,7 @@ async fn generate_synastry_chart(
 ) -> impl IntoResponse {
     let jd1 = date_to_julian(req.chart1.date);
     let jd2 = date_to_julian(req.chart2.date);
+    let house_system = parse_house_system(&req.chart1.house_system);
     
     match (calculate_planet_positions(jd1), calculate_planet_positions(jd2)) {
         (Ok(positions1), Ok(positions2)) => {
@@ -173,6 +232,27 @@ async fn generate_synastry_chart(
                 })
                 .collect();
 
+            // Calculate houses for the first chart
+            let houses = calculate_houses(jd1, req.chart1.latitude, req.chart1.longitude, house_system);
+            let house_info: Vec<HouseInfo> = houses.iter()
+                .map(|h| HouseInfo {
+                    number: h.number,
+                    longitude: h.longitude,
+                })
+                .collect();
+
+            // Calculate aspects between both charts' planets
+            let all_positions = [positions1, positions2].concat();
+            let aspects = calculate_aspects(&all_positions);
+            let aspect_info: Vec<AspectInfo> = aspects.iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
+
             let response = ChartResponse {
                 chart_type: "synastry".to_string(),
                 date: req.chart1.date,
@@ -181,8 +261,8 @@ async fn generate_synastry_chart(
                 house_system: req.chart1.house_system.clone(),
                 ayanamsa: req.chart1.ayanamsa.clone(),
                 planets: [planets1, planets2].concat(),
-                houses: vec![], // TODO: Implement house calculations
-                aspects: vec![], // TODO: Implement aspect calculations
+                houses: house_info,
+                aspects: aspect_info,
             };
 
             Json(response).into_response()

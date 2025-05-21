@@ -1,7 +1,7 @@
 pub mod types;
 pub mod calc;
 
-use chrono::{DateTime, Utc, TimeZone};
+use chrono::{DateTime, Utc};
 pub use types::*;
 pub use calc::HouseSystem;
 

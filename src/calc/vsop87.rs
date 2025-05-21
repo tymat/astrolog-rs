@@ -119,7 +119,7 @@ fn calculate_true_anomaly(mean_anomaly: f64, eccentricity: f64) -> f64 {
 /// Calculate the heliocentric coordinates of a planet
 /// Returns (longitude, latitude, radius) in degrees and AU
 pub fn heliocentric_coordinates(
-    t: f64,
+    _t: f64,
     a: f64,
     e: f64,
     i: f64,
@@ -131,7 +131,7 @@ pub fn heliocentric_coordinates(
     let i_rad = i * PI / 180.0;
     let node_rad = node * PI / 180.0;
     let lp_rad = lp * PI / 180.0;
-    let l_rad = l * PI / 180.0;
+    let _l_rad = l * PI / 180.0;
     
     // Mean anomaly M = L - lp (in degrees, then radians)
     let mut m_deg = l - lp;
@@ -145,15 +145,15 @@ pub fn heliocentric_coordinates(
     let v = calculate_true_anomaly(m, e);
     
     // Calculate radius vector
-    let r = a * (1.0 - e * e) / (1.0 + e * v.cos());
+    let _r = a * (1.0 - e * e) / (1.0 + e * v.cos());
     
     // Argument of latitude: u = v + (lp - node)
     let u = v + (lp_rad - node_rad);
     
     // Heliocentric ecliptic coordinates
-    let x = r * (node_rad.cos() * u.cos() - node_rad.sin() * u.sin() * i_rad.cos());
-    let y = r * (node_rad.sin() * u.cos() + node_rad.cos() * u.sin() * i_rad.cos());
-    let z = r * u.sin() * i_rad.sin();
+    let x = _r * (node_rad.cos() * u.cos() - node_rad.sin() * u.sin() * i_rad.cos());
+    let y = _r * (node_rad.sin() * u.cos() + node_rad.cos() * u.sin() * i_rad.cos());
+    let z = _r * u.sin() * i_rad.sin();
     
     // Ecliptic longitude and latitude
     let mut longitude = y.atan2(x) * 180.0 / PI;
@@ -165,7 +165,7 @@ pub fn heliocentric_coordinates(
         longitude += 360.0;
     }
     
-    (longitude, latitude, r)
+    (longitude, latitude, _r)
 }
 
 /// Convert heliocentric coordinates to geocentric coordinates
@@ -198,7 +198,7 @@ pub fn heliocentric_to_geocentric(
     let z = z_planet - z_earth;
     
     // Convert back to spherical coordinates
-    let r = (x * x + y * y + z * z).sqrt();
+    let _r = (x * x + y * y + z * z).sqrt();
     let longitude = y.atan2(x) * 180.0 / PI;
     let latitude = z.atan2((x * x + y * y).sqrt()) * 180.0 / PI;
     
