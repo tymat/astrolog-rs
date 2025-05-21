@@ -75,7 +75,7 @@ curl -X POST http://localhost:8080/api/chart/natal \
     "latitude": 40.7128,
     "longitude": -74.0060,
     "house_system": "placidus",
-    "ayanamsa": "fagan_bradley"
+    "ayanamsa": "tropical"
   }'
 ```
 
@@ -89,7 +89,7 @@ curl -X POST http://localhost:8080/api/chart/transit \
     "latitude": 40.7128,
     "longitude": -74.0060,
     "house_system": "placidus",
-    "ayanamsa": "fagan_bradley"
+    "ayanamsa": "tropical"
   }'
 ```
 
@@ -101,15 +101,17 @@ curl -X POST http://localhost:8080/api/chart/synastry \
     "chart1": {
       "date": "1990-01-01T12:00:00Z",
       "latitude": 40.7128,
-      "longitude": -74.0060
+      "longitude": -74.0060,
+      "house_system": "placidus",
+      "ayanamsa": "tropical"
     },
     "chart2": {
       "date": "1992-06-15T15:30:00Z",
       "latitude": 34.0522,
-      "longitude": -118.2437
-    },
-    "house_system": "placidus",
-    "ayanamsa": "fagan_bradley"
+      "longitude": -118.2437,
+      "house_system": "placidus",
+      "ayanamsa": "tropical"
+    }
   }'
 ```
 
@@ -121,7 +123,7 @@ curl -X POST http://localhost:8080/api/chart/synastry \
   "latitude": 40.7128,
   "longitude": -74.0060,
   "house_system": "placidus",
-  "ayanamsa": "fagan_bradley",
+  "ayanamsa": "tropical",
   "planets": [
     {
       "name": "Sun",
