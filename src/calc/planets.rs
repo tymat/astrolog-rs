@@ -2,7 +2,7 @@ use crate::calc::swiss_ephemeris::{self, map_planet_to_swe};
 use crate::calc::utils::{degrees_to_radians, radians_to_degrees};
 use crate::calc::vsop87;
 use crate::core::types::AstrologError;
-use chrono::{DateTime, Datelike, NaiveDateTime, Timelike, Utc};
+use chrono::{DateTime, Datelike, NaiveDateTime, TimeZone, Timelike, Utc};
 use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
 
@@ -65,6 +65,7 @@ fn normalize_longitude(longitude: f64) -> f64 {
 }
 
 /// Calculate planetary positions for a given Julian date
+#[allow(dead_code)]
 pub fn calculate_planet_positions(jd: f64) -> Result<Vec<PlanetPosition>, AstrologError> {
     let mut positions = Vec::with_capacity(10);
 
@@ -76,7 +77,7 @@ pub fn calculate_planet_positions(jd: f64) -> Result<Vec<PlanetPosition>, Astrol
             message: "Invalid date".to_string(),
         }
     })?;
-    let datetime: DateTime<Utc> = DateTime::<Utc>::from_utc(naive, Utc);
+    let datetime: DateTime<Utc> = Utc.from_utc_datetime(&naive);
 
     // Calculate positions for each planet
     for planet in [

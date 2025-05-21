@@ -20,19 +20,32 @@ static SWISSEPH: Mutex<Option<swisseph::Swisseph>> = Mutex::new(None);
 static INIT: Once = Once::new();
 
 // Swiss Ephemeris planet constants
+#[allow(dead_code)]
 pub const SE_SUN: i32 = 0;
+#[allow(dead_code)]
 pub const SE_MOON: i32 = 1;
+#[allow(dead_code)]
 pub const SE_MERCURY: i32 = 2;
+#[allow(dead_code)]
 pub const SE_VENUS: i32 = 3;
+#[allow(dead_code)]
 pub const SE_MARS: i32 = 4;
+#[allow(dead_code)]
 pub const SE_JUPITER: i32 = 5;
+#[allow(dead_code)]
 pub const SE_SATURN: i32 = 6;
+#[allow(dead_code)]
 pub const SE_URANUS: i32 = 7;
+#[allow(dead_code)]
 pub const SE_NEPTUNE: i32 = 8;
+#[allow(dead_code)]
 pub const SE_PLUTO: i32 = 9;
+#[allow(dead_code)]
 pub const SE_MEAN_NODE: i32 = 10;
+#[allow(dead_code)]
 pub const SE_TRUE_NODE: i32 = 11;
 
+#[allow(dead_code)]
 pub fn init_swiss_ephemeris() -> Result<(), AstrologError> {
     // Only initialize once
     INIT.call_once(|| {

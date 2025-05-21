@@ -10,6 +10,7 @@ use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
 use actix_web::{web, HttpResponse, Responder};
 
+#[allow(dead_code)]
 fn parse_house_system(system: &str) -> HouseSystem {
     match system.to_lowercase().as_str() {
         "placidus" => HouseSystem::Placidus,
@@ -22,6 +23,7 @@ fn parse_house_system(system: &str) -> HouseSystem {
     }
 }
 
+#[allow(dead_code)]
 async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
     let jd = date_to_julian(req.date);
     let house_system = parse_house_system(&req.house_system);
@@ -55,7 +57,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 Ok(h) => h,
                 Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
             };
-            let house_info: Vec<HouseInfo> = houses
+            let _house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -84,7 +86,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 house_system: req.house_system.clone(),
                 ayanamsa: req.ayanamsa.clone(),
                 planets,
-                houses: house_info,
+                houses: _house_info,
                 aspects: aspect_info,
             };
 
@@ -94,6 +96,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
     }
 }
 
+#[allow(dead_code)]
 async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responder {
     let natal_jd = date_to_julian(req.natal_date);
     let transit_jd = date_to_julian(req.transit_date);
@@ -154,7 +157,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 Ok(h) => h,
                 Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
             };
-            let house_info: Vec<HouseInfo> = houses
+            let _house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -270,6 +273,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
     }
 }
 
+#[allow(dead_code)]
 async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Responder {
     let jd1 = date_to_julian(req.chart1.date);
     let jd2 = date_to_julian(req.chart2.date);
@@ -344,7 +348,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
             };
 
-            let house_info1: Vec<HouseInfo> = houses1
+            let _house_info1: Vec<HouseInfo> = houses1
                 .iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -352,7 +356,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                     latitude: h.latitude,
                 })
                 .collect();
-            let house_info2: Vec<HouseInfo> = houses2
+            let _house_info2: Vec<HouseInfo> = houses2
                 .iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -441,7 +445,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 house_system: req.chart1.house_system.clone(),
                 ayanamsa: req.chart1.ayanamsa.clone(),
                 planets: planets1,
-                houses: house_info1,
+                houses: _house_info1,
                 aspects: aspect_info1,
             };
 
@@ -453,7 +457,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 house_system: req.chart2.house_system.clone(),
                 ayanamsa: req.chart2.ayanamsa.clone(),
                 planets: planets2,
-                houses: house_info2,
+                houses: _house_info2,
                 aspects: aspect_info2,
             };
 
@@ -470,6 +474,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
     }
 }
 
+#[allow(dead_code)]
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/api")

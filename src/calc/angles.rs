@@ -1,5 +1,6 @@
 use crate::calc::utils::{degrees_to_radians, normalize_angle, radians_to_degrees};
 
+#[allow(dead_code)]
 pub fn calculate_angles(sidereal_time: f64, latitude: f64, obliquity: f64) -> (f64, f64) {
     let st_rad = degrees_to_radians(sidereal_time);
     let lat_rad = degrees_to_radians(latitude);
@@ -17,11 +18,13 @@ pub fn calculate_angles(sidereal_time: f64, latitude: f64, obliquity: f64) -> (f
     (mc_longitude, asc_longitude)
 }
 
+#[allow(dead_code)]
 pub fn calculate_obliquity(t: f64) -> f64 {
     // Calculate mean obliquity of the ecliptic
     23.43929111 - 0.013004167 * t - 0.0000001639 * t * t + 0.0000005036 * t * t * t
 }
 
+#[allow(dead_code)]
 pub fn calculate_sidereal_time(t: f64, longitude: f64) -> f64 {
     // Calculate mean sidereal time at Greenwich
     let mst =

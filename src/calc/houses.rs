@@ -47,6 +47,7 @@ impl RelativeEq for HousePosition {
 }
 
 /// Calculate house cusps for a given Julian date and location
+#[allow(dead_code)]
 pub fn calculate_houses(
     julian_date: f64,
     latitude: f64,
@@ -558,6 +559,7 @@ fn calculate_krusinski_houses(
 /// Calculate house cusps using the Vedic house system.
 /// In this system, each house starts 15 degrees earlier than in the Equal system,
 /// with the Ascendant falling in the middle of the 1st house.
+#[allow(dead_code)]
 fn calculate_vedic_houses(
     _mc_longitude: f64,
     ascendant: f64,
@@ -579,6 +581,7 @@ fn calculate_vedic_houses(
 /// Calculate house cusps using the Null house system.
 /// In this system, cusps are fixed to start at their corresponding signs
 /// (1st house at 0° Aries, 2nd at 0° Taurus, etc.)
+#[allow(dead_code)]
 fn calculate_null_houses(
     _mc_longitude: f64,
     _ascendant: f64,
