@@ -1,10 +1,4 @@
-use axum::{
-    routing::post,
-    Router,
-    Json,
-    response::IntoResponse,
-    http::StatusCode,
-};
+use actix_web::{web, HttpResponse, Responder};
 use crate::calc::planets::calculate_planet_positions;
 use crate::calc::houses::calculate_houses;
 use crate::calc::aspects::calculate_aspects;
@@ -24,9 +18,7 @@ fn parse_house_system(system: &str) -> HouseSystem {
     }
 }
 
-async fn generate_natal_chart(
-    Json(req): Json<ChartRequest>,
-) -> impl IntoResponse {
+async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
     let jd = date_to_julian(req.date);
     let house_system = parse_house_system(&req.house_system);
     
@@ -85,15 +77,13 @@ async fn generate_natal_chart(
                 aspects: aspect_info,
             };
 
-            Json(response).into_response()
+            HttpResponse::Ok().json(response)
         },
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
     }
 }
 
-async fn generate_transit_chart(
-    Json(req): Json<TransitRequest>,
-) -> impl IntoResponse {
+async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responder {
     let natal_jd = date_to_julian(req.natal_date);
     let transit_jd = date_to_julian(req.transit_date);
     let house_system = parse_house_system(&req.house_system);
@@ -142,8 +132,8 @@ async fn generate_transit_chart(
                 })
                 .collect();
 
-            // Calculate houses for the transit time
-            let houses = calculate_houses(transit_jd, req.latitude, req.longitude, house_system);
+            // Calculate houses for the natal chart
+            let houses = calculate_houses(natal_jd, req.latitude, req.longitude, house_system);
             let house_info: Vec<HouseInfo> = houses.iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -165,7 +155,7 @@ async fn generate_transit_chart(
 
             let response = ChartResponse {
                 chart_type: "transit".to_string(),
-                date: req.transit_date,
+                date: req.natal_date,
                 latitude: req.latitude,
                 longitude: req.longitude,
                 house_system: req.house_system.clone(),
@@ -175,15 +165,13 @@ async fn generate_transit_chart(
                 aspects: aspect_info,
             };
 
-            Json(response).into_response()
+            HttpResponse::Ok().json(response)
         },
-        _ => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to calculate positions".to_string()).into_response(),
+        _ => HttpResponse::InternalServerError().body("Failed to calculate positions"),
     }
 }
 
-async fn generate_synastry_chart(
-    Json(req): Json<SynastryRequest>,
-) -> impl IntoResponse {
+async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Responder {
     let jd1 = date_to_julian(req.chart1.date);
     let jd2 = date_to_julian(req.chart2.date);
     let house_system = parse_house_system(&req.chart1.house_system);
@@ -265,15 +253,17 @@ async fn generate_synastry_chart(
                 aspects: aspect_info,
             };
 
-            Json(response).into_response()
+            HttpResponse::Ok().json(response)
         },
-        _ => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to calculate positions".to_string()).into_response(),
+        _ => HttpResponse::InternalServerError().body("Failed to calculate positions"),
     }
 }
 
-pub fn create_router() -> Router {
-    Router::new()
-        .route("/api/chart/natal", post(generate_natal_chart))
-        .route("/api/chart/transit", post(generate_transit_chart))
-        .route("/api/chart/synastry", post(generate_synastry_chart))
+pub fn config(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("/api")
+            .route("/chart/natal", web::post().to(generate_natal_chart))
+            .route("/chart/transit", web::post().to(generate_transit_chart))
+            .route("/chart/synastry", web::post().to(generate_synastry_chart))
+    );
 } 

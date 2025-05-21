@@ -11,20 +11,19 @@ license = "MIT"
 [dependencies]
 # Core dependencies
 chrono = { version = "0.4", features = ["serde"] }
-serde = { version = "=1.0.188", features = ["derive"] }
-serde_json = "=1.0.107"
-thiserror = { version = "=1.0.50" }
-log = { version = "=0.4.20" }
-env_logger = { version = "=0.10.0" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+log = "0.4"
+env_logger = "0.10"
 
 # Web framework
-axum = "=0.6.20"
-tokio = { version = "1.0", features = ["full"] }
-tower = { version = "=0.4.13" }
-tower-http = { version = "0.4.4", features = ["cors"] }
+actix-web = "4"
+actix-cors = "0.7"
+tokio = { version = "1", features = ["full"] }
 
 # CLI for development
-clap = { version = "=4.3.24", features = ["derive"], optional = true }
+clap = { version = "4.3", features = ["derive"], optional = true }
 
 # Optional dependencies for different features
 # These will be enabled via feature flags
@@ -38,11 +37,11 @@ postscript = []  # PostScript output
 metafile = []  # Windows metafile output
 
 [dependencies.eframe]
-version = "=0.22.0"
+version = "0.22"
 optional = true
 
 [dependencies.image]
-version = "=0.24.7"
+version = "0.24"
 optional = true
 
 [dev-dependencies]

@@ -23,6 +23,11 @@ pub fn date_to_julian(date: DateTime<Utc>) -> f64 {
     julian_date
 }
 
+/// Calculate Julian centuries since J2000.0
+pub fn julian_centuries(julian_date: f64) -> f64 {
+    (julian_date - 2451545.0) / 36525.0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -2,6 +2,10 @@ pub mod calc;
 pub mod core;
 pub mod io;
 
+pub use calc::houses::HousePosition;
+pub use core::types::HouseSystem;
+pub use core::AstrologError;
+
 #[cfg(test)]
 mod tests {
     use crate::calc::planets::{Planet, calculate_planet_position};

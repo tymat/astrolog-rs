@@ -224,7 +224,7 @@ pub fn calculate_planet_position(
         )
     };
     
-    let (prev_long, prev_lat) = if planet == Planet::Sun {
+    let (_prev_long, _prev_lat) = if planet == Planet::Sun {
         let (earth_long, _, _) = vsop87::heliocentric_coordinates(
             t_prev,
             1.00000261,
@@ -334,14 +334,14 @@ pub fn calculate_planet_position(
     };
     
     // Calculate speed using central difference
-    let mut speed = (next_long - prev_long) / (2.0 * dt * 36525.0);
+    let mut speed = (next_long - _prev_long) / (2.0 * dt * 36525.0);
     
     // Handle crossing the 0°/360° boundary
-    if (next_long - prev_long).abs() > 180.0 {
-        if next_long > prev_long {
-            speed = (next_long - prev_long - 360.0) / (2.0 * dt * 36525.0);
+    if (next_long - _prev_long).abs() > 180.0 {
+        if next_long > _prev_long {
+            speed = (next_long - _prev_long - 360.0) / (2.0 * dt * 36525.0);
         } else {
-            speed = (next_long - prev_long + 360.0) / (2.0 * dt * 36525.0);
+            speed = (next_long - _prev_long + 360.0) / (2.0 * dt * 36525.0);
         }
     }
     
@@ -349,7 +349,7 @@ pub fn calculate_planet_position(
     if planet == Planet::Mercury || planet == Planet::Mars {
         println!("{} speed calculation: next_long={:.6}, prev_long={:.6}, dt={:.6}, speed={:.6}",
             if planet == Planet::Mercury { "Mercury" } else { "Mars" },
-            next_long, prev_long, dt, speed);
+            next_long, _prev_long, dt, speed);
         
         // Additional debug output for Mars
         if planet == Planet::Mars {
@@ -358,8 +358,8 @@ pub fn calculate_planet_position(
             println!("  t_next: {:.6}", t_next);
             println!("  t_prev: {:.6}", t_prev);
             println!("  next_long: {:.6}", next_long);
-            println!("  prev_long: {:.6}", prev_long);
-            println!("  raw speed: {:.6}", (next_long - prev_long) / (2.0 * dt * 36525.0));
+            println!("  prev_long: {:.6}", _prev_long);
+            println!("  raw speed: {:.6}", (next_long - _prev_long) / (2.0 * dt * 36525.0));
             println!("  adjusted speed: {:.6}", speed);
         }
     }
