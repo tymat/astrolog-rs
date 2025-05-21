@@ -2,6 +2,53 @@
 
 A modern implementation of astrological calculations in Rust, focusing on accuracy and performance.
 
+## Prerequisites
+
+### Swiss Ephemeris Setup
+
+The project uses Swiss Ephemeris for high-precision astronomical calculations. Before building, you need to set up the Swiss Ephemeris files and library:
+
+1. **Download the Swiss Ephemeris source and ephemeris files:**
+   - Go to [https://www.astro.com/swisseph/](https://www.astro.com/swisseph/) and download:
+     - The Swiss Ephemeris source code (for the C library)
+     - The Ephemeris files package (contains files like `seas_18.se1`, `semo_18.se1`, `sepl_18.se1`, etc.)
+
+2. **Compile the Swiss Ephemeris C library:**
+   - Extract the source code (if not already in `external/swisseph`).
+   - In the `external/swisseph` directory, run:
+     ```bash
+     make
+     ```
+   - This will generate the static library files (e.g., `libswe.a`).
+
+3. **Create the required directories:**
+   ```bash
+   mkdir -p $HOME/.swisseph/lib
+   mkdir -p $HOME/.swisseph/include
+   mkdir -p $HOME/.swisseph/ephe
+   ```
+
+4. **Copy the compiled library and header files:**
+   ```bash
+   # Copy library and header files
+   cp external/swisseph/*.h $HOME/.swisseph/include/
+   cp external/swisseph/*.a $HOME/.swisseph/lib/
+   ```
+
+5. **Copy the ephemeris files:**
+   - Copy all `.se1` and other ephemeris files from the downloaded ephemeris package to:
+   ```bash
+   cp /path/to/downloaded/ephemeris/files/* $HOME/.swisseph/ephe/
+   ```
+   - Ensure that files like `seas_18.se1`, `semo_18.se1`, and `sepl_18.se1` are present in `$HOME/.swisseph/ephe`.
+
+6. **Set the environment variable (if needed):**
+   - By default, the application looks for ephemeris files in `$HOME/.swisseph/ephe`. If you want to override this or run from a different location, set the environment variable before running:
+   ```bash
+   export SE_EPHE_PATH=$HOME/.swisseph/ephe
+   ```
+   - You can add this to your shell profile (e.g., `~/.bashrc`, `~/.zshrc`) to make it permanent.
+
 ## Features
 
 ### Planetary Calculations

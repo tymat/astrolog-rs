@@ -5,6 +5,7 @@ edition = "2021"
 authors = ["Original by Walter D. Pullen", "Rust port by Your Name"]
 description = "A modern Rust port of the Astrolog astrology program as a backend service"
 license = "MIT"
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -19,7 +20,7 @@ env_logger = "0.10"
 approx = "0.5.1"
 
 # Web framework
-actix-web = "4.4.0"
+actix-web = "4.4"
 actix-cors = "0.7"
 tokio = { version = "1", features = ["full"] }
 
@@ -52,3 +53,6 @@ optional = true
 approx = "0.5"
 tokio-test = "0.4"
 actix-rt = "2.9.0"
+
+[build-dependencies]
+cc = "1.0"
