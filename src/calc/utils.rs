@@ -1,4 +1,5 @@
 use std::f64::consts::PI;
+use chrono::{DateTime, Utc};
 
 pub fn normalize_angle(angle: f64) -> f64 {
     let mut normalized = angle % 360.0;
@@ -14,6 +15,12 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 
 pub fn radians_to_degrees(radians: f64) -> f64 {
     radians * 180.0 / PI
+}
+
+pub fn date_to_julian(date: DateTime<Utc>) -> f64 {
+    let unix_timestamp = date.timestamp() as f64;
+    let julian_date = (unix_timestamp / 86400.0) + 2440587.5;
+    julian_date
 }
 
 #[cfg(test)]
