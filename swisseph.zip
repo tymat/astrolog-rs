@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Have you taken a wrong turn? (404 Webpage Not Found)</title>
+<meta name="viewport" content="initial-scale=1">
+<style>
+body{background-color:#3d668f;font-family:Verdana, Geneva, sans-serif;font-size:15px;color:white;padding:2em 0;margin:0}
+h1{font-size:1.8rem;}
+p{font-size:1.2rem;}
+button{font-size:1.2rem;border:2px solid #ccc;background:#86CA7C;padding:5px 10px;min-width:180px;margin-right:5px;border-radius:6px;font-weight:600;}
+a button{text-decoration:none;color:#fff}
+a button:hover{background:#666;cursor:pointer}
+.container{text-align:center;}
+.container::before{content:'Astrodienst AG / www.astro.com';display:block;color:#ccc;font-size:.9rem;font-weight:400;top:5px;left:5px;position:absolute}
+.image{position:relative;top: -2rem;}
+img{width:100%;height:auto;}
+.footer{max-width:500px;margin:0 auto;position:relative;line-height: 1.5rem; padding: 0 1rem;}
+.footer p{font-size:.9rem; text-align: left;color: #e8e5e5;}
+a{color:#ffc44d}
+a:hover{color:#99D0C9}
+@media only screen and (max-width:580px){
+body{font-size:12px}
+.footer p{font-size:1rem}
+.image{top: 0;}
+button{padding:5px 6px;min-width:180px;margin-bottom:5px;border-radius:6px;font-weight:600;}
+	}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>404 File Not Found</h1>
+<p>Oops, it appears that you have taken a wrong turn and have ended up on Pluto!</p>
+<div class="image"><img src="/im/404bg.svg" alt="At the end of the solar system" /></div>
+<div class="footer">
+<a href="javascript:history.back()"><button>Go back</button></a>
+<a href="/"><button>Main Page</button></a>
+<p>If you wish to report an error, please e-mail to: 
+<a href="mailto:bugmaster@astro.com?subject=404 Error">webmaster@astro.com</a></p>
+<p>But this is of value only if you can explain in the email exactly what link you used
+for getting sent to Pluto. If you come from a page on astro.com, the bettter procedure is: use the BACK button above or on your browser to return to the previous page. Now find out on which link you clicked to send you to Pluto. </p></p>Then please scroll to the bottom of the page, find the link 'report problem' in the blue botom bar. Please use this link, to describe to us in clear words what you clicked to send you to Pluto. You might want to include a screenshot (an image showing the relevant part of your screen).</p>
+</div>
+</div>
+</body>
+</html>

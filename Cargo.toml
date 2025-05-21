@@ -26,6 +26,9 @@ tokio = { version = "1", features = ["full"] }
 # CLI for development
 clap = { version = "4.3", features = ["derive"], optional = true }
 
+# Swiss Ephemeris
+swisseph = { path = "../swisseph" }
+
 # Optional dependencies for different features
 # These will be enabled via feature flags
 [features]

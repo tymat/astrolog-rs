@@ -2,7 +2,9 @@ use crate::core::types::AstrologError;
 use serde::{Serialize, Deserialize};
 use crate::calc::vsop87;
 use crate::calc::utils::{radians_to_degrees, degrees_to_radians};
+use crate::calc::swiss_ephemeris::{self, map_planet_to_swe};
 use std::f64::consts::PI;
+use chrono::{DateTime, NaiveDateTime, Utc, Datelike, Timelike};
 
 /// Planet types
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -93,280 +95,71 @@ pub fn calculate_planet_position(
     planet: Planet,
     julian_date: f64,
 ) -> Result<PlanetPosition, String> {
-    let t = vsop87::julian_centuries(julian_date);
-    
-    // Calculate Earth's position first
-    let (earth_long, _earth_lat, _earth_r) = vsop87::heliocentric_coordinates(
-        t,
-        1.00000261, // Earth's semi-major axis
-        0.01671123 - 0.00004392 * t, // Earth's eccentricity
-        -0.00001531 - 0.01294668 * t, // Earth's inclination
-        100.46457166 + 35999.37244981 * t, // Earth's mean longitude
-        102.93768193 + 0.32327364 * t, // Earth's longitude of perihelion
-        0.0, // Earth's longitude of ascending node
-    );
-    
-    // Calculate positions at t_next and t_prev
-    let dt = match planet {
-        Planet::Mars => 0.1, // 0.1 Julian centuries (about 3650 days) for Mars to better detect retrograde motion
-        _ => 0.01, // 0.01 Julian centuries (about 365 days) for other planets
-    };
-    let t_next = t + dt;
-    let t_prev = t - dt;
-    
-    // Calculate positions at t_next and t_prev
-    let (next_long, next_lat) = if planet == Planet::Sun {
-        let (earth_long, _, _) = vsop87::heliocentric_coordinates(
-            t_next,
-            1.00000261,
-            0.01671123 - 0.00004392 * t_next,
-            -0.00001531 - 0.01294668 * t_next,
-            100.46457166 + 35999.37244981 * t_next,
-            102.93768193 + 0.32327364 * t_next,
-            0.0,
-        );
-        let mut sun_long = earth_long + 180.0;
-        if sun_long >= 360.0 {
-            sun_long -= 360.0;
-        }
-        (sun_long, 0.0)
-    } else if planet == Planet::Moon {
-        // Moon position calculation (simplified)
-        let moon_long = (earth_long + 13.176396 * t_next) % 360.0;
-        let moon_lat = 5.145396 * (t_next * 0.0027379).sin();
-        (moon_long, moon_lat)
-    } else {
-        let (a, e, i, l, lp, node) = match planet {
-            Planet::Mercury => (
-                0.38709843,
-                0.20563661 + 0.00002123 * t_next,
-                7.00497902 - 0.00594749 * t_next,
-                252.25032350 + 149472.67411175 * t_next,
-                77.45779628 + 0.15940013 * t_next,
-                48.33076593 - 0.12534081 * t_next,
-            ),
-            Planet::Venus => (
-                0.72332102,
-                0.00676399 - 0.00005107 * t_next,
-                3.39777545 - 0.00043494 * t_next,
-                181.97909950 + 58517.81538729 * t_next,
-                131.60246718 + 0.00268329 * t_next,
-                76.67984255 - 0.27769418 * t_next,
-            ),
-            Planet::Mars => (
-                1.52371243,
-                0.09336511 + 0.00009149 * t_next,
-                1.85181869 - 0.00724757 * t_next,
-                355.45332620 + 19140.30268499 * t_next,
-                336.04084219 + 0.44390164 * t_next,
-                49.71355184 - 0.29257343 * t_next,
-            ),
-            Planet::Jupiter => (
-                5.20248019,
-                0.04853590 + 0.00018026 * t_next,
-                1.29861416 - 0.00322699 * t_next,
-                34.33479152 + 3034.90371757 * t_next,
-                14.72847983 + 0.21252668 * t_next,
-                100.29282654 + 0.13032614 * t_next,
-            ),
-            Planet::Saturn => (
-                9.54149883,
-                0.05550825 - 0.00034664 * t_next,
-                2.49424102 + 0.00451969 * t_next,
-                49.55953891 + 1222.11379404 * t_next,
-                92.86136063 + 0.54179478 * t_next,
-                113.63998702 - 0.25015002 * t_next,
-            ),
-            Planet::Uranus => (
-                19.18797948,
-                0.04731826 + 0.00000745 * t_next,
-                0.77298127 - 0.00180155 * t_next,
-                313.23810451 + 428.48202785 * t_next,
-                172.43404441 + 0.09266985 * t_next,
-                74.22992501 + 0.04240589 * t_next,
-            ),
-            Planet::Neptune => (
-                30.06952752,
-                0.00860648 + 0.00000215 * t_next,
-                1.77005520 + 0.00022400 * t_next,
-                304.88003403 + 218.45945325 * t_next,
-                46.68158724 + 0.01009938 * t_next,
-                131.78635853 - 0.00606302 * t_next,
-            ),
-            Planet::Pluto => (
-                39.48686035,
-                0.24885238 + 0.00006016 * t_next,
-                17.14104260 + 0.00000501 * t_next,
-                238.96535011 + 145.18042903 * t_next,
-                224.09702598 - 0.00968827 * t_next,
-                110.30167986 - 0.00809981 * t_next,
-            ),
-            _ => return Err("Invalid planet".to_string()),
-        };
-        
-        let (planet_long, planet_lat, planet_r) = vsop87::heliocentric_coordinates(t_next, a, e, i, l, lp, node);
-        let (earth_long, earth_lat, earth_r) = vsop87::heliocentric_coordinates(
-            t_next,
-            1.00000261,
-            0.01671123 - 0.00004392 * t_next,
-            -0.00001531 - 0.01294668 * t_next,
-            100.46457166 + 35999.37244981 * t_next,
-            102.93768193 + 0.32327364 * t_next,
-            0.0,
-        );
-        vsop87::heliocentric_to_geocentric(
-            planet_long,
-            planet_lat,
-            planet_r,
-            earth_long,
-            earth_lat,
-            earth_r,
-        )
-    };
-    
-    let (_prev_long, _prev_lat) = if planet == Planet::Sun {
-        let (earth_long, _, _) = vsop87::heliocentric_coordinates(
-            t_prev,
-            1.00000261,
-            0.01671123 - 0.00004392 * t_prev,
-            -0.00001531 - 0.01294668 * t_prev,
-            100.46457166 + 35999.37244981 * t_prev,
-            102.93768193 + 0.32327364 * t_prev,
-            0.0,
-        );
-        let mut sun_long = earth_long + 180.0;
-        if sun_long >= 360.0 {
-            sun_long -= 360.0;
-        }
-        (sun_long, 0.0)
-    } else if planet == Planet::Moon {
-        // Moon position calculation (simplified)
-        let moon_long = (earth_long + 13.176396 * t_prev) % 360.0;
-        let moon_lat = 5.145396 * (t_prev * 0.0027379).sin();
-        (moon_long, moon_lat)
-    } else {
-        let (a, e, i, l, lp, node) = match planet {
-            Planet::Mercury => (
-                0.38709843,
-                0.20563661 + 0.00002123 * t_prev,
-                7.00497902 - 0.00594749 * t_prev,
-                252.25032350 + 149472.67411175 * t_prev,
-                77.45779628 + 0.15940013 * t_prev,
-                48.33076593 - 0.12534081 * t_prev,
-            ),
-            Planet::Venus => (
-                0.72332102,
-                0.00676399 - 0.00005107 * t_prev,
-                3.39777545 - 0.00043494 * t_prev,
-                181.97909950 + 58517.81538729 * t_prev,
-                131.60246718 + 0.00268329 * t_prev,
-                76.67984255 - 0.27769418 * t_prev,
-            ),
-            Planet::Mars => (
-                1.52371243,
-                0.09336511 + 0.00009149 * t_prev,
-                1.85181869 - 0.00724757 * t_prev,
-                355.45332620 + 19140.30268499 * t_prev,
-                336.04084219 + 0.44390164 * t_prev,
-                49.71355184 - 0.29257343 * t_prev,
-            ),
-            Planet::Jupiter => (
-                5.20248019,
-                0.04853590 + 0.00018026 * t_prev,
-                1.29861416 - 0.00322699 * t_prev,
-                34.33479152 + 3034.90371757 * t_prev,
-                14.72847983 + 0.21252668 * t_prev,
-                100.29282654 + 0.13032614 * t_prev,
-            ),
-            Planet::Saturn => (
-                9.54149883,
-                0.05550825 - 0.00034664 * t_prev,
-                2.49424102 + 0.00451969 * t_prev,
-                49.55953891 + 1222.11379404 * t_prev,
-                92.86136063 + 0.54179478 * t_prev,
-                113.63998702 - 0.25015002 * t_prev,
-            ),
-            Planet::Uranus => (
-                19.18797948,
-                0.04731826 + 0.00000745 * t_prev,
-                0.77298127 - 0.00180155 * t_prev,
-                313.23810451 + 428.48202785 * t_prev,
-                172.43404441 + 0.09266985 * t_prev,
-                74.22992501 + 0.04240589 * t_prev,
-            ),
-            Planet::Neptune => (
-                30.06952752,
-                0.00860648 + 0.00000215 * t_prev,
-                1.77005520 + 0.00022400 * t_prev,
-                304.88003403 + 218.45945325 * t_prev,
-                46.68158724 + 0.01009938 * t_prev,
-                131.78635853 - 0.00606302 * t_prev,
-            ),
-            Planet::Pluto => (
-                39.48686035,
-                0.24885238 + 0.00006016 * t_prev,
-                17.14104260 + 0.00000501 * t_prev,
-                238.96535011 + 145.18042903 * t_prev,
-                224.09702598 - 0.00968827 * t_prev,
-                110.30167986 - 0.00809981 * t_prev,
-            ),
-            _ => return Err("Invalid planet".to_string()),
-        };
-        
-        let (planet_long, planet_lat, planet_r) = vsop87::heliocentric_coordinates(t_prev, a, e, i, l, lp, node);
-        let (earth_long, earth_lat, earth_r) = vsop87::heliocentric_coordinates(
-            t_prev,
-            1.00000261,
-            0.01671123 - 0.00004392 * t_prev,
-            -0.00001531 - 0.01294668 * t_prev,
-            100.46457166 + 35999.37244981 * t_prev,
-            102.93768193 + 0.32327364 * t_prev,
-            0.0,
-        );
-        vsop87::heliocentric_to_geocentric(
-            planet_long,
-            planet_lat,
-            planet_r,
-            earth_long,
-            earth_lat,
-            earth_r,
-        )
-    };
-    
+    // Convert Julian date to DateTime
+    let jd_epoch = 2440587.5; // Unix epoch in Julian days
+    let unix_seconds = ((julian_date - jd_epoch) * 86400.0) as i64;
+    let naive = NaiveDateTime::from_timestamp_opt(unix_seconds, 0)
+        .ok_or_else(|| "Invalid date".to_string())?;
+    let datetime: DateTime<Utc> = DateTime::<Utc>::from_utc(naive, Utc);
+
+    // Get Swiss Ephemeris planet enum
+    let swe_planet = map_planet_to_swe(planet).ok_or_else(|| "Invalid planet".to_string())?;
+
+    // Calculate position using Swiss Ephemeris
+    let (longitude, latitude, _distance) = swiss_ephemeris::calculate_planet_position_swiss(
+        swe_planet,
+        datetime.year(),
+        datetime.month() as i32,
+        datetime.day() as i32,
+        datetime.hour() as f64 + datetime.minute() as f64 / 60.0 + datetime.second() as f64 / 3600.0,
+    ).map_err(|e| e.to_string())?;
+
+    // Calculate speed by getting positions slightly before and after
+    let dt = 0.01; // 0.01 days = 14.4 minutes
+    let jd_before = julian_date - dt;
+    let jd_after = julian_date + dt;
+
+    let unix_seconds_before = ((jd_before - jd_epoch) * 86400.0) as i64;
+    let naive_before = NaiveDateTime::from_timestamp_opt(unix_seconds_before, 0)
+        .ok_or_else(|| "Invalid date".to_string())?;
+    let datetime_before: DateTime<Utc> = DateTime::<Utc>::from_utc(naive_before, Utc);
+
+    let unix_seconds_after = ((jd_after - jd_epoch) * 86400.0) as i64;
+    let naive_after = NaiveDateTime::from_timestamp_opt(unix_seconds_after, 0)
+        .ok_or_else(|| "Invalid date".to_string())?;
+    let datetime_after: DateTime<Utc> = DateTime::<Utc>::from_utc(naive_after, Utc);
+
+    let (long_before, _, _) = swiss_ephemeris::calculate_planet_position_swiss(
+        swe_planet,
+        datetime_before.year(),
+        datetime_before.month() as i32,
+        datetime_before.day() as i32,
+        datetime_before.hour() as f64 + datetime_before.minute() as f64 / 60.0 + datetime_before.second() as f64 / 3600.0,
+    ).map_err(|e| e.to_string())?;
+
+    let (long_after, _, _) = swiss_ephemeris::calculate_planet_position_swiss(
+        swe_planet,
+        datetime_after.year(),
+        datetime_after.month() as i32,
+        datetime_after.day() as i32,
+        datetime_after.hour() as f64 + datetime_after.minute() as f64 / 60.0 + datetime_after.second() as f64 / 3600.0,
+    ).map_err(|e| e.to_string())?;
+
     // Calculate speed using central difference
-    let mut speed = (next_long - _prev_long) / (2.0 * dt * 36525.0);
+    let mut speed = (long_after - long_before) / (2.0 * dt);
     
     // Handle crossing the 0°/360° boundary
-    if (next_long - _prev_long).abs() > 180.0 {
-        if next_long > _prev_long {
-            speed = (next_long - _prev_long - 360.0) / (2.0 * dt * 36525.0);
+    if (long_after - long_before).abs() > 180.0 {
+        if long_after > long_before {
+            speed = (long_after - long_before - 360.0) / (2.0 * dt);
         } else {
-            speed = (next_long - _prev_long + 360.0) / (2.0 * dt * 36525.0);
+            speed = (long_after - long_before + 360.0) / (2.0 * dt);
         }
     }
-    
-    // Add debug output for Mercury and Mars
-    if planet == Planet::Mercury || planet == Planet::Mars {
-        println!("{} speed calculation: next_long={:.6}, prev_long={:.6}, dt={:.6}, speed={:.6}",
-            if planet == Planet::Mercury { "Mercury" } else { "Mars" },
-            next_long, _prev_long, dt, speed);
-        
-        // Additional debug output for Mars
-        if planet == Planet::Mars {
-            println!("Mars position details:");
-            println!("  t: {:.6}", t);
-            println!("  t_next: {:.6}", t_next);
-            println!("  t_prev: {:.6}", t_prev);
-            println!("  next_long: {:.6}", next_long);
-            println!("  prev_long: {:.6}", _prev_long);
-            println!("  raw speed: {:.6}", (next_long - _prev_long) / (2.0 * dt * 36525.0));
-            println!("  adjusted speed: {:.6}", speed);
-        }
-    }
-    
+
     Ok(PlanetPosition::new(
-        normalize_longitude(next_long),
-        next_lat,
+        longitude,
+        latitude,
         speed,
         speed < 0.0,
     ))
@@ -400,7 +193,10 @@ fn calculate_moon_position(t: f64) -> Result<PlanetPosition, String> {
     // Calculate longitude with correction terms
     let longitude = normalize_longitude(mean_longitude + 
         6.289 * (mean_anomaly * PI / 180.0).sin() +
-        1.274 * ((2.0 * mean_longitude - mean_anomaly) * PI / 180.0).sin());
+        1.274 * ((2.0 * mean_longitude - mean_anomaly) * PI / 180.0).sin() +
+        0.658 * (2.0 * mean_longitude * PI / 180.0).sin() +
+        0.214 * (2.0 * mean_anomaly * PI / 180.0).sin() +
+        0.114 * (2.0 * ascending_node * PI / 180.0).sin());
     
     // Calculate latitude using orbital inclination
     let inclination = 5.145;

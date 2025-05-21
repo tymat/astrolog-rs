@@ -6,5 +6,6 @@ pub mod planets;
 pub mod time;
 pub mod utils;
 pub mod vsop87;
+pub mod swiss_ephemeris;
 
 pub use planets::PlanetPosition; 
