@@ -166,91 +166,27 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 })
                 .collect();
 
-            // Calculate aspects between natal and transit planets
-            let all_positions = [natal_positions.clone(), transit_positions].concat();
-            let aspects = calculate_aspects(&all_positions);
-            let aspect_info: Vec<AspectInfo> = aspects
+            // Calculate natal aspects
+            let natal_aspects = calculate_aspects(&natal_positions);
+            let natal_aspect_info: Vec<AspectInfo> = natal_aspects
                 .iter()
-                .map(|a| {
-                    // Map indices to correct planet names based on which chart they come from
-                    let planet1 = if a.planet1.starts_with("Planet") {
-                        let idx = a.planet1[6..].parse::<usize>().unwrap() - 1;
-                        if idx < natal_positions.len() {
-                            match idx {
-                                0 => "Sun".to_string(),
-                                1 => "Moon".to_string(),
-                                2 => "Mercury".to_string(),
-                                3 => "Venus".to_string(),
-                                4 => "Mars".to_string(),
-                                5 => "Jupiter".to_string(),
-                                6 => "Saturn".to_string(),
-                                7 => "Uranus".to_string(),
-                                8 => "Neptune".to_string(),
-                                9 => "Pluto".to_string(),
-                                _ => format!("Planet{}", idx + 1),
-                            }
-                        } else {
-                            let idx = idx - natal_positions.len();
-                            match idx {
-                                0 => "Sun".to_string(),
-                                1 => "Moon".to_string(),
-                                2 => "Mercury".to_string(),
-                                3 => "Venus".to_string(),
-                                4 => "Mars".to_string(),
-                                5 => "Jupiter".to_string(),
-                                6 => "Saturn".to_string(),
-                                7 => "Uranus".to_string(),
-                                8 => "Neptune".to_string(),
-                                9 => "Pluto".to_string(),
-                                _ => format!("Planet{}", idx + 1),
-                            }
-                        }
-                    } else {
-                        a.planet1.clone()
-                    };
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
 
-                    let planet2 = if a.planet2.starts_with("Planet") {
-                        let idx = a.planet2[6..].parse::<usize>().unwrap() - 1;
-                        if idx < natal_positions.len() {
-                            match idx {
-                                0 => "Sun".to_string(),
-                                1 => "Moon".to_string(),
-                                2 => "Mercury".to_string(),
-                                3 => "Venus".to_string(),
-                                4 => "Mars".to_string(),
-                                5 => "Jupiter".to_string(),
-                                6 => "Saturn".to_string(),
-                                7 => "Uranus".to_string(),
-                                8 => "Neptune".to_string(),
-                                9 => "Pluto".to_string(),
-                                _ => format!("Planet{}", idx + 1),
-                            }
-                        } else {
-                            let idx = idx - natal_positions.len();
-                            match idx {
-                                0 => "Sun".to_string(),
-                                1 => "Moon".to_string(),
-                                2 => "Mercury".to_string(),
-                                3 => "Venus".to_string(),
-                                4 => "Mars".to_string(),
-                                5 => "Jupiter".to_string(),
-                                6 => "Saturn".to_string(),
-                                7 => "Uranus".to_string(),
-                                8 => "Neptune".to_string(),
-                                9 => "Pluto".to_string(),
-                                _ => format!("Planet{}", idx + 1),
-                            }
-                        }
-                    } else {
-                        a.planet2.clone()
-                    };
-
-                    AspectInfo {
-                        aspect: format!("{:?}", a.aspect_type),
-                        orb: a.orb,
-                        planet1,
-                        planet2,
-                    }
+            // Calculate transit aspects
+            let transit_aspects = calculate_aspects(&transit_positions);
+            let transit_aspect_info: Vec<AspectInfo> = transit_aspects
+                .iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
                 })
                 .collect();
 
@@ -264,7 +200,8 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 ayanamsa: req.ayanamsa.clone(),
                 natal_planets,
                 transit_planets,
-                aspects: aspect_info,
+                natal_aspects: natal_aspect_info,
+                transit_aspects: transit_aspect_info,
             };
 
             HttpResponse::Ok().json(response)

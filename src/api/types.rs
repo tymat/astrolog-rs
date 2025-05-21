@@ -76,7 +76,8 @@ pub struct TransitResponse {
     pub ayanamsa: String,
     pub natal_planets: Vec<PlanetInfo>,
     pub transit_planets: Vec<PlanetInfo>,
-    pub aspects: Vec<AspectInfo>,
+    pub natal_aspects: Vec<AspectInfo>,
+    pub transit_aspects: Vec<AspectInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

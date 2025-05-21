@@ -155,9 +155,18 @@ async fn test_transit_chart_endpoint() {
         assert!(planet.get("house").is_some());
     }
 
-    // Check aspects
-    let aspects = response["aspects"].as_array().unwrap();
-    for aspect in aspects {
+    // Check natal aspects
+    let natal_aspects = response["natal_aspects"].as_array().unwrap();
+    for aspect in natal_aspects {
+        assert!(aspect.get("planet1").is_some());
+        assert!(aspect.get("planet2").is_some());
+        assert!(aspect.get("aspect").is_some());
+        assert!(aspect.get("orb").is_some());
+    }
+
+    // Check transit aspects
+    let transit_aspects = response["transit_aspects"].as_array().unwrap();
+    for aspect in transit_aspects {
         assert!(aspect.get("planet1").is_some());
         assert!(aspect.get("planet2").is_some());
         assert!(aspect.get("aspect").is_some());
