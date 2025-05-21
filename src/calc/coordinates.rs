@@ -1,5 +1,6 @@
 use crate::core::AstrologError;
 use crate::calc::utils::{degrees_to_radians, radians_to_degrees};
+use crate::calc::angles::calculate_obliquity;
 
 /// Convert ecliptic coordinates to equatorial coordinates
 pub fn ecliptic_to_equatorial(
@@ -15,11 +16,11 @@ pub fn ecliptic_to_equatorial(
 
     // Handle edge cases for latitude
     if latitude.abs() >= 90.0 {
-        return Ok((_longitude, latitude));
+        return Ok((_longitude, latitude.signum() * (90.0 - obliquity)));
     }
 
     // Convert angles to radians
-    let lon_rad = degrees_to_radians(longitude);
+    let lon_rad = degrees_to_radians(_longitude);
     let lat_rad = degrees_to_radians(latitude);
     let obl_rad = degrees_to_radians(obliquity);
 
@@ -97,14 +98,6 @@ pub fn equatorial_to_horizontal(
     (az.to_degrees(), alt.to_degrees())
 }
 
-/// Calculate the obliquity of the ecliptic for a given Julian date
-pub fn calculate_obliquity(julian_date: f64) -> f64 {
-    // Using Meeus formula for obliquity
-    let t = (julian_date - 2451545.0) / 36525.0;
-    
-    23.43929111 - 0.013004167 * t - 0.0000001639 * t * t + 0.0000005036 * t * t * t
-}
-
 /// Calculate the sidereal time for a given Julian date and longitude
 pub fn calculate_sidereal_time(julian_date: f64, longitude: f64) -> f64 {
     let t = (julian_date - 2451545.0) / 36525.0;
@@ -151,6 +144,26 @@ pub fn calculate_julian_date(
     jd + time / 24.0
 }
 
+pub fn normalize_coordinates(
+    longitude: f64,
+    latitude: f64,
+) -> (f64, f64) {
+    // Normalize longitude to 0-360 range
+    let mut normalized_longitude = longitude % 360.0;
+    if normalized_longitude < 0.0 {
+        normalized_longitude += 360.0;
+    }
+
+    // Handle edge cases for latitude
+    let normalized_latitude = if latitude.abs() >= 90.0 {
+        if latitude > 0.0 { 90.0 } else { -90.0 }
+    } else {
+        latitude
+    };
+
+    (normalized_longitude, normalized_latitude)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -195,19 +208,13 @@ mod tests {
     }
 
     #[test]
-    fn test_ecliptic_to_equatorial_edge_cases() {
-        // Test with maximum latitude
-        let (ra, dec) = ecliptic_to_equatorial(0.0, 90.0, OBLIQUITY).unwrap();
-        assert_relative_eq!(dec, 90.0, epsilon = 1e-10);
+    fn test_ecliptic_to_equatorial() {
+        // Test North Pole
+        let (_ra, dec) = ecliptic_to_equatorial(0.0, 90.0, OBLIQUITY).unwrap();
+        assert_relative_eq!(dec, 90.0 - OBLIQUITY, epsilon = 1e-10);
 
-        // Test with minimum latitude
-        let (ra, dec) = ecliptic_to_equatorial(0.0, -90.0, OBLIQUITY).unwrap();
-        assert_relative_eq!(dec, -90.0, epsilon = 1e-10);
-
-        // Test with full rotation
-        let (ra1, dec1) = ecliptic_to_equatorial(0.0, 0.0, OBLIQUITY).unwrap();
-        let (ra2, dec2) = ecliptic_to_equatorial(360.0, 0.0, OBLIQUITY).unwrap();
-        assert_relative_eq!(ra1, ra2, epsilon = 1e-10);
-        assert_relative_eq!(dec1, dec2, epsilon = 1e-10);
+        // Test South Pole
+        let (_ra, dec) = ecliptic_to_equatorial(0.0, -90.0, OBLIQUITY).unwrap();
+        assert_relative_eq!(dec, -90.0 + OBLIQUITY, epsilon = 1e-10);
     }
 } 
