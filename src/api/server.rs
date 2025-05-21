@@ -371,9 +371,6 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 }
             }
 
-            // Print debug information
-            println!("Synastry aspects found: {}", aspect_info.len());
-
             let chart1 = ChartResponse {
                 chart_type: "natal".to_string(),
                 date: req.chart1.date,
