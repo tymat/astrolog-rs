@@ -1,27 +1,17 @@
-pub mod api;
 pub mod calc;
 pub mod core;
 pub mod io;
-pub mod utils;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::core::{ChartInfo, HouseSystem};
-    use chrono::{DateTime, Utc, TimeZone};
+    use crate::calc::planets::{Planet, calculate_planet_position};
+    use crate::core::types::HouseSystem;
+    use crate::calc::aspects::calculate_aspect;
 
     #[test]
-    fn test_basic_chart_generation() {
-        let info = ChartInfo {
-            date: Utc.with_ymd_and_hms(2024, 3, 15, 12, 0, 0).unwrap(),
-            timezone: 0.0,
-            latitude: 51.5074, // London
-            longitude: -0.1278,
-            house_system: HouseSystem::Placidus,
-        };
-
-        assert_eq!(info.latitude, 51.5074);
-        assert_eq!(info.longitude, -0.1278);
-        assert_eq!(info.house_system, HouseSystem::Placidus);
+    fn test_basic_calculations() {
+        let jd = 2451545.0; // January 1, 2000
+        let position = calculate_planet_position(Planet::Sun, jd).unwrap();
+        assert!(position.longitude >= 0.0 && position.longitude < 360.0);
     }
 } 

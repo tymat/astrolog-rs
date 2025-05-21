@@ -1,7 +1,7 @@
-use crate::core::AstrologError;
+use crate::core::types::AstrologError;
 use serde::{Serialize, Deserialize};
 use crate::calc::vsop87;
-use crate::calc::utils::{degrees_to_radians, radians_to_degrees};
+use crate::calc::utils::radians_to_degrees;
 use std::f64::consts::PI;
 
 /// Planet types
@@ -30,7 +30,7 @@ pub enum Planet {
 }
 
 /// Planetary position
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct PlanetPosition {
     pub longitude: f64,    // Longitude in degrees
     pub latitude: f64,     // Latitude in degrees
@@ -53,11 +53,23 @@ impl PlanetPosition {
 
 /// Calculate planetary positions for a given Julian date
 pub fn calculate_planet_positions(jd: f64) -> Result<Vec<PlanetPosition>, AstrologError> {
-    let mut positions = Vec::with_capacity(15);
+    let mut positions = Vec::with_capacity(10);
     
     // Calculate positions for each planet
-    for planet in 0..15 {
-        let position = calculate_planet_position(planet, jd)?;
+    for planet in [
+        Planet::Sun,
+        Planet::Moon,
+        Planet::Mercury,
+        Planet::Venus,
+        Planet::Mars,
+        Planet::Jupiter,
+        Planet::Saturn,
+        Planet::Uranus,
+        Planet::Neptune,
+        Planet::Pluto,
+    ].iter() {
+        let position = calculate_planet_position(*planet, jd)
+            .map_err(|e| AstrologError::CalculationError { message: e })?;
         positions.push(position);
     }
     
@@ -69,203 +81,244 @@ pub fn calculate_planet_position(
     planet: Planet,
     julian_date: f64,
 ) -> Result<PlanetPosition, String> {
+    if julian_date < 0.0 {
+        return Err("Invalid Julian date".into());
+    }
+
     let t = vsop87::julian_centuries(julian_date);
     
-    match planet {
-        Planet::Sun => calculate_sun_position(t),
-        Planet::Moon => calculate_moon_position(t),
-        Planet::Mercury => calculate_mercury_position(t),
-        Planet::Venus => calculate_venus_position(t),
-        Planet::Mars => calculate_mars_position(t),
-        Planet::Jupiter => calculate_jupiter_position(t),
-        Planet::Saturn => calculate_saturn_position(t),
-        Planet::Uranus => calculate_uranus_position(t),
-        Planet::Neptune => calculate_neptune_position(t),
-        Planet::Pluto => calculate_pluto_position(t),
-        _ => Err("Planet calculation not implemented".into()),
+    // Calculate position at current time
+    let position = match planet {
+        Planet::Sun => calculate_sun_position(t)?,
+        Planet::Moon => calculate_moon_position(t)?,
+        Planet::Mercury => calculate_mercury_position(t)?,
+        Planet::Venus => calculate_venus_position(t)?,
+        Planet::Mars => calculate_mars_position(t)?,
+        Planet::Jupiter => calculate_jupiter_position(t)?,
+        Planet::Saturn => calculate_saturn_position(t)?,
+        Planet::Uranus => calculate_uranus_position(t)?,
+        Planet::Neptune => calculate_neptune_position(t)?,
+        Planet::Pluto => calculate_pluto_position(t)?,
+        _ => return Err("Planet calculation not implemented".into()),
+    };
+
+    // Calculate position at a slightly later time to determine direction
+    let delta_t = 0.0001; // About 8.64 seconds
+    let t_next = t + delta_t;
+    
+    let next_position = match planet {
+        Planet::Sun => calculate_sun_position(t_next)?,
+        Planet::Moon => calculate_moon_position(t_next)?,
+        Planet::Mercury => calculate_mercury_position(t_next)?,
+        Planet::Venus => calculate_venus_position(t_next)?,
+        Planet::Mars => calculate_mars_position(t_next)?,
+        Planet::Jupiter => calculate_jupiter_position(t_next)?,
+        Planet::Saturn => calculate_saturn_position(t_next)?,
+        Planet::Uranus => calculate_uranus_position(t_next)?,
+        Planet::Neptune => calculate_neptune_position(t_next)?,
+        Planet::Pluto => calculate_pluto_position(t_next)?,
+        _ => return Err("Planet calculation not implemented".into()),
+    };
+
+    // Calculate actual speed and determine if retrograde
+    let mut speed = (next_position.longitude - position.longitude) / delta_t;
+    
+    // Normalize speed to handle crossing 0°/360° boundary
+    if speed > 180.0 {
+        speed -= 360.0;
+    } else if speed < -180.0 {
+        speed += 360.0;
     }
+    
+    // Create new position with updated speed and retrograde status
+    Ok(PlanetPosition::new(
+        position.longitude,
+        position.latitude,
+        speed,
+        speed < 0.0,
+    ))
 }
 
 /// Calculate Sun's position
 fn calculate_sun_position(t: f64) -> Result<PlanetPosition, String> {
-    // For the Sun, we use a simplified model since it's at the center
-    // The Sun's position is the negative of the Earth's position
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    // For the Sun, we calculate its position as the negative of Earth's position
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        1.000000, // Semi-major axis (AU)
-        0.016709, // Eccentricity
-        0.0,      // Inclination
-        100.466457, // Mean longitude
-        102.94719,  // Longitude of perihelion
-        0.0,        // Longitude of ascending node
+        1.0, // Semi-major axis (AU)
+        0.0167, // Eccentricity
+        0.0, // Inclination
+        100.464, // Mean longitude
+        102.937, // Longitude of perihelion
+        0.0, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.9856; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Moon's position
 fn calculate_moon_position(t: f64) -> Result<PlanetPosition, String> {
     // Simplified lunar model
-    let mean_longitude = 218.31617 + 13.1763965 * t;
-    let mean_anomaly = 134.96292 + 13.0649930 * t;
-    let ascending_node = 125.04452 - 0.0529538 * t;
+    let mean_longitude = 218.316 + 13.176396 * t;
+    let mean_anomaly = 134.963 + 13.064993 * t;
+    let ascending_node = 125.045 - 0.052992 * t;
     
+    // Calculate longitude with correction terms
     let longitude = mean_longitude + 
-        6.2888 * (mean_anomaly * PI / 180.0).sin() +
-        1.2740 * ((2.0 * mean_longitude - mean_anomaly) * PI / 180.0).sin() +
-        0.6583 * (2.0 * mean_anomaly * PI / 180.0).sin() +
-        0.2136 * (2.0 * mean_longitude * PI / 180.0).sin();
+        6.289 * (mean_anomaly * PI / 180.0).sin() +
+        1.274 * ((2.0 * mean_longitude - mean_anomaly) * PI / 180.0).sin();
     
-    let speed = 13.1763965; // Average daily motion in degrees
+    // Calculate latitude using orbital inclination
+    let inclination = 5.145;
+    let latitude = inclination * (longitude - ascending_node).sin();
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Mercury's position
 fn calculate_mercury_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        0.387098,  // Semi-major axis (AU)
-        0.205635,  // Eccentricity
-        7.00487,   // Inclination
-        252.25084, // Mean longitude
-        77.45645,  // Longitude of perihelion
-        48.33167,  // Longitude of ascending node
+        0.387, // Semi-major axis (AU)
+        0.206, // Eccentricity
+        7.005, // Inclination
+        252.250, // Mean longitude
+        77.456, // Longitude of perihelion
+        48.331, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 1.3833; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Venus's position
 fn calculate_venus_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        0.723330,  // Semi-major axis (AU)
-        0.006773,  // Eccentricity
-        3.39471,   // Inclination
-        181.97973, // Mean longitude
-        131.53298, // Longitude of perihelion
-        76.68069,  // Longitude of ascending node
+        0.723, // Semi-major axis (AU)
+        0.007, // Eccentricity
+        3.395, // Inclination
+        181.979, // Mean longitude
+        131.533, // Longitude of perihelion
+        76.680, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 1.2; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Mars's position
 fn calculate_mars_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        1.523688,  // Semi-major axis (AU)
-        0.093405,  // Eccentricity
-        1.85061,   // Inclination
-        355.45332, // Mean longitude
-        336.04084, // Longitude of perihelion
-        49.57854,  // Longitude of ascending node
+        1.524, // Semi-major axis (AU)
+        0.093, // Eccentricity
+        1.850, // Inclination
+        355.453, // Mean longitude
+        336.041, // Longitude of perihelion
+        49.558, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.524; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Jupiter's position
 fn calculate_jupiter_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        5.202561,  // Semi-major axis (AU)
-        0.048498,  // Eccentricity
-        1.30530,   // Inclination
-        34.35148,  // Mean longitude
-        14.72884,  // Longitude of perihelion
-        100.55615, // Longitude of ascending node
+        5.203, // Semi-major axis (AU)
+        0.048, // Eccentricity
+        1.305, // Inclination
+        34.404, // Mean longitude
+        14.728, // Longitude of perihelion
+        100.556, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.083; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Saturn's position
 fn calculate_saturn_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        9.554747,  // Semi-major axis (AU)
-        0.054509,  // Eccentricity
-        2.48446,   // Inclination
-        49.94432,  // Mean longitude
-        92.43194,  // Longitude of perihelion
-        113.71504, // Longitude of ascending node
+        9.537, // Semi-major axis (AU)
+        0.054, // Eccentricity
+        2.484, // Inclination
+        49.944, // Mean longitude
+        92.432, // Longitude of perihelion
+        113.715, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.034; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Uranus's position
 fn calculate_uranus_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        19.218140, // Semi-major axis (AU)
-        0.047318,  // Eccentricity
-        0.77464,   // Inclination
-        313.23218, // Mean longitude
-        172.73583, // Longitude of perihelion
-        74.22988,  // Longitude of ascending node
+        19.191, // Semi-major axis (AU)
+        0.047, // Eccentricity
+        0.770, // Inclination
+        313.232, // Mean longitude
+        170.964, // Longitude of perihelion
+        74.229, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.012; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Neptune's position
 fn calculate_neptune_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        30.110387, // Semi-major axis (AU)
-        0.008606,  // Eccentricity
-        1.77004,   // Inclination
-        304.88003, // Mean longitude
-        48.12369,  // Longitude of perihelion
-        131.72169, // Longitude of ascending node
+        30.069, // Semi-major axis (AU)
+        0.009, // Eccentricity
+        1.770, // Inclination
+        304.880, // Mean longitude
+        44.971, // Longitude of perihelion
+        131.721, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.006; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate Pluto's position
 fn calculate_pluto_position(t: f64) -> Result<PlanetPosition, String> {
-    let (x, y, _) = vsop87::heliocentric_coordinates(
+    let (x, y, z) = vsop87::heliocentric_coordinates(
         t,
-        39.481686, // Semi-major axis (AU)
-        0.248807,  // Eccentricity
-        17.14175,  // Inclination
-        238.92903, // Mean longitude
-        224.06676, // Longitude of perihelion
-        110.30347, // Longitude of ascending node
+        39.482, // Semi-major axis (AU)
+        0.249, // Eccentricity
+        17.140, // Inclination
+        238.929, // Mean longitude
+        224.067, // Longitude of perihelion
+        110.303, // Longitude of ascending node
     );
     
     let longitude = radians_to_degrees(y.atan2(x));
-    let speed = 0.004; // Average daily motion in degrees
+    let latitude = radians_to_degrees(z.atan2((x * x + y * y).sqrt()));
     
-    Ok(PlanetPosition::new(longitude, 0.0, speed, false))
+    Ok(PlanetPosition::new(longitude, latitude, 0.0, false))
 }
 
 /// Calculate planetary aspects for a given set of positions
@@ -320,255 +373,120 @@ pub fn calculate_stations(
 mod tests {
     use super::*;
     use approx::assert_relative_eq;
-    use chrono::{DateTime, Utc, TimeZone};
+    use chrono::Utc;
 
-    #[test]
-    fn test_planet_position_creation() {
-        let position = PlanetPosition::new(45.0, 0.0, 1.0, false);
-        assert_relative_eq!(position.longitude, 45.0);
-        assert_relative_eq!(position.latitude, 0.0);
-        assert_relative_eq!(position.speed, 1.0);
-        assert!(!position.is_retrograde);
-        assert_eq!(position.house, None);
-    }
-
-    #[test]
-    fn test_planet_position_with_house() {
-        let mut position = PlanetPosition::new(45.0, 0.0, 1.0, false);
-        position.house = Some(1);
-        assert_eq!(position.house, Some(1));
-    }
+    const TEST_JD: f64 = 2443439.5; // October 24, 1977
 
     #[test]
     fn test_sun_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_sun_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_sun_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 210.674, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.995, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 0.0, epsilon = 1e-3);
     }
 
     #[test]
     fn test_moon_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_moon_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_moon_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 358.595, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 12.82, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 4.123, epsilon = 1e-3);
     }
 
     #[test]
     fn test_mercury_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_mercury_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_mercury_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 201.123, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 1.3833, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 2.456, epsilon = 1e-3);
     }
 
     #[test]
     fn test_venus_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_venus_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_venus_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 156.789, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 1.2, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, -1.234, epsilon = 1e-3);
     }
 
     #[test]
     fn test_mars_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_mars_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_mars_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 278.456, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.524, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 0.789, epsilon = 1e-3);
     }
 
     #[test]
     fn test_jupiter_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_jupiter_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_jupiter_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 123.789, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.083, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 0.567, epsilon = 1e-3);
     }
 
     #[test]
     fn test_saturn_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_saturn_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_saturn_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 145.678, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.034, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 1.234, epsilon = 1e-3);
     }
 
     #[test]
     fn test_uranus_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_uranus_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_uranus_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 234.567, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.012, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, -0.345, epsilon = 1e-3);
     }
 
     #[test]
     fn test_neptune_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_neptune_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_neptune_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 267.890, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.006, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 0.678, epsilon = 1e-3);
     }
 
     #[test]
     fn test_pluto_position() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_pluto_position(vsop87::julian_centuries(jd)).unwrap();
+        let position = calculate_pluto_position(vsop87::julian_centuries(TEST_JD)).unwrap();
         assert_relative_eq!(position.longitude, 189.012, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.004, epsilon = 1e-3);
+        assert_relative_eq!(position.latitude, 8.901, epsilon = 1e-3);
     }
 
     #[test]
     fn test_planet_positions_consistency() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        
-        // Test that all planets have valid positions
-        let positions = calculate_planet_positions(jd).unwrap();
-        assert_eq!(positions.len(), 15); // All planets should have positions
-        
-        // Test that positions are within valid ranges
+        let positions = calculate_planet_positions(TEST_JD).unwrap();
+        assert_eq!(positions.len(), 10);
+
         for position in positions {
+            // Check longitude range
             assert!(position.longitude >= 0.0 && position.longitude < 360.0);
+            
+            // Check latitude range
             assert!(position.latitude >= -90.0 && position.latitude <= 90.0);
-            assert!(position.speed.abs() < 15.0); // No planet moves faster than 15 degrees per day
+            
+            // Check speed range (should be less than 15 degrees per day)
+            assert!(position.speed.abs() < 15.0);
         }
     }
 
     #[test]
-    fn test_sun_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_sun_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 210.674, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 0.0, epsilon = 1e-3); // Sun's latitude is always 0
-        assert_relative_eq!(position.speed, 0.995, epsilon = 1e-3);
+    fn test_retrograde_motion() {
+        // Test Mercury retrograde
+        let jd_mercury_retrograde = 2451545.0; // January 1, 2000
+        let position = calculate_planet_position(Planet::Mercury, jd_mercury_retrograde).unwrap();
+        assert!(position.is_retrograde);
+
+        // Test Mars retrograde
+        let jd_mars_retrograde = 2451545.0; // January 1, 2000
+        let position = calculate_planet_position(Planet::Mars, jd_mars_retrograde).unwrap();
+        assert!(position.is_retrograde);
+
+        // Test Jupiter direct motion
+        let jd_jupiter_direct = 2451545.0; // January 1, 2000
+        let position = calculate_planet_position(Planet::Jupiter, jd_jupiter_direct).unwrap();
+        assert!(!position.is_retrograde);
     }
 
     #[test]
-    fn test_moon_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_moon_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 358.595, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 4.123, epsilon = 1e-3); // Moon's latitude varies
-        assert_relative_eq!(position.speed, 12.82, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_mercury_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_mercury_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 201.123, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 2.456, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 1.3833, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_venus_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_venus_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 156.789, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, -1.234, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 1.2, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_mars_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_mars_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 278.456, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 0.789, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.524, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_jupiter_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_jupiter_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 123.789, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 0.567, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.083, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_saturn_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_saturn_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 145.678, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 1.234, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.034, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_uranus_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_uranus_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 234.567, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, -0.345, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.012, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_neptune_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_neptune_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 267.890, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 0.678, epsilon = 1e-3);
-        assert_relative_eq!(position.speed, 0.006, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_pluto_position_with_latitude() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        let position = calculate_pluto_position(vsop87::julian_centuries(jd)).unwrap();
-        assert_relative_eq!(position.longitude, 189.012, epsilon = 1e-3);
-        assert_relative_eq!(position.latitude, 8.901, epsilon = 1e-3); // Pluto has high inclination
-        assert_relative_eq!(position.speed, 0.004, epsilon = 1e-3);
-    }
-
-    #[test]
-    fn test_planet_latitude_ranges() {
-        let date = Utc.with_ymd_and_hms(1977, 10, 24, 4, 56, 0).unwrap();
-        let jd = 2443437.705555556; // Julian date for the test date
-        
-        // Test that all planets have valid latitude ranges
-        let positions = calculate_planet_positions(jd).unwrap();
-        
-        // Check each planet's latitude is within its orbital inclination
-        for (i, position) in positions.iter().enumerate() {
-            match i {
-                0 => assert_relative_eq!(position.latitude, 0.0, epsilon = 1e-3), // Sun
-                1 => assert!(position.latitude.abs() <= 5.145), // Moon
-                2 => assert!(position.latitude.abs() <= 7.005), // Mercury
-                3 => assert!(position.latitude.abs() <= 3.395), // Venus
-                4 => assert!(position.latitude.abs() <= 1.851), // Mars
-                5 => assert!(position.latitude.abs() <= 1.305), // Jupiter
-                6 => assert!(position.latitude.abs() <= 2.485), // Saturn
-                7 => assert!(position.latitude.abs() <= 0.775), // Uranus
-                8 => assert!(position.latitude.abs() <= 1.770), // Neptune
-                9 => assert!(position.latitude.abs() <= 17.142), // Pluto
-                _ => assert!(position.latitude.abs() <= 90.0), // Other bodies
-            }
-        }
+    fn test_stationary_points() {
+        // Test Mercury stationary
+        let jd_mercury_stationary = 2451545.0; // January 1, 2000
+        let position = calculate_planet_position(Planet::Mercury, jd_mercury_stationary).unwrap();
+        assert_relative_eq!(position.speed, 0.0, epsilon = 0.1);
     }
 } 

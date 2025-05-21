@@ -50,21 +50,23 @@ pub fn perihelion(t: f64, a: f64, b: f64, c: f64) -> f64 {
     peri
 }
 
-/// Calculate the true anomaly from mean anomaly and eccentricity
-pub fn true_anomaly(mean_anomaly: f64, eccentricity: f64) -> f64 {
-    let mut e = mean_anomaly;
-    let mut delta = 1.0;
+/// Calculate true anomaly using Kepler's equation
+fn calculate_true_anomaly(mean_anomaly: f64, eccentricity: f64) -> f64 {
+    let mut eccentric_anomaly = mean_anomaly;
+    let mut delta: f64 = 1.0;
     let mut iterations = 0;
     
     while delta.abs() > 1e-12 && iterations < 50 {
-        let e_next = e - (e - eccentricity * e.sin() - mean_anomaly) / (1.0 - eccentricity * e.cos());
-        delta = e_next - e;
-        e = e_next;
+        let next = eccentric_anomaly - (eccentric_anomaly - eccentricity * eccentric_anomaly.sin() - mean_anomaly) 
+            / (1.0 - eccentricity * eccentric_anomaly.cos());
+        delta = next - eccentric_anomaly;
+        eccentric_anomaly = next;
         iterations += 1;
     }
     
-    let true_anomaly = 2.0 * ((1.0 + eccentricity) / (1.0 - eccentricity)).sqrt() * (e / 2.0).tan();
-    true_anomaly.atan2(1.0)
+    // Calculate true anomaly
+    2.0 * ((1.0 + eccentricity).sqrt() * (eccentric_anomaly / 2.0).sin())
+        .atan2((1.0 - eccentricity).sqrt() * (eccentric_anomaly / 2.0).cos())
 }
 
 /// Calculate the heliocentric coordinates of a planet
@@ -86,7 +88,7 @@ pub fn heliocentric_coordinates(
     let m = mean_anomaly(t, l, 0.0, 0.0);
     
     // Calculate true anomaly
-    let v = true_anomaly(m, e);
+    let v = calculate_true_anomaly(m, e);
     
     // Calculate radius vector
     let r = a * (1.0 - e * e) / (1.0 + e * v.cos());
@@ -131,12 +133,12 @@ mod tests {
     fn test_true_anomaly() {
         let m = 0.0;
         let e = 0.0;
-        let v = true_anomaly(m, e);
+        let v = calculate_true_anomaly(m, e);
         assert_relative_eq!(v, 0.0);
         
         let m = PI;
         let e = 0.0;
-        let v = true_anomaly(m, e);
+        let v = calculate_true_anomaly(m, e);
         assert_relative_eq!(v, PI);
     }
 

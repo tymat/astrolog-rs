@@ -9,35 +9,117 @@ pub const OBJ_MAX: usize = 100;
 /// Number of zodiac signs
 pub const SIGN_COUNT: usize = 12;
 
-/// Basic chart information
+/// Represents errors that can occur during astrological calculations
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChartInfo {
-    pub name: String,
-    pub date: DateTime<Utc>,
-    pub timezone: f64,
-    pub latitude: f64,
-    pub longitude: f64,
-    pub house_system: HouseSystem,
+pub enum AstrologError {
+    /// Error during calculation of planetary positions
+    CalculationError {
+        message: String,
+    },
+    /// Error during house system calculations
+    HouseSystemError {
+        message: String,
+        system: String,
+    },
+    /// Error during coordinate transformations
+    CoordinateError {
+        message: String,
+        from: String,
+        to: String,
+    },
+    /// Error during aspect calculations
+    AspectError {
+        message: String,
+        planets: (String, String),
+    },
+    /// Error during date/time calculations
+    DateTimeError {
+        message: String,
+        date: Option<DateTime<Utc>>,
+    },
+    /// Error during location-based calculations
+    LocationError {
+        message: String,
+        latitude: Option<f64>,
+        longitude: Option<f64>,
+    },
+    /// Error for unimplemented features
+    NotImplemented {
+        message: String,
+    },
+    /// Error for invalid input parameters
+    InvalidInput {
+        message: String,
+        parameter: String,
+    },
 }
 
-/// Chart positions for all objects
+impl fmt::Display for AstrologError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AstrologError::CalculationError { message } => {
+                write!(f, "Calculation error: {}", message)
+            }
+            AstrologError::HouseSystemError { message, system } => {
+                write!(f, "House system error ({}): {}", system, message)
+            }
+            AstrologError::CoordinateError { message, from, to } => {
+                write!(f, "Coordinate transformation error ({} to {}): {}", from, to, message)
+            }
+            AstrologError::AspectError { message, planets } => {
+                write!(f, "Aspect error between {} and {}: {}", planets.0, planets.1, message)
+            }
+            AstrologError::DateTimeError { message, date } => {
+                if let Some(dt) = date {
+                    write!(f, "Date/time error at {}: {}", dt, message)
+                } else {
+                    write!(f, "Date/time error: {}", message)
+                }
+            }
+            AstrologError::LocationError { message, latitude, longitude } => {
+                if let (Some(lat), Some(lon)) = (latitude, longitude) {
+                    write!(f, "Location error at ({}, {}): {}", lat, lon, message)
+                } else {
+                    write!(f, "Location error: {}", message)
+                }
+            }
+            AstrologError::NotImplemented { message } => {
+                write!(f, "Not implemented: {}", message)
+            }
+            AstrologError::InvalidInput { message, parameter } => {
+                write!(f, "Invalid input for {}: {}", parameter, message)
+            }
+        }
+    }
+}
+
+impl std::error::Error for AstrologError {}
+
+/// Information about a chart
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChartInfo {
+    pub julian_date: f64,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub house_system: String,
+}
+
+/// Positions of celestial bodies in a chart
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChartPositions {
-    pub sun: Position,
-    pub moon: Position,
-    pub mercury: Position,
-    pub venus: Position,
-    pub mars: Position,
-    pub jupiter: Position,
-    pub saturn: Position,
-    pub uranus: Position,
-    pub neptune: Position,
-    pub pluto: Position,
-    pub mean_node: Position,
-    pub true_node: Position,
-    pub mean_lilith: Position,
-    pub osc_lilith: Position,
-    pub chiron: Position,
+    pub zodiac_positions: Vec<f64>,
+    pub house_cusps: Vec<f64>,
+    pub house_placements: Vec<u8>,
+}
+
+impl ChartPositions {
+    pub fn new() -> Self {
+        Self {
+            zodiac_positions: Vec::new(),
+            house_cusps: Vec::new(),
+            house_placements: Vec::new(),
+        }
+    }
 }
 
 /// User settings for chart generation
@@ -127,32 +209,6 @@ pub struct GraphicsSettings {
     pub grid_cells: i32,
     pub glyphs: i32,
 }
-
-/// Error types for the application
-#[derive(Debug)]
-pub enum AstrologError {
-    InvalidDate,
-    InvalidTime,
-    InvalidLocation,
-    CalculationError,
-    IOError,
-    NotImplemented(String),
-}
-
-impl fmt::Display for AstrologError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            AstrologError::InvalidDate => write!(f, "Invalid date"),
-            AstrologError::InvalidTime => write!(f, "Invalid time"),
-            AstrologError::InvalidLocation => write!(f, "Invalid location"),
-            AstrologError::CalculationError => write!(f, "Calculation error"),
-            AstrologError::IOError => write!(f, "IO error"),
-            AstrologError::NotImplemented(msg) => write!(f, "Not implemented: {}", msg),
-        }
-    }
-}
-
-impl std::error::Error for AstrologError {}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Aspect {
