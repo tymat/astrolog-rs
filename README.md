@@ -99,58 +99,47 @@ curl -X POST http://localhost:8080/api/chart/synastry \
   -H "Content-Type: application/json" \
   -d '{
     "chart1": {
-      "date": "1990-01-01T12:00:00Z",
-      "latitude": 40.7128,
-      "longitude": -74.0060,
+      "date": "1977-10-24T12:00:00Z",
+      "latitude": 14.6488,
+      "longitude": 121.0509,
       "house_system": "placidus",
       "ayanamsa": "tropical"
     },
     "chart2": {
-      "date": "1992-06-15T15:30:00Z",
-      "latitude": 34.0522,
-      "longitude": -118.2437,
+      "date": "1996-01-06T12:00:00Z",
+      "latitude": 36.66833,
+      "longitude": 116.99722,
       "house_system": "placidus",
       "ayanamsa": "tropical"
     }
   }'
 ```
 
-#### Response Format
+Response:
 ```json
 {
-  "chart_type": "natal",
-  "date": "2024-01-14T12:00:00Z",
-  "latitude": 40.7128,
-  "longitude": -74.0060,
-  "house_system": "placidus",
-  "ayanamsa": "tropical",
-  "planets": [
-    {
-      "name": "Sun",
-      "longitude": 294.5,
-      "latitude": 0.0,
-      "speed": 0.9856,
-      "is_retrograde": false,
-      "house": 10
-    },
-    // ... other planets
-  ],
-  "houses": [
-    {
-      "number": 1,
-      "longitude": 120.5
-    },
-    // ... other houses
-  ],
-  "aspects": [
-    {
-      "planet1": "Sun",
-      "planet2": "Moon",
-      "aspect": "conjunction",
-      "orb": 5.2
-    },
-    // ... other aspects
-  ]
+  "chart_type": "synastry",
+  "chart1": {
+    "chart_type": "natal",
+    "date": "1977-10-24T12:00:00Z",
+    "latitude": 14.6488,
+    "longitude": 121.0509,
+    "house_system": "placidus",
+    "ayanamsa": "tropical",
+    "planets": [...],
+    "houses": [...]
+  },
+  "chart2": {
+    "chart_type": "natal",
+    "date": "1996-01-06T12:00:00Z",
+    "latitude": 36.66833,
+    "longitude": 116.99722,
+    "house_system": "placidus",
+    "ayanamsa": "tropical",
+    "planets": [...],
+    "houses": [...]
+  },
+  "aspects": [...]
 }
 ```
 
