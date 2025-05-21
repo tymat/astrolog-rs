@@ -1,8 +1,7 @@
 use crate::core::types::HouseSystem;
 use crate::core::AstrologError;
 use crate::calc::utils::{degrees_to_radians, radians_to_degrees, normalize_angle};
-use crate::calc::angles::{calculate_angles, calculate_obliquity, calculate_sidereal_time};
-use crate::calc::time::julian_centuries;
+use crate::calc::swiss_ephemeris::calculate_house_cusps_swiss;
 use approx::{AbsDiffEq, RelativeEq};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -45,6 +44,17 @@ pub fn calculate_houses(
     longitude: f64,
     house_system: HouseSystem,
 ) -> Result<Vec<HousePosition>, AstrologError> {
+    // Special case for Null house system - each house starts at 0° of its sign
+    if house_system == HouseSystem::Null {
+        return Ok((0..12)
+            .map(|i| HousePosition {
+                number: (i + 1) as u8,
+                longitude: (i * 30) as f64,
+                latitude: 0.0,
+            })
+            .collect());
+    }
+
     // Check for extreme latitudes
     if latitude.abs() > 66.0 && house_system != HouseSystem::Equal && house_system != HouseSystem::WholeSign {
         return Err(AstrologError::InvalidLatitude(format!(
@@ -64,45 +74,13 @@ pub fn calculate_houses(
         ]);
     }
 
-    // Calculate the sidereal time at Greenwich
-    let t = julian_centuries(julian_date);
-    let sidereal_time = calculate_sidereal_time(t, longitude);
-
-    // Calculate the obliquity of the ecliptic
-    let obliquity = calculate_obliquity(t);
-
-    // Calculate the MC (Midheaven) and ASC (Ascendant)
-    let (mc_longitude, asc_longitude) = calculate_angles(sidereal_time, latitude, obliquity);
-
-    // Flip the Ascendant if it falls in the wrong half of the zodiac for Vedic system
-    let asc_longitude = if house_system == HouseSystem::Vedic && (mc_longitude - asc_longitude).abs() > 180.0 {
-        normalize_angle(asc_longitude + 180.0)
-    } else {
-        asc_longitude
-    };
-
-    // Calculate house cusps based on the selected house system
-    let house_cusps = match house_system {
-        HouseSystem::Placidus => calculate_placidus_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Koch => calculate_koch_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Equal => calculate_equal_houses(asc_longitude),
-        HouseSystem::WholeSign => calculate_whole_sign_houses(asc_longitude),
-        HouseSystem::Campanus => calculate_campanus_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Regiomontanus => calculate_regiomontanus_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Meridian => calculate_meridian_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Alcabitius => calculate_alcabitius_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Topocentric => calculate_topocentric_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Morinus => calculate_morinus_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Porphyrius => calculate_porphyrius_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Krusinski => calculate_krusinski_houses(mc_longitude, asc_longitude, latitude, obliquity),
-        HouseSystem::Vedic => calculate_vedic_houses(mc_longitude, asc_longitude, obliquity, latitude),
-        HouseSystem::Null => calculate_null_houses(mc_longitude, asc_longitude, obliquity, latitude),
-    };
+    // Use Swiss Ephemeris for more accurate calculations
+    let (cusps, ascmc) = calculate_house_cusps_swiss(julian_date, latitude, longitude, house_system)?;
 
     // Convert house cusps to HousePosition structs
-    Ok(house_cusps.into_iter()
+    Ok(cusps[1..13].iter()
         .enumerate()
-        .map(|(i, longitude)| HousePosition {
+        .map(|(i, &longitude)| HousePosition {
             number: (i + 1) as u8,
             longitude,
             latitude: 0.0, // House cusps are always on the ecliptic

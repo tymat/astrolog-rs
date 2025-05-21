@@ -1,9 +1,11 @@
 use swisseph::{self, Planet as SwePlanet};
 use crate::core::types::AstrologError;
+use crate::core::types::HouseSystem;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use std::sync::Once;
 use std::sync::atomic::{AtomicBool, Ordering};
+use crate::calc::swiss_ephemeris_ffi;
 
 // Use a local path for ephemeris files
 const EPHE_PATH: &str = "./ephe";
@@ -131,4 +133,49 @@ pub fn map_planet_to_swe(planet: crate::calc::planets::Planet) -> Option<SwePlan
         crate::calc::planets::Planet::TrueNode => Some(SwePlanet::TrueNode),
         _ => None,
     }
+}
+
+pub fn calculate_house_cusps_swiss(
+    jd_ut: f64,
+    geolat: f64,
+    geolon: f64,
+    house_system: HouseSystem,
+) -> Result<([f64; 13], [f64; 10]), AstrologError> {
+    let mut cusps = [0.0f64; 13];
+    let mut ascmc = [0.0f64; 10];
+    
+    // Map our house systems to Swiss Ephemeris codes
+    let hsys = match house_system {
+        HouseSystem::Placidus => b'P',
+        HouseSystem::Koch => b'K',
+        HouseSystem::Equal => b'A',
+        HouseSystem::WholeSign => b'W',
+        HouseSystem::Campanus => b'C',
+        HouseSystem::Regiomontanus => b'R',
+        HouseSystem::Meridian => b'X',
+        HouseSystem::Alcabitius => b'B',
+        HouseSystem::Topocentric => b'T',
+        HouseSystem::Morinus => b'M',
+        HouseSystem::Porphyrius => b'O',
+        HouseSystem::Krusinski => b'U',
+        HouseSystem::Vedic => b'W', // Use whole sign for Vedic
+        HouseSystem::Null => b'A', // Use equal for Null
+    };
+
+    let ret = unsafe {
+        swiss_ephemeris_ffi::swe_houses(
+            jd_ut,
+            geolat,
+            geolon,
+            hsys as i32,
+            cusps.as_mut_ptr(),
+            ascmc.as_mut_ptr(),
+        )
+    };
+    if ret < 0 {
+        return Err(AstrologError::CalculationError {
+            message: "Swiss Ephemeris swe_houses failed".to_string(),
+        });
+    }
+    Ok((cusps, ascmc))
 } 
