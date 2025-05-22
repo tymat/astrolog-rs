@@ -1,6 +1,6 @@
 [package]
 name = "astrolog-rs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Original by Walter D. Pullen", "Rust port by Your Name"]
 description = "A modern Rust port of the Astrolog astrology program as a backend service"
