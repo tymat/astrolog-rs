@@ -1,8 +1,8 @@
 {
-  "natal_date": "1977-10-24T04:56:00Z",
-  "transit_date": "2025-05-20T12:00:00Z",
-  "latitude": 14.6486,
-  "longitude": 121.0508,
+  "natal_date": "2024-01-01T00:00:00Z",
+  "transit_date": "2024-01-02T00:00:00Z",
+  "latitude": 0.0,
+  "longitude": 0.0,
   "house_system": "placidus",
   "ayanamsa": "tropical"
 }
