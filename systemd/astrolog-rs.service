@@ -13,11 +13,27 @@ RestartSec=3
 # Server configuration
 Environment=PORT=4008
 Environment=RUST_LOG=info
+Environment=WORKERS=4
+Environment=RUST_BACKTRACE=1
+Environment=MAX_CONCURRENT=250
 
 # Swiss Ephemeris configuration
 Environment=SE_EPHE_PATH=%h/.swisseph/ephe
 Environment=LD_LIBRARY_PATH=%h/.swisseph/lib
 Environment=CPATH=%h/.swisseph/include
+
+# Systemd optimization
+LimitNOFILE=1048576
+TasksMax=infinity
+MemoryLimit=4G
+CPUQuota=90%
+
+# TCP settings
+Environment=TCP_NODELAY=1
+Environment=TCP_QUICKACK=1
+Environment=TCP_KEEPIDLE=60
+Environment=TCP_KEEPINTVL=10
+Environment=TCP_KEEPCNT=6
 
 [Install]
 WantedBy=multi-user.target 

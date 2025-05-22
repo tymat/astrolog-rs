@@ -1,0 +1,16 @@
+{
+  "chart1": {
+    "date": "1977-10-24T04:56:00Z",
+    "latitude": 14.6488,
+    "longitude": 121.0509,
+    "house_system": "placidus",
+    "ayanamsa": "tropical"
+  },
+  "chart2": {
+    "date": "1996-01-06T12:00:00Z",
+    "latitude": 36.66833,
+    "longitude": 116.99722,
+    "house_system": "placidus",
+    "ayanamsa": "tropical"
+  }
+}

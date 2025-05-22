@@ -18,6 +18,7 @@ thiserror = "1.0"
 log = "0.4"
 env_logger = "0.10"
 approx = "0.5.1"
+num_cpus = "1.16"
 
 # Web framework
 actix-web = "4.4"
