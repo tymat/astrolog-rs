@@ -476,6 +476,7 @@ dependencies = [
  "eframe",
  "env_logger",
  "image",
+ "lazy_static",
  "log",
  "num_cpus",
  "serde",

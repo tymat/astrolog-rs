@@ -8,6 +8,8 @@ User=%i
 Environment=PORT=4008
 Environment=WORKERS=4
 Environment=MAX_CONCURRENT=500
+Environment=MAX_QUEUE_SIZE=10000
+Environment=MAX_WAIT_TIME=30
 Environment=RUST_LOG=info
 Environment=SE_EPHE_PATH=/home/%i/.swisseph/ephe
 Environment=SE_LIB_PATH=/home/%i/.swisseph/lib

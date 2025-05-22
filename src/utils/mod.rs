@@ -1,5 +1,8 @@
 use std::f64::consts::PI;
 
+pub mod logging;
+pub use logging::*;
+
 #[allow(dead_code)]
 pub fn normalize_angle(angle: f64) -> f64 {
     let mut normalized = angle % 360.0;

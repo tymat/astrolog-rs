@@ -2,6 +2,7 @@ pub mod api;
 pub mod calc;
 pub mod core;
 pub mod io;
+pub mod utils;
 
 pub use calc::houses::HousePosition;
 pub use calc::planets::{calculate_planet_position, Planet, PlanetPosition};

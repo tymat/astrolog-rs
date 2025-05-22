@@ -10,6 +10,7 @@ use actix_cors::Cors;
 use actix_web::{App, HttpServer, middleware};
 use astrolog_rs::api::server::config;
 use astrolog_rs::calc::swiss_ephemeris;
+use crate::api::queue::{QueueConfig, RequestQueue};
 use env_logger::Env;
 use std::env;
 use actix_web::web::Data;
@@ -35,6 +36,21 @@ async fn main() -> std::io::Result<()> {
         .and_then(|w| w.parse::<usize>().ok())
         .unwrap_or_else(|| num_cpus::get());
 
+    // Create request queue configuration
+    let queue_config = QueueConfig {
+        max_queue_size: env::var("MAX_QUEUE_SIZE")
+            .ok()
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap_or(10000),
+        max_wait_time: std::time::Duration::from_secs(
+            env::var("MAX_WAIT_TIME")
+                .ok()
+                .and_then(|t| t.parse::<u64>().ok())
+                .unwrap_or(30)
+        ),
+        priority_levels: 3,
+    };
+
     // Create a semaphore to limit concurrent calculations
     let max_concurrent = env::var("MAX_CONCURRENT")
         .ok()
@@ -42,8 +58,13 @@ async fn main() -> std::io::Result<()> {
         .unwrap_or(500);
     let semaphore = Arc::new(Semaphore::new(max_concurrent));
 
+    // Create request queue
+    let request_queue = Arc::new(RequestQueue::new(queue_config, max_concurrent));
+
     println!("Starting Astrolog-rs server on http://127.0.0.1:4008 with {} workers", workers);
     println!("Maximum concurrent calculations: {}", max_concurrent);
+    println!("Maximum queue size: {}", request_queue.max_queue_size());
+    println!("Maximum wait time: {} seconds", request_queue.max_wait_time().as_secs());
 
     HttpServer::new(move || {
         App::new()
@@ -52,6 +73,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Compress::default())
             .wrap(NormalizePath::trim())
             .app_data(Data::new(semaphore.clone()))
+            .app_data(Data::new(request_queue.clone()))
             .configure(config)
     })
     .workers(workers)
