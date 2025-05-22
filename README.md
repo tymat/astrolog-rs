@@ -635,5 +635,259 @@ cd systemd
 ./uninstall-service.sh
 ```
 
+## Running as a Systemd Service
+
+The server can be run as a systemd service, allowing it to start automatically on boot and be managed by systemd. The service runs as a regular user and supports configurable ports.
+
+### Installation
+
+1. Navigate to the systemd directory:
+```bash
+cd systemd
+```
+
+2. Run the installation script:
+```bash
+./install-service.sh
+```
+
+The service will be installed and started automatically. By default, it runs on port 8808.
+
+### Configuration
+
+The service can be configured by editing the service file at `/etc/systemd/system/astrolog-rs.service`. Key configuration options:
+
+- `PORT`: The port number the server listens on (default: 8808)
+- `RUST_LOG`: Logging level (default: info)
+- `EPHE_PATH`: Path to the Swiss Ephemeris files
+
+To apply configuration changes:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart astrolog-rs@username
+```
+
+### Service Management
+
+Check service status:
+```bash
+systemctl status astrolog-rs@username
+```
+
+View service logs:
+```bash
+journalctl -u astrolog-rs@username
+```
+
+Stop the service:
+```bash
+sudo systemctl stop astrolog-rs@username
+```
+
+Start the service:
+```bash
+sudo systemctl start astrolog-rs@username
+```
+
+### Uninstallation
+
+To remove the service:
+```bash
+cd systemd
+./uninstall-service.sh
+```
+
+## Running as a Systemd Service
+
+The server can be run as a systemd service, allowing it to start automatically on boot and be managed by systemd. The service runs as a regular user and supports configurable ports.
+
+### Installation
+
+1. Navigate to the systemd directory:
+```bash
+cd systemd
+```
+
+2. Run the installation script:
+```bash
+./install-service.sh
+```
+
+The service will be installed and started automatically. By default, it runs on port 8808.
+
+### Configuration
+
+The service can be configured by editing the service file at `/etc/systemd/system/astrolog-rs.service`. Key configuration options:
+
+- `PORT`: The port number the server listens on (default: 8808)
+- `RUST_LOG`: Logging level (default: info)
+- `EPHE_PATH`: Path to the Swiss Ephemeris files
+
+To apply configuration changes:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart astrolog-rs@username
+```
+
+### Service Management
+
+Check service status:
+```bash
+systemctl status astrolog-rs@username
+```
+
+View service logs:
+```bash
+journalctl -u astrolog-rs@username
+```
+
+Stop the service:
+```bash
+sudo systemctl stop astrolog-rs@username
+```
+
+Start the service:
+```bash
+sudo systemctl start astrolog-rs@username
+```
+
+### Uninstallation
+
+To remove the service:
+```bash
+cd systemd
+./uninstall-service.sh
+```
+
+# Astrolog-rs
+
+A high-performance astrological calculation server written in Rust.
+
+## Features
+
+- Natal chart calculations
+- Transit chart calculations
+- Synastry chart calculations
+- High-performance concurrent request handling
+- Swiss Ephemeris integration
+
+## Prerequisites
+
+- Rust (latest stable version)
+- Swiss Ephemeris library and files
+- For load testing: `hey` tool (install via `brew install hey` on macOS)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/astrolog-rs.git
+cd astrolog-rs
+```
+
+2. Install Swiss Ephemeris:
+   - Download Swiss Ephemeris files
+   - Place them in `~/.swisseph/ephe/`
+   - Install Swiss Ephemeris library in `~/.swisseph/lib/`
+
+3. Build the project:
+```bash
+cargo build --release
+```
+
+## Running the Server
+
+### Basic Start
+To start the server with default settings:
+```bash
+./start-server.sh
+```
+
+### Optimized Start
+For best performance, run with sudo to apply system optimizations:
+```bash
+sudo ./start-server.sh
+```
+
+The server will start on port 4008 by default. You can configure the following environment variables:
+- `PORT`: Server port (default: 4008)
+- `WORKERS`: Number of worker threads (default: 2x CPU cores)
+- `MAX_CONCURRENT`: Maximum concurrent calculations (default: 1000)
+- `RUST_LOG`: Log level (default: info)
+
+## Load Testing
+
+The project includes load testing scripts to verify performance under high concurrency.
+
+### Prerequisites
+1. Install the `hey` load testing tool:
+   - macOS: `brew install hey`
+   - Linux: `go install github.com/rakyll/hey@latest`
+
+2. Make the test script executable:
+```bash
+chmod +x load_tester/loadtest.sh
+```
+
+### Running Load Tests
+Run the load tests with:
+```bash
+cd load_tester
+./loadtest.sh
+```
+
+The load test script will:
+1. Test each endpoint (natal, transit, synastry)
+2. Progressively increase concurrency (100, 200, 500, 1000)
+3. Run each test for 60 seconds
+4. Wait 10 seconds between tests for connection cleanup
+
+### Test Payloads
+The load tests use the following JSON payloads:
+- `natal_payload.json`: Natal chart calculation parameters
+- `transit_payload.json`: Transit chart calculation parameters
+- `synastry_payload.json`: Synastry chart calculation parameters
+
+## API Endpoints
+
+### Natal Chart
+```bash
+curl -X POST http://localhost:4008/api/chart/natal \
+  -H "Content-Type: application/json" \
+  -d @natal_payload.json
+```
+
+### Transit Chart
+```bash
+curl -X POST http://localhost:4008/api/chart/transit \
+  -H "Content-Type: application/json" \
+  -d @transit_payload.json
+```
+
+### Synastry Chart
+```bash
+curl -X POST http://localhost:4008/api/chart/synastry \
+  -H "Content-Type: application/json" \
+  -d @synastry_payload.json
+```
+
+## Performance Optimization
+
+The server is optimized for high concurrency with:
+- Multiple worker threads
+- Connection pooling
+- Response compression
+- Optimized TCP settings
+- System resource limits
+
+For best performance:
+1. Run with sudo to apply system optimizations
+2. Adjust `WORKERS` and `MAX_CONCURRENT` based on your system
+3. Monitor system resources during load tests
+
+## License
+
+[Your License]
+
 
 

@@ -7,15 +7,17 @@ mod io;
 mod utils;
 
 use actix_cors::Cors;
-use actix_web::{App, HttpServer};
+use actix_web::{App, HttpServer, middleware};
 use astrolog_rs::api::server::config;
 use astrolog_rs::calc::swiss_ephemeris;
 use env_logger::Env;
-use actix_web::middleware::Logger;
 use std::env;
 use actix_web::web::Data;
 use std::sync::Arc;
 use tokio::sync::Semaphore;
+use actix_web::middleware::Logger;
+use actix_web::middleware::Compress;
+use actix_web::middleware::NormalizePath;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -47,13 +49,15 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Cors::permissive())
             .wrap(Logger::default())
+            .wrap(Compress::default())
+            .wrap(NormalizePath::trim())
             .app_data(Data::new(semaphore.clone()))
             .configure(config)
     })
     .workers(workers)
-    .keep_alive(std::time::Duration::from_secs(120))
-    .client_request_timeout(std::time::Duration::from_secs(120))
-    .client_shutdown(5000)
+    .keep_alive(std::time::Duration::from_secs(30))
+    .client_request_timeout(std::time::Duration::from_secs(30))
+    .client_shutdown(1000)
     .backlog(8192)
     .bind("127.0.0.1:4008")?
     .run()
