@@ -29,17 +29,17 @@ async fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
 
-    // Get number of workers from environment or use number of CPU cores * 2
+    // Get number of workers from environment or use number of CPU cores
     let workers = env::var("WORKERS")
         .ok()
         .and_then(|w| w.parse::<usize>().ok())
-        .unwrap_or_else(|| num_cpus::get() * 2);
+        .unwrap_or_else(|| num_cpus::get());
 
     // Create a semaphore to limit concurrent calculations
     let max_concurrent = env::var("MAX_CONCURRENT")
         .ok()
         .and_then(|m| m.parse::<usize>().ok())
-        .unwrap_or(1000);
+        .unwrap_or(500);
     let semaphore = Arc::new(Semaphore::new(max_concurrent));
 
     println!("Starting Astrolog-rs server on http://127.0.0.1:4008 with {} workers", workers);
@@ -55,10 +55,10 @@ async fn main() -> std::io::Result<()> {
             .configure(config)
     })
     .workers(workers)
-    .keep_alive(std::time::Duration::from_secs(30))
-    .client_request_timeout(std::time::Duration::from_secs(30))
-    .client_shutdown(1000)
-    .backlog(8192)
+    .keep_alive(std::time::Duration::from_secs(75))
+    .client_request_timeout(std::time::Duration::from_secs(60))
+    .client_shutdown(5000)
+    .backlog(16384)
     .bind("127.0.0.1:4008")?
     .run()
     .await

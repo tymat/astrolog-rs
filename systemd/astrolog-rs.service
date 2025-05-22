@@ -1,32 +1,32 @@
 [Unit]
-Description=Astrolog-rs Astrological Calculation Server
+Description=Astrolog-rs Server
 After=network.target
 
 [Service]
 Type=simple
 User=%i
-WorkingDirectory=%h/astrolog-rs
-ExecStart=%h/astrolog-rs/target/release/astrolog-rs
-Restart=always
-RestartSec=3
-
-# Server configuration
 Environment=PORT=4008
-Environment=RUST_LOG=info
 Environment=WORKERS=4
+Environment=MAX_CONCURRENT=500
+Environment=RUST_LOG=info
+Environment=SE_EPHE_PATH=/home/%i/.swisseph/ephe
+Environment=SE_LIB_PATH=/home/%i/.swisseph/lib
 Environment=RUST_BACKTRACE=1
-Environment=MAX_CONCURRENT=250
 
-# Swiss Ephemeris configuration
-Environment=SE_EPHE_PATH=%h/.swisseph/ephe
-Environment=LD_LIBRARY_PATH=%h/.swisseph/lib
-Environment=CPATH=%h/.swisseph/include
-
-# Systemd optimization
+# System limits
 LimitNOFILE=1048576
-TasksMax=infinity
-MemoryLimit=4G
-CPUQuota=90%
+LimitNPROC=65535
+LimitAS=infinity
+LimitMEMLOCK=infinity
+LimitSTACK=infinity
+LimitCORE=infinity
+LimitRSS=infinity
+LimitLOCKS=infinity
+LimitSIGPENDING=infinity
+LimitMSGQUEUE=infinity
+LimitNICE=infinity
+LimitRTPRIO=infinity
+LimitRTTIME=infinity
 
 # TCP settings
 Environment=TCP_NODELAY=1
@@ -34,6 +34,20 @@ Environment=TCP_QUICKACK=1
 Environment=TCP_KEEPIDLE=60
 Environment=TCP_KEEPINTVL=10
 Environment=TCP_KEEPCNT=6
+
+# Resource limits
+MemoryLimit=4G
+CPUQuota=90%
+
+# Restart policy
+Restart=always
+RestartSec=5
+
+# Working directory
+WorkingDirectory=/home/%i/astrolog-rs
+
+# Executable
+ExecStart=/home/%i/astrolog-rs/target/release/astrolog-rs
 
 [Install]
 WantedBy=multi-user.target 
