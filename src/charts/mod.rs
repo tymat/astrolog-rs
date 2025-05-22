@@ -1,4 +1,5 @@
-use crate::core::types::{AstrologError, Chart, ChartInfo, ChartPositions};
+use crate::core::types::{AstrologError, Chart, ChartInfo, ChartPositions, HouseSystem};
+use chrono::{DateTime, Utc};
 
 /// Generate a new chart with the given information
 #[allow(dead_code)]
@@ -29,17 +30,29 @@ pub fn calculate_chart_aspects(
     })
 }
 
+pub fn create_test_chart() -> ChartInfo {
+    ChartInfo {
+        date: Utc::now(), // Use current UTC time
+        latitude: 40.7128,
+        longitude: -74.0060,
+        timezone: -4.0,
+        house_system: HouseSystem::Placidus,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::TimeZone;
 
     #[test]
     fn test_chart_generation() {
         let info = ChartInfo {
-            julian_date: 2451545.0,
+            date: Utc.with_ymd_and_hms(2024, 3, 15, 12, 0, 0).unwrap(),
             latitude: 51.5074,
             longitude: -0.1278,
-            house_system: "Placidus".to_string(),
+            timezone: 0.0,
+            house_system: HouseSystem::Placidus,
         };
 
         let result = generate_chart(&info);

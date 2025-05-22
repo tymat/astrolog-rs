@@ -4,13 +4,14 @@ pub mod core;
 pub mod io;
 pub mod utils;
 
-pub use calc::houses::HousePosition;
-pub use calc::planets::{calculate_planet_position, Planet, PlanetPosition};
-pub use core::types::HouseSystem;
-pub use core::AstrologError;
-
 #[cfg(test)]
-mod tests {
+pub mod tests {
+    pub mod api_tests;
+    pub mod functional;
+    pub mod chart_tests;
+    pub mod types_tests;
+    pub mod utils_tests;
+
     use super::*;
     use crate::calc::swiss_ephemeris;
     use approx::assert_relative_eq;
@@ -42,3 +43,8 @@ mod tests {
         Ok(())
     }
 }
+
+pub use calc::houses::HousePosition;
+pub use calc::planets::{calculate_planet_position, Planet, PlanetPosition};
+pub use core::types::HouseSystem;
+pub use core::AstrologError;

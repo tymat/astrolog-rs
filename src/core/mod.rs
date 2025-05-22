@@ -1,7 +1,8 @@
 pub mod calc;
 pub mod types;
 
-pub use calc::HouseSystem;
+pub use types::HouseSystem;
+pub use types::AstrologError;
 use chrono::{DateTime, Utc};
 pub use types::*;
 

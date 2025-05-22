@@ -1,0 +1,4 @@
+[2025-05-21 14:56:45] Endpoint: transit, IP: unknown, Payload: {"ayanamsa":"tropical","house_system":"placidus","latitude":1000.0,"longitude":0.0,"natal_date":"2024-01-01T00:00:00Z","transit_date":"2024-01-02T00:00:00Z"}, Error: Invalid latitude: The Placidus system of houses is not defined at extreme latitudes.
+
+[2025-05-21 14:56:45] Endpoint: transit, IP: unknown, Payload: {"ayanamsa":"tropical","house_system":"placidus","latitude":1000.0,"longitude":0.0,"natal_date":"2024-01-01T00:00:00Z","transit_date":"2024-01-02T00:00:00Z"}, Error: Invalid latitude: The Placidus system of houses is not defined at extreme latitudes.
+

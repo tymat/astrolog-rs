@@ -107,10 +107,11 @@ impl std::error::Error for AstrologError {}
 /// Information about a chart
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChartInfo {
-    pub julian_date: f64,
+    pub date: DateTime<Utc>,
     pub latitude: f64,
     pub longitude: f64,
-    pub house_system: String,
+    pub timezone: f64,
+    pub house_system: HouseSystem,
 }
 
 /// Positions of celestial bodies in a chart
@@ -246,7 +247,7 @@ pub struct Position {
     pub retrograde: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum HouseSystem {
     Placidus,
     Koch,

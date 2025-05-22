@@ -1,3 +1,3 @@
-mod chart_test;
+pub mod chart_test;
 
 pub use chart_test::*; 
