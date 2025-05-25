@@ -20,6 +20,7 @@ use std::rc::Rc;
 use std::future::{ready, Ready, Future};
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use chrono;
 
 thread_local! {
     static CLIENT_IP: RefCell<String> = RefCell::new("unknown".to_string());
@@ -506,7 +507,32 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
 }
 
 #[allow(dead_code)]
+async fn health_check() -> impl Responder {
+    // Check Swiss Ephemeris availability
+    let ephemeris_status = if std::path::Path::new("./ephe").exists() {
+        "available"
+    } else {
+        "unavailable"
+    };
+    
+    HttpResponse::Ok().json(json!({
+        "status": "healthy",
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+        "service": "astrolog-rs",
+        "version": env!("CARGO_PKG_VERSION"),
+        "checks": {
+            "ephemeris": ephemeris_status,
+            "server": "running"
+        }
+    }))
+}
+
+#[allow(dead_code)]
 pub fn config(cfg: &mut web::ServiceConfig) {
+    // Health endpoint at root level for load balancers/monitoring
+    cfg.route("/health", web::get().to(health_check));
+    
+    // API endpoints under /api scope
     cfg.service(
         web::scope("/api")
             .wrap(middleware::Logger::default())

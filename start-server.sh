@@ -71,4 +71,4 @@ export CPATH="$HOME/.swisseph/include"
 export RUSTFLAGS="-C target-cpu=native"
 
 # Start the server
-cargo run --release 
+target/release/astrolog-rs

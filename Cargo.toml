@@ -30,7 +30,7 @@ tokio = { version = "1", features = ["full"] }
 clap = { version = "4.3", features = ["derive"], optional = true }
 
 # Swiss Ephemeris
-swisseph = { path = "../swisseph" }
+swisseph = { path = "./external/swisseph" }
 
 # Optional dependencies for different features
 # These will be enabled via feature flags
