@@ -1,26 +1,23 @@
 use crate::api::types::{
     AspectInfo, ChartRequest, ChartResponse, HouseInfo, PlanetInfo, SynastryRequest,
-    SynastryResponse, TransitRequest, TransitResponse,
+    SynastryResponse, TransitRequest, TransitResponse, TransitData, TransitInfo,
 };
-use crate::calc::aspects::calculate_aspects;
-use crate::calc::aspects::AspectType;
+use crate::calc::aspects::{calculate_aspects_with_options, calculate_transit_aspects_with_options, calculate_cross_aspects_with_options};
 use crate::calc::houses::calculate_houses;
 use crate::calc::planets::calculate_planet_positions;
 use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
 use crate::utils::logging::log_request_error;
 use actix_web::{
-    web, HttpResponse, Responder, http::StatusCode, middleware,
+    web, HttpResponse, Responder, middleware,
     dev::{ServiceRequest, ServiceResponse, Service, Transform},
-    Error, HttpServer
+    Error
 };
 use serde_json::json;
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::future::{ready, Ready, Future};
 use std::pin::Pin;
 use std::task::{Context, Poll};
-use chrono;
 
 thread_local! {
     static CLIENT_IP: RefCell<String> = RefCell::new("unknown".to_string());
@@ -99,6 +96,241 @@ fn parse_house_system(system: &str) -> HouseSystem {
     }
 }
 
+async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Responder {
+    let jd = date_to_julian(req.date);
+    let house_system = parse_house_system(&req.house_system);
+
+    // Calculate natal chart
+    match calculate_planet_positions(jd) {
+        Ok(natal_positions) => {
+            let planets: Vec<PlanetInfo> = natal_positions
+                .iter()
+                .enumerate()
+                .map(|(i, pos)| {
+                    let mut info: PlanetInfo = (*pos).into();
+                    info.name = match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet {}", i + 1),
+                    };
+                    info
+                })
+                .collect();
+
+            // Calculate houses
+            let houses = match calculate_houses(jd, req.latitude, req.longitude, house_system) {
+                Ok(h) => h,
+                Err(e) => {
+                    log_request_error(
+                        "chart",
+                        &get_client_ip(),
+                        &json!(req.0).to_string(),
+                        &e.to_string(),
+                    );
+                    return HttpResponse::InternalServerError().body(e.to_string());
+                }
+            };
+            let house_info: Vec<HouseInfo> = houses
+                .iter()
+                .map(|h| HouseInfo {
+                    number: h.number,
+                    longitude: h.longitude,
+                    latitude: h.latitude,
+                })
+                .collect();
+
+            // Calculate natal aspects
+            let natal_aspects = calculate_aspects_with_options(&natal_positions, req.include_minor_aspects);
+            let aspect_info: Vec<AspectInfo> = natal_aspects
+                .iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
+
+            // Handle transit data if provided
+            let transit_data = if let Some(transit_info) = &req.transit {
+                let transit_jd = date_to_julian(transit_info.date);
+                
+                match calculate_planet_positions(transit_jd) {
+                    Ok(transit_positions) => {
+                        let transit_planets: Vec<PlanetInfo> = transit_positions
+                            .iter()
+                            .enumerate()
+                            .map(|(i, pos)| {
+                                let mut info: PlanetInfo = (*pos).into();
+                                info.name = match i {
+                                    0 => "Sun".to_string(),
+                                    1 => "Moon".to_string(),
+                                    2 => "Mercury".to_string(),
+                                    3 => "Venus".to_string(),
+                                    4 => "Mars".to_string(),
+                                    5 => "Jupiter".to_string(),
+                                    6 => "Saturn".to_string(),
+                                    7 => "Uranus".to_string(),
+                                    8 => "Neptune".to_string(),
+                                    9 => "Pluto".to_string(),
+                                    _ => format!("Planet {}", i + 1),
+                                };
+                                info
+                            })
+                            .collect();
+
+                        // Calculate transit aspects
+                        let transit_aspects = calculate_transit_aspects_with_options(&transit_positions, req.include_minor_aspects);
+                        let transit_aspect_info: Vec<AspectInfo> = transit_aspects
+                            .iter()
+                            .map(|a| AspectInfo {
+                                aspect: format!("{:?}", a.aspect_type),
+                                orb: a.orb,
+                                planet1: a.planet1.clone(),
+                                planet2: a.planet2.clone(),
+                            })
+                            .collect();
+
+                        // Calculate transit-to-natal aspects
+                        let cross_aspects = calculate_cross_aspects_with_options(&natal_positions, &transit_positions, req.include_minor_aspects);
+                        let cross_aspect_info: Vec<AspectInfo> = cross_aspects
+                            .iter()
+                            .map(|a| AspectInfo {
+                                aspect: format!("{:?}", a.aspect_type),
+                                orb: a.orb,
+                                planet1: a.planet1.clone(),
+                                planet2: a.planet2.clone(),
+                            })
+                            .collect();
+
+                        Some(TransitData {
+                            date: transit_info.date,
+                            latitude: transit_info.latitude,
+                            longitude: transit_info.longitude,
+                            planets: transit_planets,
+                            aspects: transit_aspect_info,
+                            transit_to_natal_aspects: cross_aspect_info,
+                        })
+                    }
+                    Err(e) => {
+                        log_request_error(
+                            "chart_transit",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &e.to_string(),
+                        );
+                        return HttpResponse::InternalServerError().body(format!("Failed to calculate transit positions: {}", e));
+                    }
+                }
+            } else {
+                // Use default transit values if no transit data provided
+                let default_transit = TransitInfo::default();
+                let transit_jd = date_to_julian(default_transit.date);
+                
+                match calculate_planet_positions(transit_jd) {
+                    Ok(transit_positions) => {
+                        let transit_planets: Vec<PlanetInfo> = transit_positions
+                            .iter()
+                            .enumerate()
+                            .map(|(i, pos)| {
+                                let mut info: PlanetInfo = (*pos).into();
+                                info.name = match i {
+                                    0 => "Sun".to_string(),
+                                    1 => "Moon".to_string(),
+                                    2 => "Mercury".to_string(),
+                                    3 => "Venus".to_string(),
+                                    4 => "Mars".to_string(),
+                                    5 => "Jupiter".to_string(),
+                                    6 => "Saturn".to_string(),
+                                    7 => "Uranus".to_string(),
+                                    8 => "Neptune".to_string(),
+                                    9 => "Pluto".to_string(),
+                                    _ => format!("Planet {}", i + 1),
+                                };
+                                info
+                            })
+                            .collect();
+
+                        // Calculate transit aspects
+                        let transit_aspects = calculate_transit_aspects_with_options(&transit_positions, req.include_minor_aspects);
+                        let transit_aspect_info: Vec<AspectInfo> = transit_aspects
+                            .iter()
+                            .map(|a| AspectInfo {
+                                aspect: format!("{:?}", a.aspect_type),
+                                orb: a.orb,
+                                planet1: a.planet1.clone(),
+                                planet2: a.planet2.clone(),
+                            })
+                            .collect();
+
+                        // Calculate transit-to-natal aspects
+                        let cross_aspects = calculate_cross_aspects_with_options(&natal_positions, &transit_positions, req.include_minor_aspects);
+                        let cross_aspect_info: Vec<AspectInfo> = cross_aspects
+                            .iter()
+                            .map(|a| AspectInfo {
+                                aspect: format!("{:?}", a.aspect_type),
+                                orb: a.orb,
+                                planet1: a.planet1.clone(),
+                                planet2: a.planet2.clone(),
+                            })
+                            .collect();
+
+                        Some(TransitData {
+                            date: default_transit.date,
+                            latitude: default_transit.latitude,
+                            longitude: default_transit.longitude,
+                            planets: transit_planets,
+                            aspects: transit_aspect_info,
+                            transit_to_natal_aspects: cross_aspect_info,
+                        })
+                    }
+                    Err(e) => {
+                        log_request_error(
+                            "chart_default_transit",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &e.to_string(),
+                        );
+                        return HttpResponse::InternalServerError().body(format!("Failed to calculate default transit positions: {}", e));
+                    }
+                }
+            };
+
+            let response = ChartResponse {
+                chart_type: "natal".to_string(),
+                date: req.date,
+                latitude: req.latitude,
+                longitude: req.longitude,
+                house_system: req.house_system.clone(),
+                ayanamsa: req.ayanamsa.clone(),
+                planets,
+                houses: house_info,
+                aspects: aspect_info,
+                transit: transit_data,
+            };
+
+            HttpResponse::Ok().json(response)
+        }
+        Err(e) => {
+            log_request_error(
+                "chart",
+                &get_client_ip(),
+                &json!(req.0).to_string(),
+                &e.to_string(),
+            );
+            HttpResponse::InternalServerError().body(e.to_string())
+        }
+    }
+}
+
 #[allow(dead_code)]
 async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
     let jd = date_to_julian(req.date);
@@ -151,7 +383,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 .collect();
 
             // Calculate aspects
-            let aspects = calculate_aspects(&positions);
+            let aspects = calculate_aspects_with_options(&positions, req.include_minor_aspects);
             let aspect_info: Vec<AspectInfo> = aspects
                 .iter()
                 .map(|a| AspectInfo {
@@ -172,6 +404,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 planets,
                 houses: _house_info,
                 aspects: aspect_info,
+                transit: None,
             };
 
             HttpResponse::Ok().json(response)
@@ -267,7 +500,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .collect();
 
             // Calculate natal aspects
-            let natal_aspects = calculate_aspects(&natal_positions);
+            let natal_aspects = calculate_aspects_with_options(&natal_positions, req.include_minor_aspects);
             let natal_aspect_info: Vec<AspectInfo> = natal_aspects
                 .iter()
                 .map(|a| AspectInfo {
@@ -278,8 +511,8 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 })
                 .collect();
 
-            // Calculate transit aspects
-            let transit_aspects = calculate_aspects(&transit_positions);
+            // Calculate transit aspects with tight orbs
+            let transit_aspects = calculate_transit_aspects_with_options(&transit_positions, req.include_minor_aspects);
             let transit_aspect_info: Vec<AspectInfo> = transit_aspects
                 .iter()
                 .map(|a| AspectInfo {
@@ -427,8 +660,8 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .collect();
 
             // Calculate aspects for both charts
-            let aspects1 = calculate_aspects(&positions1);
-            let aspects2 = calculate_aspects(&positions2);
+            let aspects1 = calculate_aspects_with_options(&positions1, req.chart1.include_minor_aspects);
+            let aspects2 = calculate_aspects_with_options(&positions2, req.chart2.include_minor_aspects);
             let aspect_info1: Vec<AspectInfo> = aspects1
                 .iter()
                 .map(|a| AspectInfo {
@@ -450,7 +683,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .collect();
 
             // Calculate synastry aspects
-            let synastry_aspects = calculate_aspects(&positions1);
+            let synastry_aspects = calculate_cross_aspects_with_options(&positions1, &positions2, req.chart1.include_minor_aspects);
             let aspect_info: Vec<AspectInfo> = synastry_aspects
                 .iter()
                 .map(|a| AspectInfo {
@@ -471,6 +704,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 planets: planets1,
                 houses: _house_info1,
                 aspects: aspect_info1,
+                transit: None,
             };
 
             let chart2 = ChartResponse {
@@ -483,6 +717,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 planets: planets2,
                 houses: _house_info2,
                 aspects: aspect_info2,
+                transit: None,
             };
 
             let response = SynastryResponse {
@@ -537,6 +772,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("/api")
             .wrap(middleware::Logger::default())
             .wrap(IpMiddleware)
+            .route("/chart", web::post().to(generate_chart_with_transits))
             .route("/chart/natal", web::post().to(generate_natal_chart))
             .route("/chart/transit", web::post().to(generate_transit_chart))
             .route("/chart/synastry", web::post().to(generate_synastry_chart)),

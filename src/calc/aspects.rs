@@ -186,6 +186,7 @@ impl AspectType {
         }
     }
 
+    /// Standard orb for natal chart aspects
     pub fn orb(&self) -> f64 {
         match self {
             AspectType::Conjunction => 10.0,
@@ -207,11 +208,95 @@ impl AspectType {
             AspectType::QuadNovile => 2.0,
         }
     }
+
+    /// Tight orb for transit aspects (< 3 degrees)
+    pub fn transit_orb(&self) -> f64 {
+        match self {
+            AspectType::Conjunction => 3.0,
+            AspectType::SemiSextile => 2.0,
+            AspectType::SemiSquare => 2.0,
+            AspectType::Sextile => 3.0,
+            AspectType::Quintile => 2.0,
+            AspectType::Square => 3.0,
+            AspectType::BiQuintile => 2.0,
+            AspectType::Trine => 3.0,
+            AspectType::Sesquisquare => 2.0,
+            AspectType::Quincunx => 2.0,
+            AspectType::Opposition => 3.0,
+            AspectType::Septile => 1.5,
+            AspectType::BiSeptile => 1.5,
+            AspectType::TriSeptile => 1.5,
+            AspectType::Novile => 1.5,
+            AspectType::BiNovile => 1.5,
+            AspectType::QuadNovile => 1.5,
+        }
+    }
+
+    /// Returns true if this is a major aspect (conjunction, sextile, square, trine, opposition)
+    pub fn is_major(&self) -> bool {
+        matches!(
+            self,
+            AspectType::Conjunction
+                | AspectType::Sextile
+                | AspectType::Square
+                | AspectType::Trine
+                | AspectType::Opposition
+        )
+    }
 }
 
-/// Calculate aspects between planets
+/// Get the list of aspect types to check based on whether to include minor aspects
+pub fn get_aspect_types(include_minor: bool) -> Vec<AspectType> {
+    if include_minor {
+        vec![
+            AspectType::Conjunction,
+            AspectType::SemiSextile,
+            AspectType::SemiSquare,
+            AspectType::Sextile,
+            AspectType::Quintile,
+            AspectType::Square,
+            AspectType::BiQuintile,
+            AspectType::Trine,
+            AspectType::Sesquisquare,
+            AspectType::Quincunx,
+            AspectType::Opposition,
+            AspectType::Septile,
+            AspectType::BiSeptile,
+            AspectType::TriSeptile,
+            AspectType::Novile,
+            AspectType::BiNovile,
+            AspectType::QuadNovile,
+        ]
+    } else {
+        vec![
+            AspectType::Conjunction,
+            AspectType::Sextile,
+            AspectType::Square,
+            AspectType::Trine,
+            AspectType::Opposition,
+        ]
+    }
+}
+
+/// Calculate aspects between planets (major aspects only by default)
 pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
+    calculate_aspects_with_options(positions, false)
+}
+
+/// Calculate aspects between planets with option to include minor aspects
+pub fn calculate_aspects_with_options(positions: &[PlanetPosition], include_minor_aspects: bool) -> Vec<Aspect> {
+    calculate_aspects_with_orb_type(positions, include_minor_aspects, false)
+}
+
+/// Calculate transit aspects with tight orbs
+pub fn calculate_transit_aspects_with_options(positions: &[PlanetPosition], include_minor_aspects: bool) -> Vec<Aspect> {
+    calculate_aspects_with_orb_type(positions, include_minor_aspects, true)
+}
+
+/// Internal function to calculate aspects with different orb types
+fn calculate_aspects_with_orb_type(positions: &[PlanetPosition], include_minor_aspects: bool, use_transit_orbs: bool) -> Vec<Aspect> {
     let mut aspects = Vec::new();
+    let aspect_types = get_aspect_types(include_minor_aspects);
 
     for i in 0..positions.len() {
         for j in (i + 1)..positions.len() {
@@ -226,62 +311,141 @@ pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
             let diff = (pos1.longitude - pos2.longitude).abs() % 360.0;
             let min_diff = diff.min(360.0 - diff);
 
-            // Check each aspect type
-            for aspect_type in [
-                AspectType::Conjunction,
-                AspectType::SemiSextile,
-                AspectType::SemiSquare,
-                AspectType::Sextile,
-                AspectType::Quintile,
-                AspectType::Square,
-                AspectType::BiQuintile,
-                AspectType::Trine,
-                AspectType::Sesquisquare,
-                AspectType::Quincunx,
-                AspectType::Opposition,
-                AspectType::Septile,
-                AspectType::BiSeptile,
-                AspectType::TriSeptile,
-                AspectType::Novile,
-                AspectType::BiNovile,
-                AspectType::QuadNovile,
-            ]
-            .iter()
-            {
-                let _aspect_angle = aspect_type.angle();
-                let orb = aspect_type.orb();
-                if (min_diff - _aspect_angle).abs() <= orb {
-                    aspects.push(Aspect {
-                        planet1: match i {
-                            0 => "Sun".to_string(),
-                            1 => "Moon".to_string(),
-                            2 => "Mercury".to_string(),
-                            3 => "Venus".to_string(),
-                            4 => "Mars".to_string(),
-                            5 => "Jupiter".to_string(),
-                            6 => "Saturn".to_string(),
-                            7 => "Uranus".to_string(),
-                            8 => "Neptune".to_string(),
-                            9 => "Pluto".to_string(),
-                            _ => format!("Planet{}", i + 1),
-                        },
-                        planet2: match j {
-                            0 => "Sun".to_string(),
-                            1 => "Moon".to_string(),
-                            2 => "Mercury".to_string(),
-                            3 => "Venus".to_string(),
-                            4 => "Mars".to_string(),
-                            5 => "Jupiter".to_string(),
-                            6 => "Saturn".to_string(),
-                            7 => "Uranus".to_string(),
-                            8 => "Neptune".to_string(),
-                            9 => "Pluto".to_string(),
-                            _ => format!("Planet{}", j + 1),
-                        },
-                        aspect_type: *aspect_type,
-                        orb: (min_diff - _aspect_angle).abs(),
-                    });
+            // Find the closest aspect within orb (to avoid multiple aspects for the same planet pair)
+            let mut closest_aspect: Option<(AspectType, f64)> = None;
+
+            // Check each aspect type to find the closest one
+            for aspect_type in aspect_types.iter() {
+                let aspect_angle = aspect_type.angle();
+                let orb = if use_transit_orbs {
+                    aspect_type.transit_orb()
+                } else {
+                    aspect_type.orb()
+                };
+                let aspect_diff = (min_diff - aspect_angle).abs();
+                
+                if aspect_diff <= orb {
+                    match closest_aspect {
+                        None => closest_aspect = Some((*aspect_type, aspect_diff)),
+                        Some((_, current_diff)) => {
+                            if aspect_diff < current_diff {
+                                closest_aspect = Some((*aspect_type, aspect_diff));
+                            }
+                        }
+                    }
                 }
+            }
+
+            // Add only the closest aspect if one was found
+            if let Some((aspect_type, orb_diff)) = closest_aspect {
+                aspects.push(Aspect {
+                    planet1: match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", i + 1),
+                    },
+                    planet2: match j {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", j + 1),
+                    },
+                    aspect_type,
+                    orb: orb_diff,
+                });
+            }
+        }
+    }
+
+    aspects
+}
+
+/// Calculate aspects between two sets of planets (e.g., natal vs transit) - major aspects only by default
+pub fn calculate_cross_aspects(natal_positions: &[PlanetPosition], transit_positions: &[PlanetPosition]) -> Vec<Aspect> {
+    calculate_cross_aspects_with_options(natal_positions, transit_positions, false)
+}
+
+/// Calculate aspects between two sets of planets with option to include minor aspects
+pub fn calculate_cross_aspects_with_options(natal_positions: &[PlanetPosition], transit_positions: &[PlanetPosition], include_minor_aspects: bool) -> Vec<Aspect> {
+    let mut aspects = Vec::new();
+    let aspect_types = get_aspect_types(include_minor_aspects);
+
+    for i in 0..natal_positions.len() {
+        for j in 0..transit_positions.len() {
+            let natal_pos = &natal_positions[i];
+            let transit_pos = &transit_positions[j];
+
+            let diff = (natal_pos.longitude - transit_pos.longitude).abs() % 360.0;
+            let min_diff = diff.min(360.0 - diff);
+
+            // Find the closest aspect within orb (to avoid multiple aspects for the same planet pair)
+            let mut closest_aspect: Option<(AspectType, f64)> = None;
+
+            // Check each aspect type to find the closest one
+            for aspect_type in aspect_types.iter() {
+                let aspect_angle = aspect_type.angle();
+                let orb = aspect_type.transit_orb(); // Use tight transit orbs
+                let aspect_diff = (min_diff - aspect_angle).abs();
+                
+                if aspect_diff <= orb {
+                    match closest_aspect {
+                        None => closest_aspect = Some((*aspect_type, aspect_diff)),
+                        Some((_, current_diff)) => {
+                            if aspect_diff < current_diff {
+                                closest_aspect = Some((*aspect_type, aspect_diff));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Add only the closest aspect if one was found
+            if let Some((aspect_type, orb_diff)) = closest_aspect {
+                aspects.push(Aspect {
+                    planet1: format!("Natal {}", match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", i + 1),
+                    }),
+                    planet2: format!("Transit {}", match j {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", j + 1),
+                    }),
+                    aspect_type,
+                    orb: orb_diff,
+                });
             }
         }
     }
@@ -312,7 +476,7 @@ mod tests {
             },
         ];
 
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, false); // Major aspects only
         println!("test_aspect_calculations: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a sextile aspect
@@ -345,7 +509,7 @@ mod tests {
                 house: Some(2),
             },
         ];
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, false); // Major aspects only
         assert!(!aspects.is_empty());
         // Should find a conjunction aspect
         let conjunction = aspects
@@ -377,7 +541,7 @@ mod tests {
                 house: Some(2),
             },
         ];
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, false); // Major aspects only
         assert!(aspects.is_empty());
     }
 
@@ -399,7 +563,7 @@ mod tests {
                 house: Some(2),
             },
         ];
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, true); // Include minor aspects
         println!("test_harmonic_aspects: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a quintile aspect
@@ -432,7 +596,7 @@ mod tests {
                 house: Some(2),
             },
         ];
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, true); // Include minor aspects
         println!("test_septile_aspects: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a septile aspect
@@ -465,7 +629,7 @@ mod tests {
                 house: Some(2),
             },
         ];
-        let aspects = calculate_aspects(&positions);
+        let aspects = calculate_aspects_with_options(&positions, true); // Include minor aspects
         println!("test_novile_aspects: aspects = {:#?}", aspects);
         assert!(!aspects.is_empty());
         // Should find a novile aspect

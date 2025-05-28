@@ -396,3 +396,134 @@ async fn test_specific_natal_chart() {
     let houses = response["houses"].as_array().unwrap();
     assert_eq!(houses.len(), 12);
 }
+
+#[actix_web::test]
+async fn test_chart_endpoint_with_transits() {
+    ensure_swiss_ephemeris_initialized().await;
+    let app = test::init_service(App::new().configure(config)).await;
+
+    let request = json!({
+        "date": "1977-10-24T04:56:00Z",
+        "latitude": 14.6486,
+        "longitude": 121.0508,
+        "house_system": "placidus",
+        "ayanamsa": "tropical",
+        "transit": {
+            "date": "2025-05-27T12:00:00Z",
+            "latitude": 19.49,
+            "longitude": -155.99
+        }
+    });
+
+    let resp = test::TestRequest::post()
+        .uri("/api/chart")
+        .set_json(&request)
+        .send_request(&app)
+        .await;
+
+    if !resp.status().is_success() {
+        let body = test::read_body(resp).await;
+        println!(
+            "chart_endpoint_with_transits error: {}",
+            String::from_utf8_lossy(&body)
+        );
+        panic!("chart_endpoint_with_transits failed");
+    }
+    let body = test::read_body(resp).await;
+    let response: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+    // Check basic natal chart structure
+    assert_eq!(response["chart_type"], "natal");
+    assert_eq!(response["date"], "1977-10-24T04:56:00Z");
+    assert_eq!(response["latitude"], 14.6486);
+    assert_eq!(response["longitude"], 121.0508);
+    assert_eq!(response["house_system"], "placidus");
+    assert_eq!(response["ayanamsa"], "tropical");
+
+    // Check natal planets
+    let planets = response["planets"].as_array().unwrap();
+    assert!(!planets.is_empty());
+    for planet in planets {
+        assert!(planet.get("name").is_some());
+        assert!(planet.get("longitude").is_some());
+        assert!(planet.get("latitude").is_some());
+        assert!(planet.get("speed").is_some());
+        assert!(planet.get("is_retrograde").is_some());
+    }
+
+    // Check houses
+    let houses = response["houses"].as_array().unwrap();
+    assert_eq!(houses.len(), 12);
+
+    // Check natal aspects
+    let aspects = response["aspects"].as_array().unwrap();
+    assert!(!aspects.is_empty());
+
+    // Check transit data
+    let transit = response["transit"].as_object().unwrap();
+    assert_eq!(transit["date"], "2025-05-27T12:00:00Z");
+    assert_eq!(transit["latitude"], 19.49);
+    assert_eq!(transit["longitude"], -155.99);
+
+    // Check transit planets
+    let transit_planets = transit["planets"].as_array().unwrap();
+    assert!(!transit_planets.is_empty());
+    assert_eq!(transit_planets.len(), planets.len()); // Should have same number of planets
+
+    // Check transit aspects
+    let transit_aspects = transit["aspects"].as_array().unwrap();
+    assert!(!transit_aspects.is_empty());
+
+    // Check transit-to-natal aspects
+    let cross_aspects = transit["transit_to_natal_aspects"].as_array().unwrap();
+    // Cross aspects might be empty if no aspects are within orb, so just check it exists
+    // The fact that we can call .as_array().unwrap() means it's a valid array
+
+    println!("Chart with transits response: {}", serde_json::to_string_pretty(&response).unwrap());
+}
+
+#[actix_web::test]
+async fn test_chart_endpoint_without_transits() {
+    ensure_swiss_ephemeris_initialized().await;
+    let app = test::init_service(App::new().configure(config)).await;
+
+    let request = json!({
+        "date": "1977-10-24T04:56:00Z",
+        "latitude": 14.6486,
+        "longitude": 121.0508,
+        "house_system": "placidus",
+        "ayanamsa": "tropical"
+    });
+
+    let resp = test::TestRequest::post()
+        .uri("/api/chart")
+        .set_json(&request)
+        .send_request(&app)
+        .await;
+
+    if !resp.status().is_success() {
+        let body = test::read_body(resp).await;
+        println!(
+            "chart_endpoint_without_transits error: {}",
+            String::from_utf8_lossy(&body)
+        );
+        panic!("chart_endpoint_without_transits failed");
+    }
+    let body = test::read_body(resp).await;
+    let response: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+    // Check basic natal chart structure
+    assert_eq!(response["chart_type"], "natal");
+    assert_eq!(response["date"], "1977-10-24T04:56:00Z");
+
+    // Check that transit data exists with default values
+    let transit = response["transit"].as_object().unwrap();
+    assert_eq!(transit["latitude"], 51.45); // Default London coordinates
+    assert_eq!(transit["longitude"], 0.05);
+
+    // Check transit planets exist
+    let transit_planets = transit["planets"].as_array().unwrap();
+    assert!(!transit_planets.is_empty());
+
+    println!("Chart with default transits response: {}", serde_json::to_string_pretty(&response).unwrap());
+}

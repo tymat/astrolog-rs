@@ -3,12 +3,33 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TransitInfo {
+    pub date: DateTime<Utc>,
+    pub latitude: f64,
+    pub longitude: f64,
+}
+
+impl Default for TransitInfo {
+    fn default() -> Self {
+        Self {
+            date: Utc::now(),
+            latitude: 51.45,  // London coordinates as default
+            longitude: 0.05,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChartRequest {
     pub date: DateTime<Utc>,
     pub latitude: f64,
     pub longitude: f64,
     pub house_system: String,
     pub ayanamsa: String,
+    #[serde(default)]
+    pub transit: Option<TransitInfo>,
+    #[serde(default)]
+    pub include_minor_aspects: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -19,6 +40,8 @@ pub struct TransitRequest {
     pub longitude: f64,
     pub house_system: String,
     pub ayanamsa: String,
+    #[serde(default)]
+    pub include_minor_aspects: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -63,6 +86,18 @@ pub struct ChartResponse {
     pub planets: Vec<PlanetInfo>,
     pub houses: Vec<HouseInfo>,
     pub aspects: Vec<AspectInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transit: Option<TransitData>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TransitData {
+    pub date: DateTime<Utc>,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub planets: Vec<PlanetInfo>,
+    pub aspects: Vec<AspectInfo>,
+    pub transit_to_natal_aspects: Vec<AspectInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
