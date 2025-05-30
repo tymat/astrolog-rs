@@ -1,8 +1,8 @@
 use crate::api::types::{
     AspectInfo, ChartRequest, ChartResponse, HouseInfo, PlanetInfo, SynastryRequest,
-    SynastryResponse, TransitRequest, TransitResponse, TransitData, TransitInfo,
+    SynastryResponse, SynastryAspectInfo, TransitRequest, TransitResponse, TransitData, TransitInfo,
 };
-use crate::calc::aspects::{calculate_aspects_with_options, calculate_transit_aspects_with_options, calculate_cross_aspects_with_options};
+use crate::calc::aspects::{calculate_aspects_with_options, calculate_transit_aspects_with_options, calculate_cross_aspects_with_options, calculate_synastry_aspects};
 use crate::calc::houses::calculate_houses;
 use crate::calc::planets::calculate_planet_positions;
 use crate::calc::utils::date_to_julian;
@@ -490,7 +490,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                     return HttpResponse::InternalServerError().body(e.to_string());
                 }
             };
-            let _house_info: Vec<HouseInfo> = houses
+            let house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
                     number: h.number,
@@ -533,6 +533,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 ayanamsa: req.ayanamsa.clone(),
                 natal_planets,
                 transit_planets,
+                houses: house_info,
                 natal_aspects: natal_aspect_info,
                 transit_aspects: transit_aspect_info,
             };
@@ -683,14 +684,14 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .collect();
 
             // Calculate synastry aspects
-            let synastry_aspects = calculate_cross_aspects_with_options(&positions1, &positions2, req.chart1.include_minor_aspects);
-            let aspect_info: Vec<AspectInfo> = synastry_aspects
+            let synastry_aspects = calculate_synastry_aspects(&positions1, &positions2, req.chart1.include_minor_aspects);
+            let aspect_info: Vec<SynastryAspectInfo> = synastry_aspects
                 .iter()
-                .map(|a| AspectInfo {
+                .map(|a| SynastryAspectInfo {
                     aspect: format!("{:?}", a.aspect_type),
                     orb: a.orb,
-                    planet1: a.planet1.clone(),
-                    planet2: a.planet2.clone(),
+                    person1: a.planet1.clone(),
+                    person2: a.planet2.clone(),
                 })
                 .collect();
 

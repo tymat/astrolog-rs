@@ -453,6 +453,79 @@ pub fn calculate_cross_aspects_with_options(natal_positions: &[PlanetPosition], 
     aspects
 }
 
+/// Calculate synastry aspects between two natal charts (person1 vs person2)
+pub fn calculate_synastry_aspects(chart1_positions: &[PlanetPosition], chart2_positions: &[PlanetPosition], include_minor_aspects: bool) -> Vec<Aspect> {
+    let mut aspects = Vec::new();
+    let aspect_types = get_aspect_types(include_minor_aspects);
+
+    for i in 0..chart1_positions.len() {
+        for j in 0..chart2_positions.len() {
+            let pos1 = &chart1_positions[i];
+            let pos2 = &chart2_positions[j];
+
+            let diff = (pos1.longitude - pos2.longitude).abs() % 360.0;
+            let min_diff = diff.min(360.0 - diff);
+
+            // Find the closest aspect within orb (to avoid multiple aspects for the same planet pair)
+            let mut closest_aspect: Option<(AspectType, f64)> = None;
+
+            // Check each aspect type to find the closest one
+            for aspect_type in aspect_types.iter() {
+                let aspect_angle = aspect_type.angle();
+                let orb = aspect_type.orb(); // Use standard natal orbs for synastry
+                let aspect_diff = (min_diff - aspect_angle).abs();
+                
+                if aspect_diff <= orb {
+                    match closest_aspect {
+                        None => closest_aspect = Some((*aspect_type, aspect_diff)),
+                        Some((_, current_diff)) => {
+                            if aspect_diff < current_diff {
+                                closest_aspect = Some((*aspect_type, aspect_diff));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Add only the closest aspect if one was found
+            if let Some((aspect_type, orb_diff)) = closest_aspect {
+                aspects.push(Aspect {
+                    planet1: match i {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", i + 1),
+                    },
+                    planet2: match j {
+                        0 => "Sun".to_string(),
+                        1 => "Moon".to_string(),
+                        2 => "Mercury".to_string(),
+                        3 => "Venus".to_string(),
+                        4 => "Mars".to_string(),
+                        5 => "Jupiter".to_string(),
+                        6 => "Saturn".to_string(),
+                        7 => "Uranus".to_string(),
+                        8 => "Neptune".to_string(),
+                        9 => "Pluto".to_string(),
+                        _ => format!("Planet{}", j + 1),
+                    },
+                    aspect_type,
+                    orb: orb_diff,
+                });
+            }
+        }
+    }
+
+    aspects
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -172,6 +172,15 @@ async fn test_transit_chart_endpoint() {
         assert!(aspect.get("aspect").is_some());
         assert!(aspect.get("orb").is_some());
     }
+
+    // Check houses
+    let houses = response["houses"].as_array().unwrap();
+    assert_eq!(houses.len(), 12);
+    for house in houses {
+        assert!(house.get("number").is_some());
+        assert!(house.get("longitude").is_some());
+        assert!(house.get("latitude").is_some());
+    }
 }
 
 #[actix_web::test]
@@ -255,8 +264,8 @@ async fn test_synastry_chart_endpoint() {
     // Check synastries
     let synastries = response["synastries"].as_array().unwrap();
     for aspect in synastries {
-        assert!(aspect.get("planet1").is_some());
-        assert!(aspect.get("planet2").is_some());
+        assert!(aspect.get("person1").is_some());
+        assert!(aspect.get("person2").is_some());
         assert!(aspect.get("aspect").is_some());
         assert!(aspect.get("orb").is_some());
     }

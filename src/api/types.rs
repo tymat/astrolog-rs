@@ -76,6 +76,14 @@ pub struct AspectInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct SynastryAspectInfo {
+    pub person1: String,
+    pub person2: String,
+    pub aspect: String,
+    pub orb: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChartResponse {
     pub chart_type: String,
     pub date: DateTime<Utc>,
@@ -111,6 +119,7 @@ pub struct TransitResponse {
     pub ayanamsa: String,
     pub natal_planets: Vec<PlanetInfo>,
     pub transit_planets: Vec<PlanetInfo>,
+    pub houses: Vec<HouseInfo>,
     pub natal_aspects: Vec<AspectInfo>,
     pub transit_aspects: Vec<AspectInfo>,
 }
@@ -120,7 +129,7 @@ pub struct SynastryResponse {
     pub chart_type: String,
     pub chart1: ChartResponse,
     pub chart2: ChartResponse,
-    pub synastries: Vec<AspectInfo>,
+    pub synastries: Vec<SynastryAspectInfo>,
 }
 
 impl From<PlanetPosition> for PlanetInfo {
