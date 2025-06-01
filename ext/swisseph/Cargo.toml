@@ -1,0 +1,13 @@
+[package]
+name = "swisseph"
+version = "0.1.0"
+edition = "2021"
+description = "Rust FFI wrapper for the Swiss Ephemeris C library"
+license = "AGPL-3.0"
+
+[lib]
+name = "swisseph"
+crate-type = ["rlib", "cdylib"]
+
+[build-dependencies]
+cc = "1.0" 
