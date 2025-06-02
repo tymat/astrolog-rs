@@ -148,7 +148,7 @@ impl SVGChartGenerator {
 
     // Zodiac signs
     fn get_zodiac_signs(&self) -> [&str; 12] {
-        ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"]
+        ["♈︎", "♉︎", "♊︎", "♋︎", "♌︎", "♍︎", "♎︎", "♏︎", "♐︎", "♑︎", "♒︎", "♓︎"]
     }
 
     // Convert longitude to angle (0° Aries = top of chart)
@@ -165,23 +165,26 @@ impl SVGChartGenerator {
     }
 
     // Create SVG document with background
-    pub fn create_svg_document(&self) -> Document {
-        let styles = get_styles();
-        Document::new()
+    pub fn create_svg_document(&self) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
+        let background_color = styles.get_chart_color("background");
+        
+        Ok(Document::new()
             .set("viewBox", (0, 0, self.width as i32, self.height as i32))
             .set("width", self.width)
             .set("height", self.height)
+            .set("style", format!("background-color: {}", background_color))
             .add(
                 Rectangle::new()
                     .set("width", "100%")
                     .set("height", "100%")
-                    .set("fill", styles.get_chart_color("background"))
-            )
+                    .set("fill", background_color)
+            ))
     }
 
     // Draw outer circle and zodiac wheel background
-    pub fn draw_chart_wheel_background(&self, doc: Document) -> Document {
-        let styles = get_styles();
+    pub fn draw_chart_wheel_background(&self, doc: Document) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         
         // Outer circle
         let outer_circle = Circle::new()
@@ -201,12 +204,12 @@ impl SVGChartGenerator {
             .set("stroke", styles.get_chart_color("chart_wheel_line"))
             .set("stroke-width", 1);
 
-        doc.add(outer_circle).add(inner_circle)
+        Ok(doc.add(outer_circle).add(inner_circle))
     }
 
     // Draw zodiac division lines with opacity
-    pub fn draw_zodiac_divisions(&self, doc: Document) -> Document {
-        let styles = get_styles();
+    pub fn draw_zodiac_divisions(&self, doc: Document) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
         // Draw zodiac divisions with 50% opacity
@@ -229,12 +232,12 @@ impl SVGChartGenerator {
             doc = doc.add(line);
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw zodiac signs text
-    pub fn draw_zodiac_signs(&self, doc: Document) -> Document {
-        let styles = get_styles();
+    pub fn draw_zodiac_signs(&self, doc: Document) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
         let signs = self.get_zodiac_signs();
 
@@ -259,12 +262,12 @@ impl SVGChartGenerator {
             doc = doc.add(sign_text);
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw houses
-    pub fn draw_houses(&self, doc: Document, houses: &[HouseInfo]) -> Document {
-        let styles = get_styles();
+    pub fn draw_houses(&self, doc: Document, houses: &[HouseInfo]) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
         for house in houses {
@@ -303,12 +306,12 @@ impl SVGChartGenerator {
             doc = doc.add(house_text);
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw planets with borders and degrees using radial positioning
-    pub fn draw_planets(&self, doc: Document, planets: &[PlanetInfo], border_type: &str) -> Document {
-        let styles = get_styles();
+    pub fn draw_planets(&self, doc: Document, planets: &[PlanetInfo], border_type: &str) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
         let positions = self.calculate_planet_positions(planets);
 
@@ -386,12 +389,12 @@ impl SVGChartGenerator {
             doc = doc.add(degree_label);
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw planets with custom positioning (for synastry charts)
-    pub fn draw_planets_with_positions(&self, doc: Document, planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, border_type: &str) -> Document {
-        let styles = get_styles();
+    pub fn draw_planets_with_positions(&self, doc: Document, planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, border_type: &str) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
         for planet in planets {
@@ -468,12 +471,12 @@ impl SVGChartGenerator {
             doc = doc.add(degree_label);
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw aspects using radial positioning
-    pub fn draw_aspects(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], line_style: &str) -> Document {
-        let styles = get_styles();
+    pub fn draw_aspects(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], line_style: &str) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
         // Get planet positions using radial positioning
@@ -510,12 +513,12 @@ impl SVGChartGenerator {
             }
         }
 
-        doc
+        Ok(doc)
     }
 
     // Draw aspects using custom positioning
-    pub fn draw_aspects_with_positions(&self, doc: Document, aspects: &[AspectInfo], _planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, line_style: &str) -> Document {
-        let styles = get_styles();
+    pub fn draw_aspects_with_positions(&self, doc: Document, aspects: &[AspectInfo], _planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, line_style: &str) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
         for aspect in aspects {
@@ -549,16 +552,16 @@ impl SVGChartGenerator {
             }
         }
 
-        doc
+        Ok(doc)
     }
 
     // Generate natal chart SVG
-    pub fn generate_natal_chart(&self, chart_data: &ChartResponse) -> String {
-        let mut doc = self.create_svg_document();
-        doc = self.draw_chart_wheel_background(doc);
-        doc = self.draw_zodiac_divisions(doc);
-        doc = self.draw_zodiac_signs(doc);
-        doc = self.draw_houses(doc, &chart_data.houses);
+    pub fn generate_natal_chart(&self, chart_data: &ChartResponse) -> Result<String, String> {
+        let mut doc = self.create_svg_document()?;
+        doc = self.draw_chart_wheel_background(doc)?;
+        doc = self.draw_zodiac_divisions(doc)?;
+        doc = self.draw_zodiac_signs(doc)?;
+        doc = self.draw_houses(doc, &chart_data.houses)?;
         
         // Add transit data if present
         if let Some(transit_data) = &chart_data.transit {
@@ -595,15 +598,15 @@ impl SVGChartGenerator {
             }
             
             // Draw planets using calculated positions
-            doc = self.draw_planets_with_positions(doc, &chart_data.planets, &natal_positions, "chart1");
-            doc = self.draw_planets_with_positions(doc, &transit_data.planets, &transit_positions, "transit");
+            doc = self.draw_planets_with_positions(doc, &chart_data.planets, &natal_positions, "chart1")?;
+            doc = self.draw_planets_with_positions(doc, &transit_data.planets, &transit_positions, "transit")?;
             
             // Draw aspects using calculated positions
-            doc = self.draw_aspects_with_positions(doc, &chart_data.aspects, &chart_data.planets, &natal_positions, "solid");
-            doc = self.draw_aspects_with_positions(doc, &transit_data.aspects, &transit_data.planets, &transit_positions, "dotted");
+            doc = self.draw_aspects_with_positions(doc, &chart_data.aspects, &chart_data.planets, &natal_positions, "solid")?;
+            doc = self.draw_aspects_with_positions(doc, &transit_data.aspects, &transit_data.planets, &transit_positions, "dotted")?;
             
             // Draw transit-to-natal aspects
-            let styles = get_styles();
+            let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
             for aspect in &transit_data.transit_to_natal_aspects {
                 // Strip prefixes from planet names for lookup
                 let planet1_name = aspect.planet1.replace("Natal ", "").replace("Transit ", "");
@@ -640,20 +643,20 @@ impl SVGChartGenerator {
             }
         } else {
             // No transits - use regular positioning
-            doc = self.draw_planets(doc, &chart_data.planets, "chart1");
-            doc = self.draw_aspects(doc, &chart_data.aspects, &chart_data.planets, "solid");
+            doc = self.draw_planets(doc, &chart_data.planets, "chart1")?;
+            doc = self.draw_aspects(doc, &chart_data.aspects, &chart_data.planets, "solid")?;
         }
 
-        doc.to_string()
+        Ok(doc.to_string())
     }
 
     // Generate synastry chart SVG
-    pub fn generate_synastry_chart(&self, synastry_data: &SynastryResponse) -> String {
-        let mut doc = self.create_svg_document();
-        doc = self.draw_chart_wheel_background(doc);
-        doc = self.draw_zodiac_divisions(doc);
-        doc = self.draw_zodiac_signs(doc);
-        doc = self.draw_houses(doc, &synastry_data.chart1.houses);
+    pub fn generate_synastry_chart(&self, synastry_data: &SynastryResponse) -> Result<String, String> {
+        let mut doc = self.create_svg_document()?;
+        doc = self.draw_chart_wheel_background(doc)?;
+        doc = self.draw_zodiac_divisions(doc)?;
+        doc = self.draw_zodiac_signs(doc)?;
+        doc = self.draw_houses(doc, &synastry_data.chart1.houses)?;
         
         // Calculate positions separately for each chart type
         let chart1_positions = self.calculate_planet_positions(&synastry_data.chart1.planets);
@@ -688,15 +691,15 @@ impl SVGChartGenerator {
         }
         
         // Draw planets using the calculated positions
-        doc = self.draw_planets_with_positions(doc, &synastry_data.chart1.planets, &chart1_positions, "chart1");
-        doc = self.draw_planets_with_positions(doc, &synastry_data.chart2.planets, &chart2_positions, "chart2");
+        doc = self.draw_planets_with_positions(doc, &synastry_data.chart1.planets, &chart1_positions, "chart1")?;
+        doc = self.draw_planets_with_positions(doc, &synastry_data.chart2.planets, &chart2_positions, "chart2")?;
         
         // Draw aspects for each chart separately
-        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart1.aspects, &synastry_data.chart1.planets, &chart1_positions, "solid");
-        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart2.aspects, &synastry_data.chart2.planets, &chart2_positions, "solid");
+        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart1.aspects, &synastry_data.chart1.planets, &chart1_positions, "solid")?;
+        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart2.aspects, &synastry_data.chart2.planets, &chart2_positions, "solid")?;
         
         // Draw synastry aspects between charts
-        let styles = get_styles();
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         for aspect in &synastry_data.synastries {
             if let (Some((x1, y1)), Some((x2, y2))) = (
                 chart1_positions.get(&aspect.person1).cloned(),
@@ -718,16 +721,16 @@ impl SVGChartGenerator {
             }
         }
 
-        doc.to_string()
+        Ok(doc.to_string())
     }
 
     // Generate transit chart SVG
-    pub fn generate_transit_chart(&self, transit_data: &TransitResponse) -> String {
-        let mut doc = self.create_svg_document();
-        doc = self.draw_chart_wheel_background(doc);
-        doc = self.draw_zodiac_divisions(doc);
-        doc = self.draw_zodiac_signs(doc);
-        doc = self.draw_houses(doc, &transit_data.houses);
+    pub fn generate_transit_chart(&self, transit_data: &TransitResponse) -> Result<String, String> {
+        let mut doc = self.create_svg_document()?;
+        doc = self.draw_chart_wheel_background(doc)?;
+        doc = self.draw_zodiac_divisions(doc)?;
+        doc = self.draw_zodiac_signs(doc)?;
+        doc = self.draw_houses(doc, &transit_data.houses)?;
         
         // Calculate positions separately for each chart type
         let natal_positions = self.calculate_planet_positions(&transit_data.natal_planets);
@@ -762,13 +765,13 @@ impl SVGChartGenerator {
         }
         
         // Draw planets using calculated positions
-        doc = self.draw_planets_with_positions(doc, &transit_data.natal_planets, &natal_positions, "chart1");
-        doc = self.draw_planets_with_positions(doc, &transit_data.transit_planets, &transit_positions, "transit");
+        doc = self.draw_planets_with_positions(doc, &transit_data.natal_planets, &natal_positions, "chart1")?;
+        doc = self.draw_planets_with_positions(doc, &transit_data.transit_planets, &transit_positions, "transit")?;
         
         // Draw aspects using calculated positions
-        doc = self.draw_aspects_with_positions(doc, &transit_data.natal_aspects, &transit_data.natal_planets, &natal_positions, "solid");
-        doc = self.draw_aspects_with_positions(doc, &transit_data.transit_aspects, &transit_data.transit_planets, &transit_positions, "dotted");
+        doc = self.draw_aspects_with_positions(doc, &transit_data.natal_aspects, &transit_data.natal_planets, &natal_positions, "solid")?;
+        doc = self.draw_aspects_with_positions(doc, &transit_data.transit_aspects, &transit_data.transit_planets, &transit_positions, "dotted")?;
 
-        doc.to_string()
+        Ok(doc.to_string())
     }
 } 

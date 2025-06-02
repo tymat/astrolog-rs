@@ -1,54 +1,13 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
-use std::sync::OnceLock;
-use lazy_static::lazy_static;
-
-lazy_static! {
-    static ref DEFAULT_STYLES: ChartStyles = ChartStyles::default();
-}
+use std::sync::{OnceLock, Once};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ChartStyles {
     pub planet_colors: HashMap<String, String>,
     pub chart_colors: HashMap<String, String>,
     pub aspect_line_colors: HashMap<String, String>,
-}
-
-impl Default for ChartStyles {
-    fn default() -> Self {
-        Self {
-            planet_colors: [
-                ("Sun".to_string(), "#FF6B35".to_string()),
-                ("Moon".to_string(), "#4ECDC4".to_string()),
-                ("Mercury".to_string(), "#45B7D1".to_string()),
-                ("Venus".to_string(), "#96CEB4".to_string()),
-                ("Mars".to_string(), "#FFEAA7".to_string()),
-                ("Jupiter".to_string(), "#DDA0DD".to_string()),
-                ("Saturn".to_string(), "#98D8C8".to_string()),
-                ("Uranus".to_string(), "#6C5CE7".to_string()),
-                ("Neptune".to_string(), "#74B9FF".to_string()),
-                ("Pluto".to_string(), "#A29BFE".to_string()),
-            ].into_iter().collect(),
-            chart_colors: [
-                ("background".to_string(), "#FFFFFF".to_string()),
-                ("wheel_background".to_string(), "#10002B".to_string()),
-                ("chart_wheel_line".to_string(), "#9dade0".to_string()),
-                ("chart1_planet_border".to_string(), "#252c42".to_string()),
-                ("chart2_planet_border".to_string(), "#854077".to_string()),
-                ("transit_planet_border".to_string(), "#8dad8c".to_string()),
-                ("chart_text_color".to_string(), "#a1a4b3".to_string()),
-                ("chart_aspect_color".to_string(), "#cbcfb4".to_string()),
-            ].into_iter().collect(),
-            aspect_line_colors: [
-                ("Conjunction".to_string(), "#FF6B6B".to_string()),
-                ("Opposition".to_string(), "#4ECDC4".to_string()),
-                ("Trine".to_string(), "#45B7D1".to_string()),
-                ("Square".to_string(), "#FFA07A".to_string()),
-                ("Sextile".to_string(), "#98D8E8".to_string()),
-            ].into_iter().collect(),
-        }
-    }
 }
 
 impl ChartStyles {
@@ -72,23 +31,63 @@ impl ChartStyles {
 }
 
 static GLOBAL_STYLES: OnceLock<ChartStyles> = OnceLock::new();
+static INIT_ONCE: Once = Once::new();
 
-pub fn init_styles() -> Result<(), Box<dyn std::error::Error>> {
-    let styles = match ChartStyles::load_from_file("chart_styles.json") {
-        Ok(styles) => {
-            log::info!("Loaded chart styles from chart_styles.json");
-            styles
-        }
-        Err(e) => {
-            log::warn!("Failed to load chart_styles.json: {}. Using default styles.", e);
-            ChartStyles::default()
-        }
-    };
+fn try_load_styles() -> Result<ChartStyles, Box<dyn std::error::Error>> {
+    // Try multiple possible paths for the chart_styles.json file
+    let possible_paths = vec![
+        "chart_styles.json".to_string(),                                    // Current working directory
+        "./chart_styles.json".to_string(),                                  // Explicit current directory
+        "astrolog-rs/chart_styles.json".to_string(),                       // From parent directory
+        "../chart_styles.json".to_string(),                                // Parent directory
+        format!("{}/chart_styles.json", env!("CARGO_MANIFEST_DIR")), // Relative to Cargo.toml
+    ];
     
-    GLOBAL_STYLES.set(styles).map_err(|_| "Failed to initialize global styles")?;
-    Ok(())
+    let mut last_error = None;
+    
+    for path in &possible_paths {
+        match ChartStyles::load_from_file(path) {
+            Ok(loaded_styles) => {
+                log::info!("Loaded chart styles from {}", path);
+                return Ok(loaded_styles);
+            }
+            Err(e) => {
+                log::debug!("Failed to load chart styles from {}: {}", path, e);
+                last_error = Some(e);
+            }
+        }
+    }
+    
+    // If we get here, no file was found - this is an error
+    let error_msg = format!(
+        "Failed to load chart_styles.json from any location. Tried: {}. Last error: {}",
+        possible_paths.join(", "),
+        last_error.map(|e| e.to_string()).unwrap_or_else(|| "Unknown error".to_string())
+    );
+    
+    Err(error_msg.into())
 }
 
-pub fn get_styles() -> &'static ChartStyles {
-    GLOBAL_STYLES.get().unwrap_or(&*DEFAULT_STYLES)
+pub fn init_styles() -> Result<(), Box<dyn std::error::Error>> {
+    try_load_styles().map(|styles| {
+        let _ = GLOBAL_STYLES.set(styles);
+    })
+}
+
+pub fn get_styles() -> Option<&'static ChartStyles> {
+    // Try to get existing styles first
+    if let Some(styles) = GLOBAL_STYLES.get() {
+        return Some(styles);
+    }
+    
+    // If not initialized, try to initialize once
+    let mut init_result = Ok(());
+    INIT_ONCE.call_once(|| {
+        init_result = try_load_styles().map(|styles| {
+            let _ = GLOBAL_STYLES.set(styles);
+        });
+    });
+    
+    // Return styles if available, regardless of initialization result
+    GLOBAL_STYLES.get()
 } 

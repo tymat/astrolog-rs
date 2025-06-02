@@ -1,19 +1,19 @@
 <svg height="800" viewBox="0 0 800 800" width="800" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#FFFFFF" height="100%" width="100%"/>
-<circle cx="400" cy="400" fill="#10002B" r="350" stroke="#9dade0" stroke-width="2"/>
-<circle cx="400" cy="400" fill="none" r="280" stroke="#9dade0" stroke-width="1"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="120" y2="50"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="157.51288694035716" y2="96.89110867544645"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596428" x2="703.1088913245535" y1="260" y2="225"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="680" x2="750" y1="400" y2="400"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596429" x2="703.1088913245535" y1="540" y2="575"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="642.4871130596429" y2="703.1088913245535"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="680" y2="750"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.99999999999994" x2="224.99999999999991" y1="642.4871130596428" y2="703.1088913245535"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.51288694035722" x2="96.8911086754465" y1="540.0000000000001" y2="575.0000000000001"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="120" x2="50" y1="400.00000000000006" y2="400.00000000000006"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.5128869403572" x2="96.8911086754465" y1="260" y2="224.99999999999997"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.9999999999999" x2="224.99999999999986" y1="157.51288694035725" y2="96.89110867544656"/>
+<rect fill="#2D2A5A" height="100%" width="100%"/>
+<circle cx="400" cy="400" fill="#003E66" r="350" stroke="#141729" stroke-width="2"/>
+<circle cx="400" cy="400" fill="none" r="280" stroke="#141729" stroke-width="1"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="400" y1="120" y2="50"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="540" x2="575" y1="157.51288694035716" y2="96.89110867544645"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="642.4871130596428" x2="703.1088913245535" y1="260" y2="225"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="680" x2="750" y1="400" y2="400"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="642.4871130596429" x2="703.1088913245535" y1="540" y2="575"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="540" x2="575" y1="642.4871130596429" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="400" y1="680" y2="750"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="259.99999999999994" x2="224.99999999999991" y1="642.4871130596428" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="157.51288694035722" x2="96.8911086754465" y1="540.0000000000001" y2="575.0000000000001"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="120" x2="50" y1="400.00000000000006" y2="400.00000000000006"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="157.5128869403572" x2="96.8911086754465" y1="260" y2="224.99999999999997"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="259.9999999999999" x2="224.99999999999986" y1="157.51288694035725" y2="96.89110867544656"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="481.52799920729404" y="95.7333647189435">
 ♈
 </text>
@@ -50,51 +50,51 @@
 <text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="318.4720007927057" y="95.73336471894356">
 ♓
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="186.4989914869768" y1="400" y2="218.8444884528158"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="186.4989914869768" y1="400" y2="218.8444884528158"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.52828676176756" y="215.80726853616116">
 1
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="329.2565199770013" y1="400" y2="129.08421966552856"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="329.2565199770013" y1="400" y2="129.08421966552856"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="401.4281673388743" y="176.00455286311694">
 2
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="494.51838850129747" y1="400" y2="136.43544579151433"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="494.51838850129747" y1="400" y2="136.43544579151433"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.6106230045909" y="215.9034794017547">
 3
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="614.4330898368371" y1="400" y2="219.94875734106438"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="614.4330898368371" y1="400" y2="219.94875734106438"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="602.9817201430983" y="305.26657776819786">
 4
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="672.3695924228812" y1="400" y2="335.0784694928286"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="672.3695924228812" y1="400" y2="335.0784694928286"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="623.9134017196388" y="406.2280438614099">
 5
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="673.6240993409525" y1="400" y2="459.41255978202366"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="673.6240993409525" y1="400" y2="459.41255978202366"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="599.1387858069055" y="502.56580320628996">
 6
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="613.5010085130232" y1="400" y2="581.1555115471843"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="613.5010085130232" y1="400" y2="581.1555115471843"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.4717132382323" y="584.192731463839">
 7
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="470.7434800229983" y1="400" y2="670.9157803344715"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="470.7434800229983" y1="400" y2="670.9157803344715"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="398.5718326611253" y="623.9954471368831">
 8
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="305.48161149870253" y1="400" y2="663.5645542084858"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="305.48161149870253" y1="400" y2="663.5645542084858"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.38937699540895" y="584.0965205982452">
 9
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="185.56691016316287" y1="400" y2="580.0512426589357"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="185.56691016316287" y1="400" y2="580.0512426589357"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="197.01827985690167" y="494.73342223180214">
 10
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="127.63040757711883" y1="400" y2="464.9215305071714"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="127.63040757711883" y1="400" y2="464.9215305071714"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="176.0865982803612" y="393.77195613859004">
 11
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="126.37590065904749" y1="400" y2="340.58744021797634"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="126.37590065904749" y1="400" y2="340.58744021797634"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="200.8612141930945" y="297.43419679371">
 12
 </text>
@@ -175,11 +175,11 @@
 <text dominant-baseline="central" fill="#FF6B35" font-family="sans-serif" font-size="8" text-anchor="middle" x="629.1424268954748" y="336.62950051700665">
 11°51'
 </text>
-<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="496.22139833350127" y="625.5302487271417"/>
-<text dominant-baseline="central" fill="#4ECDC4" font-family="serif" font-size="16" text-anchor="middle" x="511.22139833350127" y="637.5302487271417">
+<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="502.2924066796645" y="617.0398485934952"/>
+<text dominant-baseline="central" fill="#4ECDC4" font-family="serif" font-size="16" text-anchor="middle" x="517.2924066796645" y="629.0398485934952">
 ☽
 </text>
-<text dominant-baseline="central" fill="#4ECDC4" font-family="sans-serif" font-size="8" text-anchor="middle" x="511.22139833350127" y="648.5302487271417">
+<text dominant-baseline="central" fill="#4ECDC4" font-family="sans-serif" font-size="8" text-anchor="middle" x="517.2924066796645" y="640.0398485934952">
 0°11'
 </text>
 <rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="602.0252819046193" y="325.6280620644691"/>
@@ -196,25 +196,25 @@
 <text dominant-baseline="central" fill="#96CEB4" font-family="sans-serif" font-size="8" text-anchor="middle" x="505.3049132780392" y="192.33619858793028">
 26°01'
 </text>
-<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="530.6196963034172" y="606.4043903099046"/>
-<text dominant-baseline="central" fill="#FFEAA7" font-family="serif" font-size="16" text-anchor="middle" x="545.6196963034172" y="618.4043903099046">
+<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="533.8563623972044" y="573.2598825397279"/>
+<text dominant-baseline="central" fill="#FFEAA7" font-family="serif" font-size="16" text-anchor="middle" x="548.8563623972044" y="585.2598825397279">
 ♂
 </text>
-<text dominant-baseline="central" fill="#FFEAA7" font-family="sans-serif" font-size="8" text-anchor="middle" x="545.6196963034172" y="629.4043903099046">
+<text dominant-baseline="central" fill="#FFEAA7" font-family="sans-serif" font-size="8" text-anchor="middle" x="548.8563623972044" y="596.2598825397279">
 21°40'
 </text>
-<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="649.5725401257034" y="400.04563097490546"/>
-<text dominant-baseline="central" fill="#DDA0DD" font-family="serif" font-size="16" text-anchor="middle" x="664.5725401257034" y="412.04563097490546">
+<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="624.8886715863696" y="377.69074254613327"/>
+<text dominant-baseline="central" fill="#DDA0DD" font-family="serif" font-size="16" text-anchor="middle" x="639.8886715863696" y="389.69074254613327">
 ♃
 </text>
-<text dominant-baseline="central" fill="#DDA0DD" font-family="sans-serif" font-size="8" text-anchor="middle" x="664.5725401257034" y="423.04563097490546">
+<text dominant-baseline="central" fill="#DDA0DD" font-family="sans-serif" font-size="8" text-anchor="middle" x="639.8886715863696" y="400.69074254613327">
 28°15'
 </text>
-<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="410.67797035731684" y="121.24700601068287"/>
-<text dominant-baseline="central" fill="#98D8C8" font-family="serif" font-size="16" text-anchor="middle" x="425.67797035731684" y="133.24700601068287">
+<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="401.146962772706" y="125.50187747650881"/>
+<text dominant-baseline="central" fill="#98D8C8" font-family="serif" font-size="16" text-anchor="middle" x="416.146962772706" y="137.5018774765088">
 ♄
 </text>
-<text dominant-baseline="central" fill="#98D8C8" font-family="sans-serif" font-size="8" text-anchor="middle" x="425.67797035731684" y="144.24700601068287">
+<text dominant-baseline="central" fill="#98D8C8" font-family="sans-serif" font-size="8" text-anchor="middle" x="416.146962772706" y="148.5018774765088">
 0°33'
 </text>
 <rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="588.9174914260781" y="258.4391186404923"/>
@@ -224,11 +224,11 @@
 <text dominant-baseline="central" fill="#6C5CE7" font-family="sans-serif" font-size="8" text-anchor="middle" x="603.9174914260781" y="281.4391186404923">
 28°10'
 </text>
-<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="416.77082799590704" y="121.91139422533996"/>
-<text dominant-baseline="central" fill="#74B9FF" font-family="serif" font-size="16" text-anchor="middle" x="431.77082799590704" y="133.91139422533996">
+<rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="407.14396858647285" y="125.94470733983968"/>
+<text dominant-baseline="central" fill="#74B9FF" font-family="serif" font-size="16" text-anchor="middle" x="422.14396858647285" y="137.94470733983968">
 ♆
 </text>
-<text dominant-baseline="central" fill="#74B9FF" font-family="sans-serif" font-size="8" text-anchor="middle" x="431.77082799590704" y="144.91139422533996">
+<text dominant-baseline="central" fill="#74B9FF" font-family="sans-serif" font-size="8" text-anchor="middle" x="422.14396858647285" y="148.94470733983968">
 1°53'
 </text>
 <rect fill="none" height="30" stroke="#8dad8c" stroke-width="1" style="stroke-dasharray: 3,3" width="30" x="185.1836922238816" y="252.0584972752319"/>
@@ -255,10 +255,10 @@
 <line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="638.622449899224" x2="272.42955765101897" y1="425.6773519680738" y2="566.8106178841302"/>
 <line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="638.622449899224" x2="350.17222735257405" y1="425.6773519680738" y2="619.4132928356813"/>
 <line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="168.95830000060505" x2="350.17222735257405" y1="464.95947091371335" y2="619.4132928356813"/>
-<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="511.22139833350127" x2="664.5725401257034" y1="640.5302487271417" y2="415.04563097490546"/>
-<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 2,2" x1="511.22139833350127" x2="603.9174914260781" y1="640.5302487271417" y2="273.4391186404923"/>
-<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="505.3049132780392" x2="664.5725401257034" y1="184.33619858793028" y2="415.04563097490546"/>
-<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 2,2" x1="664.5725401257034" x2="425.67797035731684" y1="415.04563097490546" y2="136.24700601068287"/>
-<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="425.67797035731684" x2="603.9174914260781" y1="136.24700601068287" y2="273.4391186404923"/>
-<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="stroke-dasharray: 2,2" x1="425.67797035731684" x2="431.77082799590704" y1="136.24700601068287" y2="136.91139422533996"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="517.2924066796645" x2="639.8886715863696" y1="632.0398485934952" y2="392.69074254613327"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 2,2" x1="517.2924066796645" x2="603.9174914260781" y1="632.0398485934952" y2="273.4391186404923"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="505.3049132780392" x2="639.8886715863696" y1="184.33619858793028" y2="392.69074254613327"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 2,2" x1="639.8886715863696" x2="416.146962772706" y1="392.69074254613327" y2="140.5018774765088"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 2,2" x1="416.146962772706" x2="603.9174914260781" y1="140.5018774765088" y2="273.4391186404923"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="stroke-dasharray: 2,2" x1="416.146962772706" x2="422.14396858647285" y1="140.5018774765088" y2="140.94470733983968"/>
 </svg>

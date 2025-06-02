@@ -1,19 +1,19 @@
 <svg height="800" viewBox="0 0 800 800" width="800" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#FFFFFF" height="100%" width="100%"/>
-<circle cx="400" cy="400" fill="#10002B" r="350" stroke="#9dade0" stroke-width="2"/>
-<circle cx="400" cy="400" fill="none" r="280" stroke="#9dade0" stroke-width="1"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="120" y2="50"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="157.51288694035716" y2="96.89110867544645"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596428" x2="703.1088913245535" y1="260" y2="225"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="680" x2="750" y1="400" y2="400"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596429" x2="703.1088913245535" y1="540" y2="575"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="642.4871130596429" y2="703.1088913245535"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="680" y2="750"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.99999999999994" x2="224.99999999999991" y1="642.4871130596428" y2="703.1088913245535"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.51288694035722" x2="96.8911086754465" y1="540.0000000000001" y2="575.0000000000001"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="120" x2="50" y1="400.00000000000006" y2="400.00000000000006"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.5128869403572" x2="96.8911086754465" y1="260" y2="224.99999999999997"/>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.9999999999999" x2="224.99999999999986" y1="157.51288694035725" y2="96.89110867544656"/>
+<rect fill="#2D2A5A" height="100%" width="100%"/>
+<circle cx="400" cy="400" fill="#003E66" r="350" stroke="#141729" stroke-width="2"/>
+<circle cx="400" cy="400" fill="none" r="280" stroke="#141729" stroke-width="1"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="400" y1="120" y2="50"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="540" x2="575" y1="157.51288694035716" y2="96.89110867544645"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="642.4871130596428" x2="703.1088913245535" y1="260" y2="225"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="680" x2="750" y1="400" y2="400"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="642.4871130596429" x2="703.1088913245535" y1="540" y2="575"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="540" x2="575" y1="642.4871130596429" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="400" y1="680" y2="750"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="259.99999999999994" x2="224.99999999999991" y1="642.4871130596428" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="157.51288694035722" x2="96.8911086754465" y1="540.0000000000001" y2="575.0000000000001"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="120" x2="50" y1="400.00000000000006" y2="400.00000000000006"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="157.5128869403572" x2="96.8911086754465" y1="260" y2="224.99999999999997"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="259.9999999999999" x2="224.99999999999986" y1="157.51288694035725" y2="96.89110867544656"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="481.52799920729404" y="95.7333647189435">
 ♈
 </text>
@@ -50,51 +50,51 @@
 <text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="318.4720007927057" y="95.73336471894356">
 ♓
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="186.49909915685038" y1="400" y2="218.8443615584555"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="186.49909915685038" y1="400" y2="218.8443615584555"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.5283962367987" y="215.80719277334035">
 1
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="329.25699135184993" y1="400" y2="129.08409657717073"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="329.25699135184993" y1="400" y2="129.08409657717073"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="401.4285570754754" y="176.0045553483685">
 2
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="494.518948495041" y1="400" y2="136.43564661473698"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="494.518948495041" y1="400" y2="136.43564661473698"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.6110141530268" y="215.90375053566135">
 3
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="614.4334005633989" y1="400" y2="219.94912740334496"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="614.4334005633989" y1="400" y2="219.94912740334496"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="602.9818836308142" y="305.26692806793073">
 4
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="672.3696651625277" y1="400" y2="335.0787746630384"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="672.3696651625277" y1="400" y2="335.0787746630384"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="623.9133947414315" y="406.2282947399642">
 5
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="673.6240607358632" y1="400" y2="459.41273757719506"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="673.6240607358632" y1="400" y2="459.41273757719506"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="599.1387191617621" y="502.5659326024624">
 6
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="613.5009008431496" y1="400" y2="581.1556384415445"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="613.5009008431496" y1="400" y2="581.1556384415445"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.4716037632013" y="584.1928072266596">
 7
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="470.74300864814995" y1="400" y2="670.9159034228294"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="470.74300864814995" y1="400" y2="670.9159034228294"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="398.5714429245245" y="623.9954446516315">
 8
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="305.48105150495905" y1="400" y2="663.5643533852631"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="305.48105150495905" y1="400" y2="663.5643533852631"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.3889858469733" y="584.0962494643387">
 9
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="185.566599436601" y1="400" y2="580.0508725966549"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="185.566599436601" y1="400" y2="580.0508725966549"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="197.01811636918575" y="494.73307193206915">
 10
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="127.63033483747233" y1="400" y2="464.92122533696175"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="127.63033483747233" y1="400" y2="464.92122533696175"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="176.08660525856845" y="393.77170526003584">
 11
 </text>
-<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="126.37593926413678" y1="400" y2="340.587262422805"/>
+<line opacity="0.5" stroke="#141729" stroke-width="1" x1="400" x2="126.37593926413678" y1="400" y2="340.587262422805"/>
 <text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="200.86128083823792" y="297.43406739753766">
 12
 </text>

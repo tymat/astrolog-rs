@@ -320,11 +320,22 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
             };
 
             // Generate SVG chart
-            let svg_chart = generate_natal_svg(&response);
-            let mut final_response = response;
-            final_response.svg_chart = Some(svg_chart);
-
-            HttpResponse::Ok().json(final_response)
+            match generate_natal_svg(&response) {
+                Ok(svg_chart) => {
+                    let mut final_response = response;
+                    final_response.svg_chart = Some(svg_chart);
+                    HttpResponse::Ok().json(final_response)
+                }
+                Err(svg_error) => {
+                    log_request_error(
+                        "chart",
+                        &get_client_ip(),
+                        &json!(req.0).to_string(),
+                        &format!("SVG generation failed: {}", svg_error),
+                    );
+                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                }
+            }
         }
         Err(e) => {
             log_request_error(
@@ -416,11 +427,22 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
             };
 
             // Generate SVG chart
-            let svg_chart = generate_natal_svg(&response);
-            let mut final_response = response;
-            final_response.svg_chart = Some(svg_chart);
-
-            HttpResponse::Ok().json(final_response)
+            match generate_natal_svg(&response) {
+                Ok(svg_chart) => {
+                    let mut final_response = response;
+                    final_response.svg_chart = Some(svg_chart);
+                    HttpResponse::Ok().json(final_response)
+                }
+                Err(svg_error) => {
+                    log_request_error(
+                        "chart",
+                        &get_client_ip(),
+                        &json!(req.0).to_string(),
+                        &format!("SVG generation failed: {}", svg_error),
+                    );
+                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                }
+            }
         }
         Err(e) => {
             log_request_error(
@@ -553,11 +575,22 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
             };
 
             // Generate SVG chart
-            let svg_chart = generate_transit_svg(&response);
-            let mut final_response = response;
-            final_response.svg_chart = Some(svg_chart);
-
-            HttpResponse::Ok().json(final_response)
+            match generate_transit_svg(&response) {
+                Ok(svg_chart) => {
+                    let mut final_response = response;
+                    final_response.svg_chart = Some(svg_chart);
+                    HttpResponse::Ok().json(final_response)
+                }
+                Err(svg_error) => {
+                    log_request_error(
+                        "transit",
+                        &get_client_ip(),
+                        &json!(req.0).to_string(),
+                        &format!("SVG generation failed: {}", svg_error),
+                    );
+                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                }
+            }
         }
         _ => {
             log_request_error(
@@ -743,27 +776,52 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
             };
 
             // Generate SVG charts
-            let svg_chart1 = generate_natal_svg(&chart1);
-            let svg_chart2 = generate_natal_svg(&chart2);
-            let mut final_chart1 = chart1;
-            final_chart1.svg_chart = Some(svg_chart1);
-            let mut final_chart2 = chart2;
-            final_chart2.svg_chart = Some(svg_chart2);
+            let svg_chart1_result = generate_natal_svg(&chart1);
+            let svg_chart2_result = generate_natal_svg(&chart2);
+            
+            match (svg_chart1_result, svg_chart2_result) {
+                (Ok(svg_chart1), Ok(svg_chart2)) => {
+                    let mut final_chart1 = chart1;
+                    final_chart1.svg_chart = Some(svg_chart1);
+                    let mut final_chart2 = chart2;
+                    final_chart2.svg_chart = Some(svg_chart2);
 
-            let response = SynastryResponse {
-                chart_type: "synastry".to_string(),
-                chart1: final_chart1,
-                chart2: final_chart2,
-                synastries: aspect_info,
-                svg_chart: None, // Will be set below
-            };
+                    let response = SynastryResponse {
+                        chart_type: "synastry".to_string(),
+                        chart1: final_chart1,
+                        chart2: final_chart2,
+                        synastries: aspect_info,
+                        svg_chart: None, // Will be set below
+                    };
 
-            // Generate SVG chart for synastry
-            let synastry_svg = generate_synastry_svg(&response);
-            let mut final_response = response;
-            final_response.svg_chart = Some(synastry_svg);
-
-            HttpResponse::Ok().json(final_response)
+                    // Generate SVG chart for synastry
+                    match generate_synastry_svg(&response) {
+                        Ok(synastry_svg) => {
+                            let mut final_response = response;
+                            final_response.svg_chart = Some(synastry_svg);
+                            HttpResponse::Ok().json(final_response)
+                        }
+                        Err(svg_error) => {
+                            log_request_error(
+                                "synastry",
+                                &get_client_ip(),
+                                &json!(req.0).to_string(),
+                                &format!("Synastry SVG generation failed: {}", svg_error),
+                            );
+                            HttpResponse::InternalServerError().body(format!("Synastry SVG generation failed: {}", svg_error))
+                        }
+                    }
+                }
+                (Err(e), _) | (_, Err(e)) => {
+                    log_request_error(
+                        "synastry",
+                        &get_client_ip(),
+                        &json!(req.0).to_string(),
+                        &format!("Individual chart SVG generation failed: {}", e),
+                    );
+                    HttpResponse::InternalServerError().body(format!("Individual chart SVG generation failed: {}", e))
+                }
+            }
         }
         _ => {
             log_request_error(
