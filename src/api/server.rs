@@ -758,7 +758,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 houses: _house_info1,
                 aspects: aspect_info1,
                 transit: None,
-                svg_chart: None, // Will be set below
+                svg_chart: None, // No individual SVG for synastry to reduce response size
             };
 
             let chart2 = ChartResponse {
@@ -772,54 +772,33 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 houses: _house_info2,
                 aspects: aspect_info2,
                 transit: None,
+                svg_chart: None, // No individual SVG for synastry to reduce response size
+            };
+
+            // Skip individual SVG generation for chart1 and chart2 to reduce response size
+            let response = SynastryResponse {
+                chart_type: "synastry".to_string(),
+                chart1,
+                chart2,
+                synastries: aspect_info,
                 svg_chart: None, // Will be set below
             };
 
-            // Generate SVG charts
-            let svg_chart1_result = generate_natal_svg(&chart1);
-            let svg_chart2_result = generate_natal_svg(&chart2);
-            
-            match (svg_chart1_result, svg_chart2_result) {
-                (Ok(svg_chart1), Ok(svg_chart2)) => {
-                    let mut final_chart1 = chart1;
-                    final_chart1.svg_chart = Some(svg_chart1);
-                    let mut final_chart2 = chart2;
-                    final_chart2.svg_chart = Some(svg_chart2);
-
-                    let response = SynastryResponse {
-                        chart_type: "synastry".to_string(),
-                        chart1: final_chart1,
-                        chart2: final_chart2,
-                        synastries: aspect_info,
-                        svg_chart: None, // Will be set below
-                    };
-
-                    // Generate SVG chart for synastry
-                    match generate_synastry_svg(&response) {
-                        Ok(synastry_svg) => {
-                            let mut final_response = response;
-                            final_response.svg_chart = Some(synastry_svg);
-                            HttpResponse::Ok().json(final_response)
-                        }
-                        Err(svg_error) => {
-                            log_request_error(
-                                "synastry",
-                                &get_client_ip(),
-                                &json!(req.0).to_string(),
-                                &format!("Synastry SVG generation failed: {}", svg_error),
-                            );
-                            HttpResponse::InternalServerError().body(format!("Synastry SVG generation failed: {}", svg_error))
-                        }
-                    }
+            // Generate only the top-level synastry SVG chart
+            match generate_synastry_svg(&response) {
+                Ok(synastry_svg) => {
+                    let mut final_response = response;
+                    final_response.svg_chart = Some(synastry_svg);
+                    HttpResponse::Ok().json(final_response)
                 }
-                (Err(e), _) | (_, Err(e)) => {
+                Err(svg_error) => {
                     log_request_error(
                         "synastry",
                         &get_client_ip(),
                         &json!(req.0).to_string(),
-                        &format!("Individual chart SVG generation failed: {}", e),
+                        &format!("Synastry SVG generation failed: {}", svg_error),
                     );
-                    HttpResponse::InternalServerError().body(format!("Individual chart SVG generation failed: {}", e))
+                    HttpResponse::InternalServerError().body(format!("Synastry SVG generation failed: {}", svg_error))
                 }
             }
         }

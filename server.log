@@ -1,0 +1,224 @@
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:124:8: warning: missing field 'do_interpolate_nut' initializer [-Wmissing-field-initializers]
+warning: swisseph@0.1.0:   124 |                             };
+warning: swisseph@0.1.0:       |                             ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:1988:48: warning: parameter 'iflag' set but not used [-Wunused-but-set-parameter]
+warning: swisseph@0.1.0:  1988 | static int jplplan(double tjd, int ipli, int32 iflag, AS_BOOL do_save,
+warning: swisseph@0.1.0:       |                                                ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:2444:86: warning: unused parameter 'serr' [-Wunused-parameter]
+warning: swisseph@0.1.0:  2444 | static int calc_center_body(int32 ipli, int32 iflag, double *xx, double *xcom, char *serr)
+warning: swisseph@0.1.0:       |                                                                                      ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:6065:57: warning: unused parameter 'tjd' [-Wunused-parameter]
+warning: swisseph@0.1.0:  6065 | static int32 plaus_iflag(int32 iflag, int32 ipl, double tjd, char *serr)
+warning: swisseph@0.1.0:       |                                                         ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:6704:20: warning: comparison of integers of different signs: 'long' and 'unsigned long' [-Wsign-compare]
+warning: swisseph@0.1.0:  6704 |     if (sp - sstar != strlen(sstar) - 1) {
+warning: swisseph@0.1.0:       |         ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:7472:71: warning: unused parameter 'sname' [-Wunused-parameter]
+warning: swisseph@0.1.0:  7472 | static int32 swi_fixstar_load_record(char *star, char *srecord, char *sname, char *sbayer, double *dparams, char *serr)
+warning: swisseph@0.1.0:       |                                                                       ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/sweph.c:7472:84: warning: unused parameter 'sbayer' [-Wunused-parameter]
+warning: swisseph@0.1.0:  7472 | static int32 swi_fixstar_load_record(char *star, char *srecord, char *sname, char *sbayer, double *dparams, char *serr)
+warning: swisseph@0.1.0:       |                                                                                    ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swephlib.c:3198:30: warning: unused parameter 'tjd_ut' [-Wunused-parameter]
+warning: swisseph@0.1.0:  3198 | int32 swi_get_tid_acc(double tjd_ut, int32 iflag, int32 denum, int32 *denumret, double *tid_acc, char *serr)
+warning: swisseph@0.1.0:       |                              ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swephlib.c:3198:104: warning: unused parameter 'serr' [-Wunused-parameter]
+warning: swisseph@0.1.0:  3198 | int32 swi_get_tid_acc(double tjd_ut, int32 iflag, int32 denum, int32 *denumret, double *tid_acc, char *serr)
+warning: swisseph@0.1.0:       |                                                                                                        ^
+warning: swisseph@0.1.0: 7 warnings generated.
+warning: swisseph@0.1.0: 2 warnings generated.
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swehouse.c:539:35: warning: unused parameter 'nutl' [-Wunused-parameter]
+warning: swisseph@0.1.0:   539 |                            double nutl,
+warning: swisseph@0.1.0:       |                                   ^
+warning: swisseph@0.1.0: 1 warning generated.
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swehel.c:224:73: warning: parameter 'JDNDaysUT' set but not used [-Wunused-but-set-parameter]
+warning: swisseph@0.1.0:   224 | static double OpticFactor(double Bback, double kX, double *dobs, double JDNDaysUT, char *ObjectName, int TypeFactor, int helflag)
+warning: swisseph@0.1.0:       |                                                                         ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swehel.c:553:45: warning: parameter 'helflag' set but not used [-Wunused-but-set-parameter]
+warning: swisseph@0.1.0:   553 | static double SunRA(double JDNDaysUT, int32 helflag, char *serr)
+warning: swisseph@0.1.0:       |                                             ^
+warning: swisseph@0.1.0: /Users/aeufemio/projects/tymat/astrology_project/astrolog-rs/ext/swisseph/swehel.c:1268:42: warning: parameter 'Press' set but not used [-Wunused-but-set-parameter]
+warning: swisseph@0.1.0:  1268 | static double Bcity(double Value, double Press)
+warning: swisseph@0.1.0:       |                                          ^
+warning: swisseph@0.1.0: 3 warnings generated.
+   Compiling astrolog-rs v0.2.0 (/Users/aeufemio/projects/tymat/astrology_project/astrolog-rs)
+warning: astrolog-rs@0.2.0: Swiss Ephemeris external directory not found at "external/swisseph"
+warning: astrolog-rs@0.2.0: Please ensure the Swiss Ephemeris files are in the correct location
+warning: unused import: `chrono::NaiveDateTime`
+ --> src/calc/utils.rs:1:5
+  |
+1 | use chrono::NaiveDateTime;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `crate::core::types::HouseSystem`
+ --> src/core/calc.rs:1:5
+  |
+1 | use crate::core::types::HouseSystem;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Read`
+ --> src/utils/logging.rs:4:22
+  |
+4 | use std::io::{Write, Read};
+  |                      ^^^^
+
+warning: unused import: `std::path::Path`
+ --> src/utils/logging.rs:6:5
+  |
+6 | use std::path::Path;
+  |     ^^^^^^^^^^^^^^^
+
+warning: `astrolog-rs` (lib) generated 4 warnings (run `cargo fix --lib -p astrolog-rs` to apply 4 suggestions)
+warning: unused import: `server::*`
+ --> src/api/mod.rs:5:9
+  |
+5 | pub use server::*;
+  |         ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `queue::*`
+ --> src/api/mod.rs:6:9
+  |
+6 | pub use queue::*;
+  |         ^^^^^^^^
+
+warning: unused import: `chrono::NaiveDateTime`
+ --> src/calc/utils.rs:1:5
+  |
+1 | use chrono::NaiveDateTime;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `ChartStyles` and `get_styles`
+ --> src/charts/mod.rs:8:18
+  |
+8 | pub use styles::{ChartStyles, init_styles, get_styles};
+  |                  ^^^^^^^^^^^               ^^^^^^^^^^
+
+warning: unused import: `types::*`
+ --> src/core/mod.rs:7:9
+  |
+7 | pub use types::*;
+  |         ^^^^^^^^
+
+warning: unused import: `logging::*`
+ --> src/utils/mod.rs:4:9
+  |
+4 | pub use logging::*;
+  |         ^^^^^^^^^^
+
+warning: unused import: `middleware`
+  --> src/main.rs:10:34
+   |
+10 | use actix_web::{App, HttpServer, middleware};
+   |                                  ^^^^^^^^^^
+
+warning: use of deprecated method `actix_web::HttpServer::<F, I, S, B>::client_shutdown`: Renamed to `client_disconnect_timeout`.
+  --> src/main.rs:88:6
+   |
+88 |     .client_shutdown(5000)
+   |      ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: field `request_type` is never read
+  --> src/api/queue.rs:28:9
+   |
+25 | pub struct QueuedRequest {
+   |            ------------- field in this struct
+...
+28 |     pub request_type: String,
+   |         ^^^^^^^^^^^^
+   |
+   = note: `QueuedRequest` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` on by default
+
+warning: fields `queue` and `semaphore` are never read
+  --> src/api/queue.rs:56:5
+   |
+55 | pub struct RequestQueue {
+   |            ------------ fields in this struct
+56 |     queue: Arc<Mutex<BinaryHeap<QueuedRequest>>>,
+   |     ^^^^^
+57 |     semaphore: Arc<Semaphore>,
+   |     ^^^^^^^^^
+
+warning: methods `priority_levels`, `enqueue`, `acquire`, `release`, `queue_size`, and `is_full` are never used
+   --> src/api/queue.rs:78:12
+    |
+61  | impl RequestQueue {
+    | ----------------- methods in this implementation
+...
+78  |     pub fn priority_levels(&self) -> usize {
+    |            ^^^^^^^^^^^^^^^
+...
+82  |     pub async fn enqueue(&self, priority: u8, request_type: String) -> Result<(), String> {
+    |                  ^^^^^^^
+...
+98  |     pub async fn acquire(&self) -> Result<(), String> {
+    |                  ^^^^^^^
+...
+110 |     pub fn release(&self) {
+    |            ^^^^^^^
+...
+114 |     pub fn queue_size(&self) -> usize {
+    |            ^^^^^^^^^^
+...
+118 |     pub fn is_full(&self) -> bool {
+    |            ^^^^^^^
+
+warning: function `get_request_priority` is never used
+   --> src/api/queue.rs:124:8
+    |
+124 | pub fn get_request_priority(request_type: &str) -> u8 {
+    |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: method `is_major` is never used
+   --> src/calc/aspects.rs:236:12
+    |
+166 | impl AspectType {
+    | --------------- method in this implementation
+...
+236 |     pub fn is_major(&self) -> bool {
+    |            ^^^^^^^^
+
+warning: function `calculate_aspects` is never used
+   --> src/calc/aspects.rs:282:8
+    |
+282 | pub fn calculate_aspects(positions: &[PlanetPosition]) -> Vec<Aspect> {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: function `calculate_cross_aspects` is never used
+   --> src/calc/aspects.rs:379:8
+    |
+379 | pub fn calculate_cross_aspects(natal_positions: &[PlanetPosition], transit_positions: &[PlanetPosition]) -> Vec<Aspect> {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `astrolog-rs` (bin "astrolog-rs") generated 18 warnings (3 duplicates) (run `cargo fix --bin "astrolog-rs"` to apply 7 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.64s
+     Running `target/debug/astrolog-rs`
+[2025-06-02T08:06:58Z INFO  astrolog_rs::charts::styles] Loaded chart styles from chart_styles.json
+Starting Astrolog-rs server on http://127.0.0.1:4008 with 10 workers
+Maximum concurrent calculations: 500
+Maximum queue size: 10000
+Maximum wait time: 30 seconds
+[2025-06-02T08:06:58Z INFO  actix_server::builder] starting 10 workers
+[2025-06-02T08:06:58Z INFO  actix_server::server] Actix runtime found; starting in Actix runtime
+[2025-06-02T08:06:58Z INFO  actix_server::server] starting service: "actix-web-service-127.0.0.1:4008", workers: 10, listening on: 127.0.0.1:4008
+[2025-06-02T08:07:27Z INFO  astrolog_rs::charts::styles] Loaded chart styles from chart_styles.json
+[2025-06-02T08:07:27Z INFO  actix_web::middleware::logger] 127.0.0.1 "POST /api/chart/synastry HTTP/1.1" 200 40236 "-" "curl/8.7.1" 0.004913
+[2025-06-02T08:07:27Z INFO  actix_web::middleware::logger] 127.0.0.1 "POST /api/chart/synastry HTTP/1.1" 200 40236 "-" "curl/8.7.1" 0.004838
+[2025-06-02T08:07:34Z INFO  actix_server::server] SIGTERM received; starting graceful shutdown
+[2025-06-02T08:07:34Z INFO  actix_server::accept] accept thread stopped
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker
+[2025-06-02T08:07:34Z INFO  actix_server::worker] shutting down idle worker

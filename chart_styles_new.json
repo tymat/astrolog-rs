@@ -22,10 +22,32 @@
     "chart_aspect_color": "#cbcfb4"
   },
   "aspect_line_colors": {
+    "synastries": {
+      "Conjunction": "#A8DEE8",
+      "Opposition": "#C08C8C",
+      "Trine": "#A5C9A0",
+      "Square": "#E1C5AE",
+      "Sextile": "D2BCDF"
+    },
     "Conjunction": "#6DD7EA",
     "Opposition": "#C52222",
-    "Trine": "#3FD32B",
-    "Square": "#D8803B",
-    "Sextile": "#A83DE9"
+    "Trine": "#64CD56",
+    "Square": "#DE9C68",
+    "Sextile": "#D49CF6",
+    "chart1": {
+      "Conjunction": "#6DD7EA",
+      "Opposition": "#C52222",
+      "Trine": "#64CD56",
+      "Square": "#DE9C68",
+      "Sextile": "#D49CF6"
+    },
+    "chart2": {
+      "Conjunction": "#00D8FF",
+      "Opposition": "#790000",
+      "Trine": "#129800",
+      "Square": "#E26300",
+      "Sextile": "#AA30F5" 
+    }
+
   }
 } 
