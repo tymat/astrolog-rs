@@ -30,6 +30,12 @@ async fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
 
+    // Initialize chart styles
+    if let Err(e) = charts::init_styles() {
+        eprintln!("Failed to initialize chart styles: {}", e);
+        std::process::exit(1);
+    }
+
     // Get number of workers from environment or use number of CPU cores
     let workers = env::var("WORKERS")
         .ok()

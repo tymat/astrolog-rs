@@ -1,0 +1,799 @@
+{
+  "chart_type": "synastry",
+  "chart1": {
+    "chart_type": "natal",
+    "date": "1977-10-24T04:56:00Z",
+    "latitude": 14.6488,
+    "longitude": 121.0509,
+    "house_system": "placidus",
+    "ayanamsa": "tropical",
+    "planets": [
+      {
+        "name": "Sun",
+        "longitude": 210.6744669034905,
+        "latitude": 0.00006678490546041098,
+        "speed": 0.9959704185291685,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Moon",
+        "longitude": 358.5942324195677,
+        "latitude": 1.5177873027001032,
+        "speed": 12.823424727832844,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Mercury",
+        "longitude": 214.14813385726157,
+        "latitude": 0.23401978868226417,
+        "speed": 1.6320167788990148,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Venus",
+        "longitude": 188.85324965421856,
+        "latitude": 1.5670691774642245,
+        "speed": 1.2424665747204244,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Mars",
+        "longitude": 118.87844563523794,
+        "latitude": 1.218993130964329,
+        "speed": 0.4408793444376613,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Jupiter",
+        "longitude": 96.14177157010668,
+        "latitude": -0.3560852494589444,
+        "speed": 0.0007332904289114595,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Saturn",
+        "longitude": 148.48522316080135,
+        "latitude": 1.1715944192389212,
+        "speed": 0.08080131227927723,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Uranus",
+        "longitude": 221.39956897198832,
+        "latitude": 0.38864507709570373,
+        "speed": 0.061703978747118526,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Neptune",
+        "longitude": 254.29618996387114,
+        "latitude": 1.4347608998371546,
+        "speed": 0.029173047380481876,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Pluto",
+        "longitude": 194.735971068273,
+        "latitude": 16.545811183961156,
+        "speed": 0.03814490264204551,
+        "is_retrograde": false,
+        "house": null
+      }
+    ],
+    "houses": [
+      {
+        "number": 1,
+        "longitude": 310.31462425749794,
+        "latitude": 0.0
+      },
+      {
+        "number": 2,
+        "longitude": 345.3654055628077,
+        "latitude": 0.0
+      },
+      {
+        "number": 3,
+        "longitude": 19.728752684774115,
+        "latitude": 0.0
+      },
+      {
+        "number": 4,
+        "longitude": 49.98120750654334,
+        "latitude": 0.0
+      },
+      {
+        "number": 5,
+        "longitude": 76.59330803408,
+        "latitude": 0.0
+      },
+      {
+        "number": 6,
+        "longitude": 102.25062596204089,
+        "latitude": 0.0
+      },
+      {
+        "number": 7,
+        "longitude": 130.31462425749794,
+        "latitude": 0.0
+      },
+      {
+        "number": 8,
+        "longitude": 165.36540556280772,
+        "latitude": 0.0
+      },
+      {
+        "number": 9,
+        "longitude": 199.72875268477412,
+        "latitude": 0.0
+      },
+      {
+        "number": 10,
+        "longitude": 229.98120750654337,
+        "latitude": 0.0
+      },
+      {
+        "number": 11,
+        "longitude": 256.59330803408,
+        "latitude": 0.0
+      },
+      {
+        "number": 12,
+        "longitude": 282.2506259620409,
+        "latitude": 0.0
+      }
+    ],
+    "aspects": [
+      {
+        "planet1": "Sun",
+        "planet2": "Mercury",
+        "aspect": "Conjunction",
+        "orb": 3.4736669537710725
+      },
+      {
+        "planet1": "Sun",
+        "planet2": "Mars",
+        "aspect": "Square",
+        "orb": 1.7960212682525594
+      },
+      {
+        "planet1": "Sun",
+        "planet2": "Jupiter",
+        "aspect": "Trine",
+        "orb": 5.467304666616187
+      },
+      {
+        "planet1": "Sun",
+        "planet2": "Saturn",
+        "aspect": "Sextile",
+        "orb": 2.1892437426891433
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Mars",
+        "aspect": "Trine",
+        "orb": 0.28421321567026325
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Jupiter",
+        "aspect": "Square",
+        "orb": 7.5475391505390235
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Mars",
+        "aspect": "Square",
+        "orb": 5.269688222023632
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Jupiter",
+        "aspect": "Trine",
+        "orb": 1.9936377128451142
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Saturn",
+        "aspect": "Sextile",
+        "orb": 5.662910696460216
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Uranus",
+        "aspect": "Conjunction",
+        "orb": 7.251435114726746
+      },
+      {
+        "planet1": "Venus",
+        "planet2": "Jupiter",
+        "aspect": "Square",
+        "orb": 2.7114780841118744
+      },
+      {
+        "planet1": "Venus",
+        "planet2": "Neptune",
+        "aspect": "Sextile",
+        "orb": 5.442940309652585
+      },
+      {
+        "planet1": "Venus",
+        "planet2": "Pluto",
+        "aspect": "Conjunction",
+        "orb": 5.88272141405443
+      },
+      {
+        "planet1": "Jupiter",
+        "planet2": "Saturn",
+        "aspect": "Sextile",
+        "orb": 7.65654840930533
+      },
+      {
+        "planet1": "Jupiter",
+        "planet2": "Uranus",
+        "aspect": "Trine",
+        "orb": 5.257797401881632
+      },
+      {
+        "planet1": "Jupiter",
+        "planet2": "Pluto",
+        "aspect": "Square",
+        "orb": 8.594199498166304
+      },
+      {
+        "planet1": "Neptune",
+        "planet2": "Pluto",
+        "aspect": "Sextile",
+        "orb": 0.43978110440184537
+      }
+    ]
+  },
+  "chart2": {
+    "chart_type": "natal",
+    "date": "1996-01-06T12:00:00Z",
+    "latitude": 36.66833,
+    "longitude": 116.99722,
+    "house_system": "placidus",
+    "ayanamsa": "tropical",
+    "planets": [
+      {
+        "name": "Sun",
+        "longitude": 285.4447932045096,
+        "latitude": -0.00013647597362546765,
+        "speed": 1.0189908567951989,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Moon",
+        "longitude": 112.30602343362936,
+        "latitude": -4.988770275898013,
+        "speed": 11.895815473337734,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Mercury",
+        "longitude": 304.1365852895241,
+        "latitude": -0.2946142030959626,
+        "speed": 0.5802483041037476,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Venus",
+        "longitude": 319.37678388832967,
+        "latitude": -1.7719249617786312,
+        "speed": 1.226305709624853,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Mars",
+        "longitude": 298.4660797850462,
+        "latitude": -1.0814577260327132,
+        "speed": 0.7823979930378755,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Jupiter",
+        "longitude": 270.71955135446706,
+        "latitude": 0.23819891606120702,
+        "speed": 0.22478093098357022,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Saturn",
+        "longitude": 349.78750640426995,
+        "latitude": -2.1006752970054303,
+        "speed": 0.07510471403406882,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Uranus",
+        "longitude": 299.6636553239038,
+        "latitude": -0.533364141138838,
+        "speed": 0.05753169182582951,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Neptune",
+        "longitude": 294.8835159575724,
+        "latitude": 0.48838737699083573,
+        "speed": 0.03755147365609446,
+        "is_retrograde": false,
+        "house": null
+      },
+      {
+        "name": "Pluto",
+        "longitude": 242.12684324165673,
+        "latitude": 12.885451186251487,
+        "speed": 0.03121910104368908,
+        "is_retrograde": false,
+        "house": null
+      }
+    ],
+    "houses": [
+      {
+        "number": 1,
+        "longitude": 141.05375955486994,
+        "latitude": 0.0
+      },
+      {
+        "number": 2,
+        "longitude": 164.21135162015753,
+        "latitude": 0.0
+      },
+      {
+        "number": 3,
+        "longitude": 192.13822561746147,
+        "latitude": 0.0
+      },
+      {
+        "number": 4,
+        "longitude": 224.82020520944366,
+        "latitude": 0.0
+      },
+      {
+        "number": 5,
+        "longitude": 259.42945528752,
+        "latitude": 0.0
+      },
+      {
+        "number": 6,
+        "longitude": 292.03822697866394,
+        "latitude": 0.0
+      },
+      {
+        "number": 7,
+        "longitude": 321.05375955486994,
+        "latitude": 0.0
+      },
+      {
+        "number": 8,
+        "longitude": 344.21135162015753,
+        "latitude": 0.0
+      },
+      {
+        "number": 9,
+        "longitude": 12.138225617461444,
+        "latitude": 0.0
+      },
+      {
+        "number": 10,
+        "longitude": 44.82020520944367,
+        "latitude": 0.0
+      },
+      {
+        "number": 11,
+        "longitude": 79.42945528751999,
+        "latitude": 0.0
+      },
+      {
+        "number": 12,
+        "longitude": 112.03822697866396,
+        "latitude": 0.0
+      }
+    ],
+    "aspects": [
+      {
+        "planet1": "Sun",
+        "planet2": "Moon",
+        "aspect": "Opposition",
+        "orb": 6.861230229119769
+      },
+      {
+        "planet1": "Sun",
+        "planet2": "Saturn",
+        "aspect": "Sextile",
+        "orb": 4.34271319976034
+      },
+      {
+        "planet1": "Sun",
+        "planet2": "Neptune",
+        "aspect": "Conjunction",
+        "orb": 9.438722753062791
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Mars",
+        "aspect": "Opposition",
+        "orb": 6.160056351416813
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Saturn",
+        "aspect": "Trine",
+        "orb": 2.5185170293594297
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Uranus",
+        "aspect": "Opposition",
+        "orb": 7.357631890274433
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Neptune",
+        "aspect": "Opposition",
+        "orb": 2.5774925239430218
+      },
+      {
+        "planet1": "Moon",
+        "planet2": "Pluto",
+        "aspect": "Trine",
+        "orb": 9.820819808027352
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Mars",
+        "aspect": "Conjunction",
+        "orb": 5.670505504477887
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Uranus",
+        "aspect": "Conjunction",
+        "orb": 4.472929965620267
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Neptune",
+        "aspect": "Conjunction",
+        "orb": 9.253069331951679
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Pluto",
+        "aspect": "Sextile",
+        "orb": 2.0097420478673484
+      },
+      {
+        "planet1": "Mars",
+        "planet2": "Uranus",
+        "aspect": "Conjunction",
+        "orb": 1.1975755388576204
+      },
+      {
+        "planet1": "Mars",
+        "planet2": "Neptune",
+        "aspect": "Conjunction",
+        "orb": 3.582563827473791
+      },
+      {
+        "planet1": "Mars",
+        "planet2": "Pluto",
+        "aspect": "Sextile",
+        "orb": 3.660763456610539
+      },
+      {
+        "planet1": "Saturn",
+        "planet2": "Neptune",
+        "aspect": "Sextile",
+        "orb": 5.096009553302451
+      },
+      {
+        "planet1": "Uranus",
+        "planet2": "Neptune",
+        "aspect": "Conjunction",
+        "orb": 4.780139366331412
+      },
+      {
+        "planet1": "Uranus",
+        "planet2": "Pluto",
+        "aspect": "Sextile",
+        "orb": 2.4631879177529186
+      },
+      {
+        "planet1": "Neptune",
+        "planet2": "Pluto",
+        "aspect": "Sextile",
+        "orb": 7.24332728408433
+      }
+    ]
+  },
+  "synastries": [
+    {
+      "person1": "Sun",
+      "person2": "Moon",
+      "aspect": "Square",
+      "orb": 8.368443469861134
+    },
+    {
+      "person1": "Sun",
+      "person2": "Mercury",
+      "aspect": "Square",
+      "orb": 3.4621183860335805
+    },
+    {
+      "person1": "Sun",
+      "person2": "Mars",
+      "aspect": "Square",
+      "orb": 2.208387118444307
+    },
+    {
+      "person1": "Sun",
+      "person2": "Jupiter",
+      "aspect": "Sextile",
+      "orb": 0.04508445097656022
+    },
+    {
+      "person1": "Sun",
+      "person2": "Uranus",
+      "aspect": "Square",
+      "orb": 1.0108115795866865
+    },
+    {
+      "person1": "Sun",
+      "person2": "Neptune",
+      "aspect": "Square",
+      "orb": 5.790950945918098
+    },
+    {
+      "person1": "Moon",
+      "person2": "Moon",
+      "aspect": "Trine",
+      "orb": 6.288208985938297
+    },
+    {
+      "person1": "Moon",
+      "person2": "Mercury",
+      "aspect": "Sextile",
+      "orb": 5.542352869956403
+    },
+    {
+      "person1": "Moon",
+      "person2": "Mars",
+      "aspect": "Sextile",
+      "orb": 0.1281526345214843
+    },
+    {
+      "person1": "Moon",
+      "person2": "Jupiter",
+      "aspect": "Square",
+      "orb": 2.125318934899383
+    },
+    {
+      "person1": "Moon",
+      "person2": "Saturn",
+      "aspect": "Conjunction",
+      "orb": 8.806726015297727
+    },
+    {
+      "person1": "Moon",
+      "person2": "Uranus",
+      "aspect": "Sextile",
+      "orb": 1.069422904336136
+    },
+    {
+      "person1": "Moon",
+      "person2": "Neptune",
+      "aspect": "Sextile",
+      "orb": 3.7107164619952755
+    },
+    {
+      "person1": "Moon",
+      "person2": "Pluto",
+      "aspect": "Trine",
+      "orb": 3.5326108220890546
+    },
+    {
+      "person1": "Mercury",
+      "person2": "Mercury",
+      "aspect": "Square",
+      "orb": 0.011548567737492021
+    },
+    {
+      "person1": "Mercury",
+      "person2": "Mars",
+      "aspect": "Square",
+      "orb": 5.682054072215379
+    },
+    {
+      "person1": "Mercury",
+      "person2": "Jupiter",
+      "aspect": "Sextile",
+      "orb": 3.4285825027945123
+    },
+    {
+      "person1": "Mercury",
+      "person2": "Uranus",
+      "aspect": "Square",
+      "orb": 4.484478533357759
+    },
+    {
+      "person1": "Mercury",
+      "person2": "Neptune",
+      "aspect": "Square",
+      "orb": 9.26461789968917
+    },
+    {
+      "person1": "Venus",
+      "person2": "Sun",
+      "aspect": "Square",
+      "orb": 6.59154355029105
+    },
+    {
+      "person1": "Venus",
+      "person2": "Mercury",
+      "aspect": "Trine",
+      "orb": 4.716664364694481
+    },
+    {
+      "person1": "Venus",
+      "person2": "Jupiter",
+      "aspect": "Square",
+      "orb": 8.1336982997515
+    },
+    {
+      "person1": "Venus",
+      "person2": "Uranus",
+      "aspect": "Trine",
+      "orb": 9.189594330314748
+    },
+    {
+      "person1": "Venus",
+      "person2": "Pluto",
+      "aspect": "Sextile",
+      "orb": 6.726406412561829
+    },
+    {
+      "person1": "Mars",
+      "person2": "Moon",
+      "aspect": "Conjunction",
+      "orb": 6.572422201608575
+    },
+    {
+      "person1": "Mars",
+      "person2": "Mercury",
+      "aspect": "Opposition",
+      "orb": 5.25813965428614
+    },
+    {
+      "person1": "Mars",
+      "person2": "Mars",
+      "aspect": "Opposition",
+      "orb": 0.41236585019174754
+    },
+    {
+      "person1": "Mars",
+      "person2": "Saturn",
+      "aspect": "Trine",
+      "orb": 9.09093923096799
+    },
+    {
+      "person1": "Mars",
+      "person2": "Uranus",
+      "aspect": "Opposition",
+      "orb": 0.7852096886658728
+    },
+    {
+      "person1": "Mars",
+      "person2": "Neptune",
+      "aspect": "Opposition",
+      "orb": 3.9949296776655387
+    },
+    {
+      "person1": "Mars",
+      "person2": "Pluto",
+      "aspect": "Trine",
+      "orb": 3.2483976064187914
+    },
+    {
+      "person1": "Jupiter",
+      "person2": "Sun",
+      "aspect": "Opposition",
+      "orb": 9.30302163440291
+    },
+    {
+      "person1": "Jupiter",
+      "person2": "Jupiter",
+      "aspect": "Opposition",
+      "orb": 5.422220215639641
+    },
+    {
+      "person1": "Saturn",
+      "person2": "Venus",
+      "aspect": "Opposition",
+      "orb": 9.108439272471685
+    },
+    {
+      "person1": "Saturn",
+      "person2": "Jupiter",
+      "aspect": "Trine",
+      "orb": 2.2343281936657036
+    },
+    {
+      "person1": "Saturn",
+      "person2": "Pluto",
+      "aspect": "Square",
+      "orb": 3.6416200808553754
+    },
+    {
+      "person1": "Uranus",
+      "person2": "Sun",
+      "aspect": "Sextile",
+      "orb": 4.045224232521292
+    },
+    {
+      "person1": "Uranus",
+      "person2": "Mercury",
+      "aspect": "Square",
+      "orb": 7.262983682464238
+    },
+    {
+      "person1": "Uranus",
+      "person2": "Venus",
+      "aspect": "Square",
+      "orb": 7.977214916341353
+    },
+    {
+      "person1": "Uranus",
+      "person2": "Saturn",
+      "aspect": "Trine",
+      "orb": 8.387937432281632
+    },
+    {
+      "person1": "Neptune",
+      "person2": "Venus",
+      "aspect": "Sextile",
+      "orb": 5.080593924458526
+    },
+    {
+      "person1": "Neptune",
+      "person2": "Saturn",
+      "aspect": "Square",
+      "orb": 5.491316440398805
+    },
+    {
+      "person1": "Pluto",
+      "person2": "Sun",
+      "aspect": "Square",
+      "orb": 0.7088221362366198
+    },
+    {
+      "person1": "Pluto",
+      "person2": "Moon",
+      "aspect": "Square",
+      "orb": 7.570052365356375
+    },
+    {
+      "person1": "Pluto",
+      "person2": "Venus",
+      "aspect": "Trine",
+      "orb": 4.640812820056681
+    }
+  ]
+}

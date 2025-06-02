@@ -1,0 +1,322 @@
+<svg height="800" viewBox="0 0 800 800" width="800" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#FFFFFF" height="100%" width="100%"/>
+<circle cx="400" cy="400" fill="#10002B" r="350" stroke="#9dade0" stroke-width="2"/>
+<circle cx="400" cy="400" fill="none" r="280" stroke="#9dade0" stroke-width="1"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="120" y2="50"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="157.51288694035716" y2="96.89110867544645"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596428" x2="703.1088913245535" y1="260" y2="225"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="680" x2="750" y1="400" y2="400"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="642.4871130596429" x2="703.1088913245535" y1="540" y2="575"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="540" x2="575" y1="642.4871130596429" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="400" y1="680" y2="750"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.99999999999994" x2="224.99999999999991" y1="642.4871130596428" y2="703.1088913245535"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.51288694035722" x2="96.8911086754465" y1="540.0000000000001" y2="575.0000000000001"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="120" x2="50" y1="400.00000000000006" y2="400.00000000000006"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="157.5128869403572" x2="96.8911086754465" y1="260" y2="224.99999999999997"/>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="259.9999999999999" x2="224.99999999999986" y1="157.51288694035725" y2="96.89110867544656"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="481.52799920729404" y="95.7333647189435">
+♈
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="622.7386360737624" y="177.2613639262375">
+♉
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="704.2666352810566" y="318.4720007927059">
+♊
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="704.2666352810566" y="481.52799920729404">
+♋
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="622.7386360737626" y="622.7386360737624">
+♌
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="481.52799920729404" y="704.2666352810566">
+♍
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="318.472000792706" y="704.2666352810566">
+♎
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="177.26136392623744" y="622.7386360737623">
+♏
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="95.7333647189435" y="481.5279992072941">
+♐
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="95.7333647189435" y="318.47200079270596">
+♑
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="177.26136392623758" y="177.2613639262375">
+♒
+</text>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="serif" font-size="18" text-anchor="middle" x="318.4720007927057" y="95.73336471894356">
+♓
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="186.49909915685038" y1="400" y2="218.8443615584555"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.5283962367987" y="215.80719277334035">
+1
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="329.25699135184993" y1="400" y2="129.08409657717073"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="401.4285570754754" y="176.0045553483685">
+2
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="494.518948495041" y1="400" y2="136.43564661473698"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.6110141530268" y="215.90375053566135">
+3
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="614.4334005633989" y1="400" y2="219.94912740334496"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="602.9818836308142" y="305.26692806793073">
+4
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="672.3696651625277" y1="400" y2="335.0787746630384"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="623.9133947414315" y="406.2282947399642">
+5
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="673.6240607358632" y1="400" y2="459.41273757719506"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="599.1387191617621" y="502.5659326024624">
+6
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="613.5009008431496" y1="400" y2="581.1556384415445"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="527.4716037632013" y="584.1928072266596">
+7
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="470.74300864814995" y1="400" y2="670.9159034228294"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="398.5714429245245" y="623.9954446516315">
+8
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="305.48105150495905" y1="400" y2="663.5643533852631"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="272.3889858469733" y="584.0962494643387">
+9
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="185.566599436601" y1="400" y2="580.0508725966549"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="197.01811636918575" y="494.73307193206915">
+10
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="127.63033483747233" y1="400" y2="464.92122533696175"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="176.08660525856845" y="393.77170526003584">
+11
+</text>
+<line opacity="0.5" stroke="#9dade0" stroke-width="1" x1="400" x2="126.37593926413678" y1="400" y2="340.587262422805"/>
+<text dominant-baseline="central" fill="#a1a4b3" font-family="sans-serif" font-size="12" text-anchor="middle" x="200.86128083823792" y="297.43406739753766">
+12
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="252.85878094124428" y="585.3464455029485"/>
+<text dominant-baseline="central" fill="#FF6B35" font-family="serif" font-size="16" text-anchor="middle" x="267.8587809412443" y="597.3464455029485">
+☉
+</text>
+<text dominant-baseline="central" fill="#FF6B35" font-family="sans-serif" font-size="8" text-anchor="middle" x="267.8587809412443" y="608.3464455029485">
+0°40'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="379.11212530045594" y="145.0722339296211"/>
+<text dominant-baseline="central" fill="#4ECDC4" font-family="serif" font-size="16" text-anchor="middle" x="394.11212530045594" y="157.0722339296211">
+☽
+</text>
+<text dominant-baseline="central" fill="#4ECDC4" font-family="sans-serif" font-size="8" text-anchor="middle" x="394.11212530045594" y="168.0722339296211">
+28°35'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="254.63808220690998" y="568.3869417088023"/>
+<text dominant-baseline="central" fill="#45B7D1" font-family="serif" font-size="16" text-anchor="middle" x="269.63808220691" y="580.3869417088023">
+☿
+</text>
+<text dominant-baseline="central" fill="#45B7D1" font-family="sans-serif" font-size="8" text-anchor="middle" x="269.63808220691" y="591.3869417088023">
+4°08'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="340.05066088018475" y="620.7531694647855"/>
+<text dominant-baseline="central" fill="#96CEB4" font-family="serif" font-size="16" text-anchor="middle" x="355.05066088018475" y="632.7531694647855">
+♀
+</text>
+<text dominant-baseline="central" fill="#96CEB4" font-family="sans-serif" font-size="8" text-anchor="middle" x="355.05066088018475" y="643.7531694647855">
+8°51'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="595.1551055885789" y="500.90872096202804"/>
+<text dominant-baseline="central" fill="#FFEAA7" font-family="serif" font-size="16" text-anchor="middle" x="610.1551055885789" y="512.908720962028">
+♂
+</text>
+<text dominant-baseline="central" fill="#FFEAA7" font-family="sans-serif" font-size="8" text-anchor="middle" x="610.1551055885789" y="523.908720962028">
+28°52'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="623.622449899224" y="410.6773519680738"/>
+<text dominant-baseline="central" fill="#DDA0DD" font-family="serif" font-size="16" text-anchor="middle" x="638.622449899224" y="422.6773519680738">
+♃
+</text>
+<text dominant-baseline="central" fill="#DDA0DD" font-family="sans-serif" font-size="8" text-anchor="middle" x="638.622449899224" y="433.6773519680738">
+6°08'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="510.452427296642" y="589.6012915046745"/>
+<text dominant-baseline="central" fill="#98D8C8" font-family="serif" font-size="16" text-anchor="middle" x="525.452427296642" y="601.6012915046745">
+♄
+</text>
+<text dominant-baseline="central" fill="#98D8C8" font-family="sans-serif" font-size="8" text-anchor="middle" x="525.452427296642" y="612.6012915046745">
+28°29'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="257.42955765101897" y="551.8106178841302"/>
+<text dominant-baseline="central" fill="#6C5CE7" font-family="serif" font-size="16" text-anchor="middle" x="272.42955765101897" y="563.8106178841302">
+♅
+</text>
+<text dominant-baseline="central" fill="#6C5CE7" font-family="sans-serif" font-size="8" text-anchor="middle" x="272.42955765101897" y="574.8106178841302">
+11°23'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="153.95830000060505" y="449.95947091371335"/>
+<text dominant-baseline="central" fill="#74B9FF" font-family="serif" font-size="16" text-anchor="middle" x="168.95830000060505" y="461.95947091371335">
+♆
+</text>
+<text dominant-baseline="central" fill="#74B9FF" font-family="sans-serif" font-size="8" text-anchor="middle" x="168.95830000060505" y="472.95947091371335">
+14°17'
+</text>
+<rect fill="none" height="30" stroke="#252c42" stroke-width="1" style="" width="30" x="335.17222735257405" y="604.4132928356813"/>
+<text dominant-baseline="central" fill="#A29BFE" font-family="serif" font-size="16" text-anchor="middle" x="350.17222735257405" y="616.4132928356813">
+♇
+</text>
+<text dominant-baseline="central" fill="#A29BFE" font-family="sans-serif" font-size="8" text-anchor="middle" x="350.17222735257405" y="627.4132928356813">
+14°44'
+</text>
+<circle cx="168.66699980671243" cy="336.08565871752717" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#FF6B35" font-family="serif" font-size="16" text-anchor="middle" x="168.66699980671243" y="333.08565871752717">
+☉
+</text>
+<text dominant-baseline="central" fill="#FF6B35" font-family="sans-serif" font-size="8" text-anchor="middle" x="168.66699980671243" y="344.08565871752717">
+15°26'
+</text>
+<circle cx="622.040757165215" cy="491.09282165735135" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#4ECDC4" font-family="serif" font-size="16" text-anchor="middle" x="622.040757165215" y="488.09282165735135">
+☽
+</text>
+<text dominant-baseline="central" fill="#4ECDC4" font-family="sans-serif" font-size="8" text-anchor="middle" x="622.040757165215" y="499.09282165735135">
+22°18'
+</text>
+<circle cx="184.8199867807573" cy="293.71001029745776" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#45B7D1" font-family="serif" font-size="16" text-anchor="middle" x="184.8199867807573" y="290.71001029745776">
+☿
+</text>
+<text dominant-baseline="central" fill="#45B7D1" font-family="sans-serif" font-size="8" text-anchor="middle" x="184.8199867807573" y="301.71001029745776">
+4°08'
+</text>
+<circle cx="243.7403635033091" cy="217.83818731160466" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#96CEB4" font-family="serif" font-size="16" text-anchor="middle" x="243.7403635033091" y="214.83818731160466">
+♀
+</text>
+<text dominant-baseline="central" fill="#96CEB4" font-family="sans-serif" font-size="8" text-anchor="middle" x="243.7403635033091" y="225.83818731160466">
+19°22'
+</text>
+<circle cx="201.8692522899755" cy="293.37351730519" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#FFEAA7" font-family="serif" font-size="16" text-anchor="middle" x="201.8692522899755" y="290.37351730519">
+♂
+</text>
+<text dominant-baseline="central" fill="#FFEAA7" font-family="sans-serif" font-size="8" text-anchor="middle" x="201.8692522899755" y="301.37351730519">
+28°27'
+</text>
+<circle cx="160.01892578330853" cy="396.98602956172135" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#DDA0DD" font-family="serif" font-size="16" text-anchor="middle" x="160.01892578330853" y="393.98602956172135">
+♃
+</text>
+<text dominant-baseline="central" fill="#DDA0DD" font-family="sans-serif" font-size="8" text-anchor="middle" x="160.01892578330853" y="404.98602956172135">
+0°43'
+</text>
+<circle cx="357.44815737474926" cy="163.80232708767875" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#98D8C8" font-family="serif" font-size="16" text-anchor="middle" x="357.44815737474926" y="160.80232708767875">
+♄
+</text>
+<text dominant-baseline="central" fill="#98D8C8" font-family="sans-serif" font-size="8" text-anchor="middle" x="357.44815737474926" y="171.80232708767875">
+19°47'
+</text>
+<circle cx="218.66374818474873" cy="294.0888873743847" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#6C5CE7" font-family="serif" font-size="16" text-anchor="middle" x="218.66374818474873" y="291.0888873743847">
+♅
+</text>
+<text dominant-baseline="central" fill="#6C5CE7" font-family="sans-serif" font-size="8" text-anchor="middle" x="218.66374818474873" y="302.0888873743847">
+29°39'
+</text>
+<circle cx="235.15113943738825" cy="295.8373715231389" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#74B9FF" font-family="serif" font-size="16" text-anchor="middle" x="235.15113943738825" y="292.8373715231389">
+♆
+</text>
+<text dominant-baseline="central" fill="#74B9FF" font-family="sans-serif" font-size="8" text-anchor="middle" x="235.15113943738825" y="303.8373715231389">
+24°53'
+</text>
+<circle cx="187.84365769901868" cy="512.2037718682792" fill="none" r="15" stroke="#854077" stroke-width="1"/>
+<text dominant-baseline="central" fill="#A29BFE" font-family="serif" font-size="16" text-anchor="middle" x="187.84365769901868" y="509.2037718682792">
+♇
+</text>
+<text dominant-baseline="central" fill="#A29BFE" font-family="sans-serif" font-size="8" text-anchor="middle" x="187.84365769901868" y="520.2037718682792">
+2°07'
+</text>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="267.8587809412443" x2="269.63808220691" y1="600.3464455029485" y2="583.3869417088023"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="267.8587809412443" x2="610.1551055885789" y1="600.3464455029485" y2="515.908720962028"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="267.8587809412443" x2="638.622449899224" y1="600.3464455029485" y2="425.6773519680738"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="267.8587809412443" x2="525.452427296642" y1="600.3464455029485" y2="604.6012915046745"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="394.11212530045594" x2="610.1551055885789" y1="160.0722339296211" y2="515.908720962028"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="394.11212530045594" x2="638.622449899224" y1="160.0722339296211" y2="425.6773519680738"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="269.63808220691" x2="610.1551055885789" y1="583.3869417088023" y2="515.908720962028"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="269.63808220691" x2="638.622449899224" y1="583.3869417088023" y2="425.6773519680738"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="269.63808220691" x2="525.452427296642" y1="583.3869417088023" y2="604.6012915046745"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="269.63808220691" x2="272.42955765101897" y1="583.3869417088023" y2="566.8106178841302"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="355.05066088018475" x2="638.622449899224" y1="635.7531694647855" y2="425.6773519680738"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="355.05066088018475" x2="168.95830000060505" y1="635.7531694647855" y2="464.95947091371335"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="355.05066088018475" x2="350.17222735257405" y1="635.7531694647855" y2="619.4132928356813"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="638.622449899224" x2="525.452427296642" y1="425.6773519680738" y2="604.6012915046745"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="638.622449899224" x2="272.42955765101897" y1="425.6773519680738" y2="566.8106178841302"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="" x1="638.622449899224" x2="350.17222735257405" y1="425.6773519680738" y2="619.4132928356813"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="168.95830000060505" x2="350.17222735257405" y1="464.95947091371335" y2="619.4132928356813"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="" x1="168.66699980671243" x2="622.040757165215" y1="336.08565871752717" y2="491.09282165735135"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="168.66699980671243" x2="357.44815737474926" y1="336.08565871752717" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="168.66699980671243" x2="235.15113943738825" y1="336.08565871752717" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="" x1="622.040757165215" x2="201.8692522899755" y1="491.09282165735135" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="622.040757165215" x2="357.44815737474926" y1="491.09282165735135" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="" x1="622.040757165215" x2="218.66374818474873" y1="491.09282165735135" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="" x1="622.040757165215" x2="235.15113943738825" y1="491.09282165735135" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="" x1="622.040757165215" x2="187.84365769901868" y1="491.09282165735135" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="184.8199867807573" x2="201.8692522899755" y1="293.71001029745776" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="184.8199867807573" x2="218.66374818474873" y1="293.71001029745776" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="184.8199867807573" x2="235.15113943738825" y1="293.71001029745776" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="184.8199867807573" x2="187.84365769901868" y1="293.71001029745776" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="201.8692522899755" x2="218.66374818474873" y1="293.37351730519" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="201.8692522899755" x2="235.15113943738825" y1="293.37351730519" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="201.8692522899755" x2="187.84365769901868" y1="293.37351730519" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="357.44815737474926" x2="235.15113943738825" y1="163.80232708767875" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="" x1="218.66374818474873" x2="235.15113943738825" y1="294.0888873743847" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="218.66374818474873" x2="187.84365769901868" y1="294.0888873743847" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="" x1="235.15113943738825" x2="187.84365769901868" y1="295.8373715231389" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="622.040757165215" y1="600.3464455029485" y2="491.09282165735135"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="184.8199867807573" y1="600.3464455029485" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="201.8692522899755" y1="600.3464455029485" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="160.01892578330853" y1="600.3464455029485" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="218.66374818474873" y1="600.3464455029485" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="267.8587809412443" x2="235.15113943738825" y1="600.3464455029485" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="622.040757165215" y1="160.0722339296211" y2="491.09282165735135"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="184.8199867807573" y1="160.0722339296211" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="201.8692522899755" y1="160.0722339296211" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="160.01892578330853" y1="160.0722339296211" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="357.44815737474926" y1="160.0722339296211" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="218.66374818474873" y1="160.0722339296211" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="235.15113943738825" y1="160.0722339296211" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="394.11212530045594" x2="187.84365769901868" y1="160.0722339296211" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="269.63808220691" x2="184.8199867807573" y1="583.3869417088023" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="269.63808220691" x2="201.8692522899755" y1="583.3869417088023" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="269.63808220691" x2="160.01892578330853" y1="583.3869417088023" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="269.63808220691" x2="218.66374818474873" y1="583.3869417088023" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="269.63808220691" x2="235.15113943738825" y1="583.3869417088023" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="355.05066088018475" x2="168.66699980671243" y1="635.7531694647855" y2="336.08565871752717"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="355.05066088018475" x2="184.8199867807573" y1="635.7531694647855" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="355.05066088018475" x2="160.01892578330853" y1="635.7531694647855" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="355.05066088018475" x2="218.66374818474873" y1="635.7531694647855" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="355.05066088018475" x2="187.84365769901868" y1="635.7531694647855" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#FF6B6B" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="622.040757165215" y1="515.908720962028" y2="491.09282165735135"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="184.8199867807573" y1="515.908720962028" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="201.8692522899755" y1="515.908720962028" y2="293.37351730519"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="357.44815737474926" y1="515.908720962028" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="218.66374818474873" y1="515.908720962028" y2="294.0888873743847"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="235.15113943738825" y1="515.908720962028" y2="295.8373715231389"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="610.1551055885789" x2="187.84365769901868" y1="515.908720962028" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="638.622449899224" x2="168.66699980671243" y1="425.6773519680738" y2="336.08565871752717"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="638.622449899224" x2="160.01892578330853" y1="425.6773519680738" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#4ECDC4" stroke-width="1" style="stroke-dasharray: 5,5" x1="525.452427296642" x2="243.7403635033091" y1="604.6012915046745" y2="217.83818731160466"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="525.452427296642" x2="160.01892578330853" y1="604.6012915046745" y2="396.98602956172135"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="525.452427296642" x2="187.84365769901868" y1="604.6012915046745" y2="512.2037718682792"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="272.42955765101897" x2="168.66699980671243" y1="566.8106178841302" y2="336.08565871752717"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="272.42955765101897" x2="184.8199867807573" y1="566.8106178841302" y2="293.71001029745776"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="272.42955765101897" x2="243.7403635033091" y1="566.8106178841302" y2="217.83818731160466"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="272.42955765101897" x2="357.44815737474926" y1="566.8106178841302" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#98D8E8" stroke-width="1" style="stroke-dasharray: 5,5" x1="168.95830000060505" x2="243.7403635033091" y1="464.95947091371335" y2="217.83818731160466"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="168.95830000060505" x2="357.44815737474926" y1="464.95947091371335" y2="163.80232708767875"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="168.66699980671243" y1="619.4132928356813" y2="336.08565871752717"/>
+<line opacity="0.7" stroke="#FFA07A" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="622.040757165215" y1="619.4132928356813" y2="491.09282165735135"/>
+<line opacity="0.7" stroke="#45B7D1" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="243.7403635033091" y1="619.4132928356813" y2="217.83818731160466"/>
+</svg>

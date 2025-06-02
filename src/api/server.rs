@@ -8,6 +8,7 @@ use crate::calc::planets::calculate_planet_positions;
 use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
 use crate::utils::logging::log_request_error;
+use crate::charts::{generate_natal_svg, generate_synastry_svg, generate_transit_svg};
 use actix_web::{
     web, HttpResponse, Responder, middleware,
     dev::{ServiceRequest, ServiceResponse, Service, Transform},
@@ -315,9 +316,15 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                 houses: house_info,
                 aspects: aspect_info,
                 transit: transit_data,
+                svg_chart: None, // Will be set below
             };
 
-            HttpResponse::Ok().json(response)
+            // Generate SVG chart
+            let svg_chart = generate_natal_svg(&response);
+            let mut final_response = response;
+            final_response.svg_chart = Some(svg_chart);
+
+            HttpResponse::Ok().json(final_response)
         }
         Err(e) => {
             log_request_error(
@@ -405,9 +412,15 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 houses: _house_info,
                 aspects: aspect_info,
                 transit: None,
+                svg_chart: None, // Will be set below
             };
 
-            HttpResponse::Ok().json(response)
+            // Generate SVG chart
+            let svg_chart = generate_natal_svg(&response);
+            let mut final_response = response;
+            final_response.svg_chart = Some(svg_chart);
+
+            HttpResponse::Ok().json(final_response)
         }
         Err(e) => {
             log_request_error(
@@ -536,9 +549,15 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 houses: house_info,
                 natal_aspects: natal_aspect_info,
                 transit_aspects: transit_aspect_info,
+                svg_chart: None, // Will be set below
             };
 
-            HttpResponse::Ok().json(response)
+            // Generate SVG chart
+            let svg_chart = generate_transit_svg(&response);
+            let mut final_response = response;
+            final_response.svg_chart = Some(svg_chart);
+
+            HttpResponse::Ok().json(final_response)
         }
         _ => {
             log_request_error(
@@ -706,6 +725,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 houses: _house_info1,
                 aspects: aspect_info1,
                 transit: None,
+                svg_chart: None, // Will be set below
             };
 
             let chart2 = ChartResponse {
@@ -719,16 +739,31 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 houses: _house_info2,
                 aspects: aspect_info2,
                 transit: None,
+                svg_chart: None, // Will be set below
             };
+
+            // Generate SVG charts
+            let svg_chart1 = generate_natal_svg(&chart1);
+            let svg_chart2 = generate_natal_svg(&chart2);
+            let mut final_chart1 = chart1;
+            final_chart1.svg_chart = Some(svg_chart1);
+            let mut final_chart2 = chart2;
+            final_chart2.svg_chart = Some(svg_chart2);
 
             let response = SynastryResponse {
                 chart_type: "synastry".to_string(),
-                chart1,
-                chart2,
+                chart1: final_chart1,
+                chart2: final_chart2,
                 synastries: aspect_info,
+                svg_chart: None, // Will be set below
             };
 
-            HttpResponse::Ok().json(response)
+            // Generate SVG chart for synastry
+            let synastry_svg = generate_synastry_svg(&response);
+            let mut final_response = response;
+            final_response.svg_chart = Some(synastry_svg);
+
+            HttpResponse::Ok().json(final_response)
         }
         _ => {
             log_request_error(

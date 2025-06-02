@@ -96,6 +96,8 @@ pub struct ChartResponse {
     pub aspects: Vec<AspectInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transit: Option<TransitData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub svg_chart: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -122,6 +124,8 @@ pub struct TransitResponse {
     pub houses: Vec<HouseInfo>,
     pub natal_aspects: Vec<AspectInfo>,
     pub transit_aspects: Vec<AspectInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub svg_chart: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -130,6 +134,8 @@ pub struct SynastryResponse {
     pub chart1: ChartResponse,
     pub chart2: ChartResponse,
     pub synastries: Vec<SynastryAspectInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub svg_chart: Option<String>,
 }
 
 impl From<PlanetPosition> for PlanetInfo {

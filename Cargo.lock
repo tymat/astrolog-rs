@@ -481,6 +481,7 @@ dependencies = [
  "num_cpus",
  "serde",
  "serde_json",
+ "svg",
  "swisseph",
  "thiserror",
  "tokio",
@@ -3257,6 +3258,12 @@ name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
+
+[[package]]
+name = "svg"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02d815ad337e8449d2374d4248448645edfe74e699343dd5719139d93fa87112"
 
 [[package]]
 name = "swisseph"

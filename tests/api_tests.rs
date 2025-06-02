@@ -89,6 +89,12 @@ async fn test_natal_chart_endpoint() {
         ]
         .contains(&planet2));
     }
+
+    // Check that SVG chart is generated
+    assert!(response.get("svg_chart").is_some());
+    let svg_chart = response["svg_chart"].as_str().unwrap();
+    assert!(svg_chart.contains("<svg"));
+    assert!(svg_chart.contains("</svg>"));
 }
 
 #[actix_web::test]
@@ -181,6 +187,12 @@ async fn test_transit_chart_endpoint() {
         assert!(house.get("longitude").is_some());
         assert!(house.get("latitude").is_some());
     }
+
+    // Check that SVG chart is generated
+    assert!(response.get("svg_chart").is_some());
+    let svg_chart = response["svg_chart"].as_str().unwrap();
+    assert!(svg_chart.contains("<svg"));
+    assert!(svg_chart.contains("</svg>"));
 }
 
 #[actix_web::test]
@@ -269,6 +281,12 @@ async fn test_synastry_chart_endpoint() {
         assert!(aspect.get("aspect").is_some());
         assert!(aspect.get("orb").is_some());
     }
+
+    // Check that SVG chart is generated
+    assert!(response.get("svg_chart").is_some());
+    let svg_chart = response["svg_chart"].as_str().unwrap();
+    assert!(svg_chart.contains("<svg"));
+    assert!(svg_chart.contains("</svg>"));
 }
 
 #[actix_web::test]
@@ -488,6 +506,12 @@ async fn test_chart_endpoint_with_transits() {
     // Cross aspects might be empty if no aspects are within orb, so just check it exists
     // The fact that we can call .as_array().unwrap() means it's a valid array
 
+    // Check that SVG chart is generated
+    assert!(response.get("svg_chart").is_some());
+    let svg_chart = response["svg_chart"].as_str().unwrap();
+    assert!(svg_chart.contains("<svg"));
+    assert!(svg_chart.contains("</svg>"));
+
     println!("Chart with transits response: {}", serde_json::to_string_pretty(&response).unwrap());
 }
 
@@ -533,6 +557,12 @@ async fn test_chart_endpoint_without_transits() {
     // Check transit planets exist
     let transit_planets = transit["planets"].as_array().unwrap();
     assert!(!transit_planets.is_empty());
+
+    // Check that SVG chart is generated
+    assert!(response.get("svg_chart").is_some());
+    let svg_chart = response["svg_chart"].as_str().unwrap();
+    assert!(svg_chart.contains("<svg"));
+    assert!(svg_chart.contains("</svg>"));
 
     println!("Chart with default transits response: {}", serde_json::to_string_pretty(&response).unwrap());
 }

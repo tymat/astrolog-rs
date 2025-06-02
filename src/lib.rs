@@ -1,5 +1,6 @@
 pub mod api;
 pub mod calc;
+pub mod charts;
 pub mod core;
 pub mod io;
 pub mod utils;

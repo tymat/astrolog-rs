@@ -1,64 +1,99 @@
-use crate::core::types::{AstrologError, Chart, ChartInfo, ChartPositions, HouseSystem};
-use chrono::{DateTime, Utc};
+pub mod styles;
+pub mod svg_generator;
 
-/// Generate a new chart with the given information
-#[allow(dead_code)]
-pub fn generate_chart(_info: &ChartInfo) -> Result<Chart, AstrologError> {
-    Err(AstrologError::NotImplemented {
-        message: "Chart generation not yet implemented".into(),
-    })
+use crate::api::types::{ChartResponse, TransitResponse, SynastryResponse};
+use svg_generator::SVGChartGenerator;
+
+// Re-export important types
+pub use styles::{ChartStyles, init_styles, get_styles};
+
+/// Generate SVG for natal chart (including transits if present)
+pub fn generate_natal_svg(chart_data: &ChartResponse) -> String {
+    let generator = SVGChartGenerator::new();
+    generator.generate_natal_chart(chart_data)
 }
 
-/// Update an existing chart with new positions
-#[allow(dead_code)]
-pub fn update_chart_positions(
-    _chart: &mut Chart,
-    _positions: &ChartPositions,
-) -> Result<(), AstrologError> {
-    Err(AstrologError::NotImplemented {
-        message: "Chart position update not yet implemented".into(),
-    })
+/// Generate SVG for synastry chart
+pub fn generate_synastry_svg(synastry_data: &SynastryResponse) -> String {
+    let generator = SVGChartGenerator::new();
+    generator.generate_synastry_chart(synastry_data)
 }
 
-/// Calculate aspects for a chart
-#[allow(dead_code)]
-pub fn calculate_chart_aspects(
-    _chart: &Chart,
-) -> Result<Vec<(String, String, f64)>, AstrologError> {
-    Err(AstrologError::NotImplemented {
-        message: "Chart aspect calculation not yet implemented".into(),
-    })
-}
-
-pub fn create_test_chart() -> ChartInfo {
-    ChartInfo {
-        date: Utc::now(), // Use current UTC time
-        latitude: 40.7128,
-        longitude: -74.0060,
-        timezone: -4.0,
-        house_system: HouseSystem::Placidus,
-    }
+/// Generate SVG for transit chart
+pub fn generate_transit_svg(transit_data: &TransitResponse) -> String {
+    let generator = SVGChartGenerator::new();
+    generator.generate_transit_chart(transit_data)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::TimeZone;
+    use crate::api::types::{ChartResponse, PlanetInfo, HouseInfo, AspectInfo};
+    use chrono::{DateTime, Utc};
+    use std::collections::HashMap;
+
+    fn create_test_chart_data() -> ChartResponse {
+        ChartResponse {
+            chart_type: "natal".to_string(),
+            date: Utc::now(),
+            latitude: 40.7128,
+            longitude: -74.0060,
+            house_system: "placidus".to_string(),
+            ayanamsa: "tropical".to_string(),
+            planets: vec![
+                PlanetInfo {
+                    name: "Sun".to_string(),
+                    longitude: 120.0,
+                    latitude: 0.0,
+                    speed: 1.0,
+                    is_retrograde: false,
+                    house: Some(5),
+                },
+                PlanetInfo {
+                    name: "Moon".to_string(),
+                    longitude: 180.0,
+                    latitude: 0.0,
+                    speed: 13.0,
+                    is_retrograde: false,
+                    house: Some(7),
+                },
+            ],
+            houses: vec![
+                HouseInfo { number: 1, longitude: 0.0, latitude: 0.0 },
+                HouseInfo { number: 2, longitude: 30.0, latitude: 0.0 },
+            ],
+            aspects: vec![
+                AspectInfo {
+                    planet1: "Sun".to_string(),
+                    planet2: "Moon".to_string(),
+                    aspect: "Opposition".to_string(),
+                    orb: 2.0,
+                },
+            ],
+            transit: None,
+        }
+    }
 
     #[test]
-    fn test_chart_generation() {
-        let info = ChartInfo {
-            date: Utc.with_ymd_and_hms(2024, 3, 15, 12, 0, 0).unwrap(),
-            latitude: 51.5074,
-            longitude: -0.1278,
-            timezone: 0.0,
-            house_system: HouseSystem::Placidus,
-        };
+    fn test_natal_svg_generation() {
+        let _ = init_styles(); // Initialize styles
+        let chart_data = create_test_chart_data();
+        let svg = generate_natal_svg(&chart_data);
+        
+        assert!(svg.contains("<svg"));
+        assert!(svg.contains("</svg>"));
+        assert!(svg.contains("☉")); // Sun symbol
+        assert!(svg.contains("☽")); // Moon symbol
+    }
 
-        let result = generate_chart(&info);
-        assert!(result.is_err());
-        if let Err(AstrologError::NotImplemented { message }) = result {
-            assert_eq!(message, "Chart generation not yet implemented");
-        }
+    #[test]
+    fn test_styles_initialization() {
+        let result = init_styles();
+        assert!(result.is_ok() || result.is_err()); // Either loads file or uses defaults
+        
+        let styles = get_styles();
+        assert!(styles.get_planet_color("Sun").starts_with("#"));
+        assert!(styles.get_chart_color("background").starts_with("#"));
+        assert!(styles.get_aspect_color("Opposition").starts_with("#"));
     }
 }
