@@ -12,9 +12,9 @@
     "Pluto": "#A29BFE"
   },
   "chart_colors": {
-    "background": "#2D2A5A",
-    "wheel_background": "#003E66",
-    "chart_wheel_line": "#141729",
+    "background": "#1A1A2E",
+    "wheel_background": "#150A24",
+    "chart_wheel_line": "#5F616E",
     "chart1_planet_border": "#252c42",
     "chart2_planet_border": "#854077",
     "transit_planet_border": "#8dad8c",
