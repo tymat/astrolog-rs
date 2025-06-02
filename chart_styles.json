@@ -1,15 +1,15 @@
 {
   "planet_colors": {
-    "Sun": "#FF6B35",
-    "Moon": "#4ECDC4",
-    "Mercury": "#45B7D1",
-    "Venus": "#96CEB4",
-    "Mars": "#FFEAA7",
-    "Jupiter": "#DDA0DD",
-    "Saturn": "#98D8C8",
-    "Uranus": "#6C5CE7",
-    "Neptune": "#74B9FF",
-    "Pluto": "#A29BFE"
+    "Sun": "#FFD900",
+    "Moon": "#8D00CC",
+    "Mercury": "#FF7107",
+    "Venus": "#3AD200",
+    "Mars": "#940000",
+    "Jupiter": "#0000FF",
+    "Saturn": "#3E3E3E",
+    "Uranus": "#00FFC8",
+    "Neptune": "#6EC0C6",
+    "Pluto": "#612B0D"
   },
   "chart_colors": {
     "background": "#1A1A2E",
