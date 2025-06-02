@@ -474,8 +474,8 @@ impl SVGChartGenerator {
         Ok(doc)
     }
 
-    // Draw aspects using radial positioning
-    pub fn draw_aspects(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], line_style: &str) -> Result<Document, String> {
+    // Draw aspects using radial positioning with chart-specific colors
+    pub fn draw_aspects_for_chart(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], line_style: &str, chart_type: &str) -> Result<Document, String> {
         let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
@@ -491,7 +491,12 @@ impl SVGChartGenerator {
                 planet_positions.get(&planet1_name).cloned(),
                 planet_positions.get(&planet2_name).cloned()
             ) {
-                let color = styles.get_aspect_color(&aspect.aspect);
+                let color = match chart_type {
+                    "chart1" => styles.get_chart1_aspect_color(&aspect.aspect),
+                    "chart2" => styles.get_chart2_aspect_color(&aspect.aspect),
+                    "synastry" => styles.get_synastry_aspect_color(&aspect.aspect),
+                    _ => styles.get_aspect_color(&aspect.aspect)
+                };
                 
                 let stroke_style = match line_style {
                     "dotted" => "stroke-dasharray: 2,2",
@@ -516,8 +521,8 @@ impl SVGChartGenerator {
         Ok(doc)
     }
 
-    // Draw aspects using custom positioning
-    pub fn draw_aspects_with_positions(&self, doc: Document, aspects: &[AspectInfo], _planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, line_style: &str) -> Result<Document, String> {
+    // Draw aspects using custom positioning with chart-specific colors
+    pub fn draw_aspects_with_positions_for_chart(&self, doc: Document, aspects: &[AspectInfo], _planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, line_style: &str, chart_type: &str) -> Result<Document, String> {
         let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
         let mut doc = doc;
 
@@ -530,7 +535,12 @@ impl SVGChartGenerator {
                 positions.get(&planet1_name).cloned(),
                 positions.get(&planet2_name).cloned()
             ) {
-                let color = styles.get_aspect_color(&aspect.aspect);
+                let color = match chart_type {
+                    "chart1" => styles.get_chart1_aspect_color(&aspect.aspect),
+                    "chart2" => styles.get_chart2_aspect_color(&aspect.aspect),
+                    "synastry" => styles.get_synastry_aspect_color(&aspect.aspect),
+                    _ => styles.get_aspect_color(&aspect.aspect)
+                };
                 
                 let stroke_style = match line_style {
                     "dotted" => "stroke-dasharray: 2,2",
@@ -553,6 +563,16 @@ impl SVGChartGenerator {
         }
 
         Ok(doc)
+    }
+
+    // Backward compatibility: Draw aspects using radial positioning (uses default colors)
+    pub fn draw_aspects(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], line_style: &str) -> Result<Document, String> {
+        self.draw_aspects_for_chart(doc, aspects, planets, line_style, "default")
+    }
+
+    // Backward compatibility: Draw aspects using custom positioning (uses default colors)
+    pub fn draw_aspects_with_positions(&self, doc: Document, aspects: &[AspectInfo], planets: &[PlanetInfo], positions: &std::collections::HashMap<String, (f64, f64)>, line_style: &str) -> Result<Document, String> {
+        self.draw_aspects_with_positions_for_chart(doc, aspects, planets, positions, line_style, "default")
     }
 
     // Generate natal chart SVG
@@ -602,8 +622,8 @@ impl SVGChartGenerator {
             doc = self.draw_planets_with_positions(doc, &transit_data.planets, &transit_positions, "transit")?;
             
             // Draw aspects using calculated positions
-            doc = self.draw_aspects_with_positions(doc, &chart_data.aspects, &chart_data.planets, &natal_positions, "solid")?;
-            doc = self.draw_aspects_with_positions(doc, &transit_data.aspects, &transit_data.planets, &transit_positions, "dotted")?;
+            doc = self.draw_aspects_with_positions_for_chart(doc, &chart_data.aspects, &chart_data.planets, &natal_positions, "solid", "chart1")?;
+            doc = self.draw_aspects_with_positions_for_chart(doc, &transit_data.aspects, &transit_data.planets, &transit_positions, "dotted", "transit")?;
             
             // Draw transit-to-natal aspects
             let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
@@ -626,7 +646,7 @@ impl SVGChartGenerator {
                 };
                 
                 if let (Some((x1, y1)), Some((x2, y2))) = (pos1, pos2) {
-                    let color = styles.get_aspect_color(&aspect.aspect);
+                    let color = styles.get_synastry_aspect_color(&aspect.aspect);
                     
                     let line = Line::new()
                         .set("x1", x1)
@@ -644,7 +664,7 @@ impl SVGChartGenerator {
         } else {
             // No transits - use regular positioning
             doc = self.draw_planets(doc, &chart_data.planets, "chart1")?;
-            doc = self.draw_aspects(doc, &chart_data.aspects, &chart_data.planets, "solid")?;
+            doc = self.draw_aspects_for_chart(doc, &chart_data.aspects, &chart_data.planets, "solid", "chart1")?;
         }
 
         Ok(doc.to_string())
@@ -695,8 +715,8 @@ impl SVGChartGenerator {
         doc = self.draw_planets_with_positions(doc, &synastry_data.chart2.planets, &chart2_positions, "chart2")?;
         
         // Draw aspects for each chart separately
-        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart1.aspects, &synastry_data.chart1.planets, &chart1_positions, "solid")?;
-        doc = self.draw_aspects_with_positions(doc, &synastry_data.chart2.aspects, &synastry_data.chart2.planets, &chart2_positions, "solid")?;
+        doc = self.draw_aspects_with_positions_for_chart(doc, &synastry_data.chart1.aspects, &synastry_data.chart1.planets, &chart1_positions, "solid", "chart1")?;
+        doc = self.draw_aspects_with_positions_for_chart(doc, &synastry_data.chart2.aspects, &synastry_data.chart2.planets, &chart2_positions, "solid", "chart2")?;
         
         // Draw synastry aspects between charts
         let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
@@ -705,7 +725,7 @@ impl SVGChartGenerator {
                 chart1_positions.get(&aspect.person1).cloned(),
                 chart2_positions.get(&aspect.person2).cloned()
             ) {
-                let color = styles.get_aspect_color(&aspect.aspect);
+                let color = styles.get_synastry_aspect_color(&aspect.aspect);
                 
                 let line = Line::new()
                     .set("x1", x1)
@@ -769,8 +789,8 @@ impl SVGChartGenerator {
         doc = self.draw_planets_with_positions(doc, &transit_data.transit_planets, &transit_positions, "transit")?;
         
         // Draw aspects using calculated positions
-        doc = self.draw_aspects_with_positions(doc, &transit_data.natal_aspects, &transit_data.natal_planets, &natal_positions, "solid")?;
-        doc = self.draw_aspects_with_positions(doc, &transit_data.transit_aspects, &transit_data.transit_planets, &transit_positions, "dotted")?;
+        doc = self.draw_aspects_with_positions_for_chart(doc, &transit_data.natal_aspects, &transit_data.natal_planets, &natal_positions, "solid", "chart1")?;
+        doc = self.draw_aspects_with_positions_for_chart(doc, &transit_data.transit_aspects, &transit_data.transit_planets, &transit_positions, "dotted", "transit")?;
 
         Ok(doc.to_string())
     }
