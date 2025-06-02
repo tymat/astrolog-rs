@@ -12,6 +12,7 @@
     "Pluto": "#612B0D"
   },
   "chart_colors": {
+    "date_label_color": "#FFFFFF",
     "background": "#1A1A2E",
     "wheel_background": "#150A24",
     "chart_wheel_line": "#5F616E",

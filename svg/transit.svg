@@ -261,4 +261,10 @@
 <line opacity="0.7" stroke="#DE9C68" stroke-width="1" style="stroke-dasharray: 2,2" x1="639.8886715863696" x2="416.146962772706" y1="392.69074254613327" y2="140.5018774765088"/>
 <line opacity="0.7" stroke="#D49CF6" stroke-width="1" style="stroke-dasharray: 2,2" x1="416.146962772706" x2="603.9174914260781" y1="140.5018774765088" y2="273.4391186404923"/>
 <line opacity="0.7" stroke="#6DD7EA" stroke-width="1" style="stroke-dasharray: 2,2" x1="416.146962772706" x2="422.14396858647285" y1="140.5018774765088" y2="140.94470733983968"/>
+<text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold" x="20" y="25">
+Birthday: 1977-10-24 04:56
+</text>
+<text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold" x="20" y="45">
+Transit Date: 2025-06-02 03:21
+</text>
 </svg>

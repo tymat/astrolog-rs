@@ -4,6 +4,7 @@ use svg::Document;
 use svg::node::element::{Circle, Line, Text, Rectangle};
 use svg::node::Text as TextNode;
 use std::f64::consts::PI;
+use chrono::{DateTime, Utc};
 
 const CHART_SIZE: f64 = 800.0;
 const CENTER: f64 = CHART_SIZE / 2.0;
@@ -575,6 +576,37 @@ impl SVGChartGenerator {
         self.draw_aspects_with_positions_for_chart(doc, aspects, planets, positions, line_style, "default")
     }
 
+    // Format date for display
+    fn format_date(&self, date: &DateTime<Utc>) -> String {
+        date.format("%Y-%m-%d %H:%M").to_string()
+    }
+
+    // Draw date labels in upper left corner
+    fn draw_date_labels(&self, doc: Document, labels: Vec<String>) -> Result<Document, String> {
+        let styles = get_styles().ok_or("Chart styles not initialized. chart_styles.json is required.")?;
+        let mut doc = doc;
+        
+        let start_y = 25.0;
+        let line_height = 20.0;
+        
+        for (i, label) in labels.iter().enumerate() {
+            let y_position = start_y + (i as f64 * line_height);
+            
+            let date_text = Text::new()
+                .set("x", 20)
+                .set("y", y_position)
+                .set("fill", styles.get_chart_color("date_label_color"))
+                .set("font-family", "sans-serif")
+                .set("font-size", 14)
+                .set("font-weight", "bold")
+                .add(TextNode::new(label));
+            
+            doc = doc.add(date_text);
+        }
+        
+        Ok(doc)
+    }
+
     // Generate natal chart SVG
     pub fn generate_natal_chart(&self, chart_data: &ChartResponse) -> Result<String, String> {
         let mut doc = self.create_svg_document()?;
@@ -583,8 +615,15 @@ impl SVGChartGenerator {
         doc = self.draw_zodiac_signs(doc)?;
         doc = self.draw_houses(doc, &chart_data.houses)?;
         
+        // Prepare date labels
+        let mut date_labels = vec![
+            format!("Birthday: {}", self.format_date(&chart_data.date))
+        ];
+        
         // Add transit data if present
         if let Some(transit_data) = &chart_data.transit {
+            date_labels.push(format!("Transit Date: {}", self.format_date(&transit_data.date)));
+            
             // Calculate positions separately for each chart type
             let natal_positions = self.calculate_planet_positions(&chart_data.planets);
             let mut transit_positions = self.calculate_planet_positions(&transit_data.planets);
@@ -667,6 +706,9 @@ impl SVGChartGenerator {
             doc = self.draw_aspects_for_chart(doc, &chart_data.aspects, &chart_data.planets, "solid", "chart1")?;
         }
 
+        // Add date labels
+        doc = self.draw_date_labels(doc, date_labels)?;
+
         Ok(doc.to_string())
     }
 
@@ -677,6 +719,12 @@ impl SVGChartGenerator {
         doc = self.draw_zodiac_divisions(doc)?;
         doc = self.draw_zodiac_signs(doc)?;
         doc = self.draw_houses(doc, &synastry_data.chart1.houses)?;
+        
+        // Prepare date labels
+        let date_labels = vec![
+            format!("Chart 1 Birthday: {}", self.format_date(&synastry_data.chart1.date)),
+            format!("Chart 2 Birthday: {}", self.format_date(&synastry_data.chart2.date))
+        ];
         
         // Calculate positions separately for each chart type
         let chart1_positions = self.calculate_planet_positions(&synastry_data.chart1.planets);
@@ -741,6 +789,9 @@ impl SVGChartGenerator {
             }
         }
 
+        // Add date labels
+        doc = self.draw_date_labels(doc, date_labels)?;
+
         Ok(doc.to_string())
     }
 
@@ -751,6 +802,12 @@ impl SVGChartGenerator {
         doc = self.draw_zodiac_divisions(doc)?;
         doc = self.draw_zodiac_signs(doc)?;
         doc = self.draw_houses(doc, &transit_data.houses)?;
+        
+        // Prepare date labels
+        let date_labels = vec![
+            format!("Birthday: {}", self.format_date(&transit_data.natal_date)),
+            format!("Transit Date: {}", self.format_date(&transit_data.transit_date))
+        ];
         
         // Calculate positions separately for each chart type
         let natal_positions = self.calculate_planet_positions(&transit_data.natal_planets);
@@ -791,6 +848,9 @@ impl SVGChartGenerator {
         // Draw aspects using calculated positions
         doc = self.draw_aspects_with_positions_for_chart(doc, &transit_data.natal_aspects, &transit_data.natal_planets, &natal_positions, "solid", "chart1")?;
         doc = self.draw_aspects_with_positions_for_chart(doc, &transit_data.transit_aspects, &transit_data.transit_planets, &transit_positions, "dotted", "transit")?;
+
+        // Add date labels
+        doc = self.draw_date_labels(doc, date_labels)?;
 
         Ok(doc.to_string())
     }
