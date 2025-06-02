@@ -319,10 +319,4 @@
 <line opacity="0.7" stroke="#E1C5AE" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="168.66699980671243" y1="619.4132928356813" y2="336.08565871752717"/>
 <line opacity="0.7" stroke="#E1C5AE" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="622.040757165215" y1="619.4132928356813" y2="491.09282165735135"/>
 <line opacity="0.7" stroke="#A5C9A0" stroke-width="1" style="stroke-dasharray: 5,5" x1="350.17222735257405" x2="243.7403635033091" y1="619.4132928356813" y2="217.83818731160466"/>
-<text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold" x="20" y="25">
-Chart 1 Birthday: 1977-10-24 04:56
-</text>
-<text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold" x="20" y="45">
-Chart 2 Birthday: 1996-01-06 12:00
-</text>
 </svg>
