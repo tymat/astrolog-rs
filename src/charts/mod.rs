@@ -47,7 +47,9 @@ mod tests {
                     latitude: 0.0,
                     speed: 1.0,
                     is_retrograde: false,
+                    sign: "Leo".to_string(),
                     house: Some(5),
+                    transit_house: None,
                 },
                 PlanetInfo {
                     name: "Moon".to_string(),
@@ -55,7 +57,9 @@ mod tests {
                     latitude: 0.0,
                     speed: 13.0,
                     is_retrograde: false,
+                    sign: "Libra".to_string(),
                     house: Some(7),
+                    transit_house: None,
                 },
             ],
             houses: vec![
@@ -71,6 +75,7 @@ mod tests {
                 },
             ],
             transit: None,
+            svg_chart: None,
         }
     }
 

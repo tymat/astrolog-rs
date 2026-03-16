@@ -3,7 +3,7 @@ use crate::api::types::{
     SynastryResponse, SynastryAspectInfo, TransitRequest, TransitResponse, TransitData, TransitInfo,
 };
 use crate::calc::aspects::{calculate_aspects_with_options, calculate_transit_aspects_with_options, calculate_cross_aspects_with_options, calculate_synastry_aspects};
-use crate::calc::houses::calculate_houses;
+use crate::calc::houses::{calculate_houses, house_place_in};
 use crate::calc::planets::calculate_planet_positions;
 use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
@@ -84,6 +84,25 @@ fn get_client_ip() -> String {
     CLIENT_IP.with(|cell| cell.borrow().clone())
 }
 
+/// Extract house cusp longitudes from HousePosition vec for use with house_place_in.
+fn cusp_longitudes(houses: &[crate::calc::houses::HousePosition]) -> Vec<f64> {
+    houses.iter().map(|h| h.longitude).collect()
+}
+
+/// Assign house placements to planets using the given house cusps.
+fn assign_houses(planets: &mut [PlanetInfo], cusps: &[f64]) {
+    for planet in planets.iter_mut() {
+        planet.house = Some(house_place_in(planet.longitude, cusps));
+    }
+}
+
+/// Assign transit-location house placements to planets.
+fn assign_transit_houses(planets: &mut [PlanetInfo], cusps: &[f64]) {
+    for planet in planets.iter_mut() {
+        planet.transit_house = Some(house_place_in(planet.longitude, cusps));
+    }
+}
+
 #[allow(dead_code)]
 fn parse_house_system(system: &str) -> HouseSystem {
     match system.to_lowercase().as_str() {
@@ -104,7 +123,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
     // Calculate natal chart
     match calculate_planet_positions(jd) {
         Ok(natal_positions) => {
-            let planets: Vec<PlanetInfo> = natal_positions
+            let mut planets: Vec<PlanetInfo> = natal_positions
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -139,6 +158,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                     return HttpResponse::InternalServerError().body(e.to_string());
                 }
             };
+            let natal_cusps = cusp_longitudes(&houses);
             let house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
@@ -147,6 +167,9 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                     latitude: h.latitude,
                 })
                 .collect();
+
+            // Assign house placements to natal planets
+            assign_houses(&mut planets, &natal_cusps);
 
             // Calculate natal aspects
             let natal_aspects = calculate_aspects_with_options(&natal_positions, req.include_minor_aspects);
@@ -166,7 +189,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                 
                 match calculate_planet_positions(transit_jd) {
                     Ok(transit_positions) => {
-                        let transit_planets: Vec<PlanetInfo> = transit_positions
+                        let mut transit_planets: Vec<PlanetInfo> = transit_positions
                             .iter()
                             .enumerate()
                             .map(|(i, pos)| {
@@ -187,6 +210,17 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                                 info
                             })
                             .collect();
+
+                        // Assign natal house placements to transit planets (traditional)
+                        assign_houses(&mut transit_planets, &natal_cusps);
+
+                        // Calculate transit-location houses and assign transit_house
+                        let transit_lat = transit_info.latitude;
+                        let transit_lon = transit_info.longitude;
+                        if let Ok(transit_houses) = calculate_houses(transit_jd, transit_lat, transit_lon, house_system) {
+                            let transit_cusps = cusp_longitudes(&transit_houses);
+                            assign_transit_houses(&mut transit_planets, &transit_cusps);
+                        }
 
                         // Calculate transit aspects
                         let transit_aspects = calculate_transit_aspects_with_options(&transit_positions, req.include_minor_aspects);
@@ -238,7 +272,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                 
                 match calculate_planet_positions(transit_jd) {
                     Ok(transit_positions) => {
-                        let transit_planets: Vec<PlanetInfo> = transit_positions
+                        let mut transit_planets: Vec<PlanetInfo> = transit_positions
                             .iter()
                             .enumerate()
                             .map(|(i, pos)| {
@@ -259,6 +293,17 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                                 info
                             })
                             .collect();
+
+                        // Assign natal house placements to transit planets (traditional)
+                        assign_houses(&mut transit_planets, &natal_cusps);
+
+                        // Calculate transit-location houses and assign transit_house
+                        let transit_lat = default_transit.latitude;
+                        let transit_lon = default_transit.longitude;
+                        if let Ok(transit_houses) = calculate_houses(transit_jd, transit_lat, transit_lon, house_system) {
+                            let transit_cusps = cusp_longitudes(&transit_houses);
+                            assign_transit_houses(&mut transit_planets, &transit_cusps);
+                        }
 
                         // Calculate transit aspects
                         let transit_aspects = calculate_transit_aspects_with_options(&transit_positions, req.include_minor_aspects);
@@ -319,22 +364,25 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                 svg_chart: None, // Will be set below
             };
 
-            // Generate SVG chart
-            match generate_natal_svg(&response) {
-                Ok(svg_chart) => {
-                    let mut final_response = response;
-                    final_response.svg_chart = Some(svg_chart);
-                    HttpResponse::Ok().json(final_response)
+            if req.svg_chart {
+                match generate_natal_svg(&response) {
+                    Ok(svg_chart) => {
+                        let mut final_response = response;
+                        final_response.svg_chart = Some(svg_chart);
+                        HttpResponse::Ok().json(final_response)
+                    }
+                    Err(svg_error) => {
+                        log_request_error(
+                            "chart",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &format!("SVG generation failed: {}", svg_error),
+                        );
+                        HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                    }
                 }
-                Err(svg_error) => {
-                    log_request_error(
-                        "chart",
-                        &get_client_ip(),
-                        &json!(req.0).to_string(),
-                        &format!("SVG generation failed: {}", svg_error),
-                    );
-                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
-                }
+            } else {
+                HttpResponse::Ok().json(response)
             }
         }
         Err(e) => {
@@ -356,7 +404,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
 
     match calculate_planet_positions(jd) {
         Ok(positions) => {
-            let planets: Vec<PlanetInfo> = positions
+            let mut planets: Vec<PlanetInfo> = positions
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -391,6 +439,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                     return HttpResponse::InternalServerError().body(e.to_string());
                 }
             };
+            let natal_cusps = cusp_longitudes(&houses);
             let _house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
@@ -399,6 +448,9 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                     latitude: h.latitude,
                 })
                 .collect();
+
+            // Assign house placements to natal planets
+            assign_houses(&mut planets, &natal_cusps);
 
             // Calculate aspects
             let aspects = calculate_aspects_with_options(&positions, req.include_minor_aspects);
@@ -426,22 +478,25 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 svg_chart: None, // Will be set below
             };
 
-            // Generate SVG chart
-            match generate_natal_svg(&response) {
-                Ok(svg_chart) => {
-                    let mut final_response = response;
-                    final_response.svg_chart = Some(svg_chart);
-                    HttpResponse::Ok().json(final_response)
+            if req.svg_chart {
+                match generate_natal_svg(&response) {
+                    Ok(svg_chart) => {
+                        let mut final_response = response;
+                        final_response.svg_chart = Some(svg_chart);
+                        HttpResponse::Ok().json(final_response)
+                    }
+                    Err(svg_error) => {
+                        log_request_error(
+                            "chart",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &format!("SVG generation failed: {}", svg_error),
+                        );
+                        HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                    }
                 }
-                Err(svg_error) => {
-                    log_request_error(
-                        "chart",
-                        &get_client_ip(),
-                        &json!(req.0).to_string(),
-                        &format!("SVG generation failed: {}", svg_error),
-                    );
-                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
-                }
+            } else {
+                HttpResponse::Ok().json(response)
             }
         }
         Err(e) => {
@@ -467,7 +522,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
         calculate_planet_positions(transit_jd),
     ) {
         (Ok(natal_positions), Ok(transit_positions)) => {
-            let natal_planets: Vec<PlanetInfo> = natal_positions
+            let mut natal_planets: Vec<PlanetInfo> = natal_positions
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -489,7 +544,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 })
                 .collect();
 
-            let transit_planets: Vec<PlanetInfo> = transit_positions
+            let mut transit_planets: Vec<PlanetInfo> = transit_positions
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -525,6 +580,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                     return HttpResponse::InternalServerError().body(e.to_string());
                 }
             };
+            let natal_cusps = cusp_longitudes(&houses);
             let house_info: Vec<HouseInfo> = houses
                 .iter()
                 .map(|h| HouseInfo {
@@ -533,6 +589,20 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                     latitude: h.latitude,
                 })
                 .collect();
+
+            // Assign house placements to natal planets
+            assign_houses(&mut natal_planets, &natal_cusps);
+
+            // Assign natal house placements to transit planets (traditional)
+            assign_houses(&mut transit_planets, &natal_cusps);
+
+            // Calculate transit-location houses and assign transit_house
+            let transit_lat = req.transit_latitude.unwrap_or(req.latitude);
+            let transit_lon = req.transit_longitude.unwrap_or(req.longitude);
+            if let Ok(transit_houses) = calculate_houses(transit_jd, transit_lat, transit_lon, house_system) {
+                let transit_cusps = cusp_longitudes(&transit_houses);
+                assign_transit_houses(&mut transit_planets, &transit_cusps);
+            }
 
             // Calculate natal aspects
             let natal_aspects = calculate_aspects_with_options(&natal_positions, req.include_minor_aspects);
@@ -558,6 +628,18 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 })
                 .collect();
 
+            // Calculate transit-to-natal cross aspects
+            let cross_aspects = calculate_cross_aspects_with_options(&natal_positions, &transit_positions, req.include_minor_aspects);
+            let cross_aspect_info: Vec<AspectInfo> = cross_aspects
+                .iter()
+                .map(|a| AspectInfo {
+                    aspect: format!("{:?}", a.aspect_type),
+                    orb: a.orb,
+                    planet1: a.planet1.clone(),
+                    planet2: a.planet2.clone(),
+                })
+                .collect();
+
             let response = TransitResponse {
                 chart_type: "transit".to_string(),
                 natal_date: req.natal_date,
@@ -571,25 +653,29 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 houses: house_info,
                 natal_aspects: natal_aspect_info,
                 transit_aspects: transit_aspect_info,
+                transit_to_natal_aspects: cross_aspect_info,
                 svg_chart: None, // Will be set below
             };
 
-            // Generate SVG chart
-            match generate_transit_svg(&response) {
-                Ok(svg_chart) => {
-                    let mut final_response = response;
-                    final_response.svg_chart = Some(svg_chart);
-                    HttpResponse::Ok().json(final_response)
+            if req.svg_chart {
+                match generate_transit_svg(&response) {
+                    Ok(svg_chart) => {
+                        let mut final_response = response;
+                        final_response.svg_chart = Some(svg_chart);
+                        HttpResponse::Ok().json(final_response)
+                    }
+                    Err(svg_error) => {
+                        log_request_error(
+                            "transit",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &format!("SVG generation failed: {}", svg_error),
+                        );
+                        HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
+                    }
                 }
-                Err(svg_error) => {
-                    log_request_error(
-                        "transit",
-                        &get_client_ip(),
-                        &json!(req.0).to_string(),
-                        &format!("SVG generation failed: {}", svg_error),
-                    );
-                    HttpResponse::InternalServerError().body(format!("SVG generation failed: {}", svg_error))
-                }
+            } else {
+                HttpResponse::Ok().json(response)
             }
         }
         _ => {
@@ -615,7 +701,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
         calculate_planet_positions(jd2),
     ) {
         (Ok(positions1), Ok(positions2)) => {
-            let planets1: Vec<PlanetInfo> = positions1
+            let mut planets1: Vec<PlanetInfo> = positions1
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -637,7 +723,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 })
                 .collect();
 
-            let planets2: Vec<PlanetInfo> = positions2
+            let mut planets2: Vec<PlanetInfo> = positions2
                 .iter()
                 .enumerate()
                 .map(|(i, pos)| {
@@ -695,6 +781,8 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 }
             };
 
+            let cusps1 = cusp_longitudes(&houses1);
+            let cusps2 = cusp_longitudes(&houses2);
             let _house_info1: Vec<HouseInfo> = houses1
                 .iter()
                 .map(|h| HouseInfo {
@@ -711,6 +799,10 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                     latitude: h.latitude,
                 })
                 .collect();
+
+            // Assign house placements to each chart's planets
+            assign_houses(&mut planets1, &cusps1);
+            assign_houses(&mut planets2, &cusps2);
 
             // Calculate aspects for both charts
             let aspects1 = calculate_aspects_with_options(&positions1, req.chart1.include_minor_aspects);
@@ -784,22 +876,26 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 svg_chart: None, // Will be set below
             };
 
-            // Generate only the top-level synastry SVG chart
-            match generate_synastry_svg(&response) {
-                Ok(synastry_svg) => {
-                    let mut final_response = response;
-                    final_response.svg_chart = Some(synastry_svg);
-                    HttpResponse::Ok().json(final_response)
-                }
-                Err(svg_error) => {
-                    log_request_error(
-                        "synastry",
-                        &get_client_ip(),
-                        &json!(req.0).to_string(),
-                        &format!("Synastry SVG generation failed: {}", svg_error),
+            if req.svg_chart {
+                // Generate only the top-level synastry SVG chart
+                match generate_synastry_svg(&response) {
+                    Ok(synastry_svg) => {
+                        let mut final_response = response;
+                        final_response.svg_chart = Some(synastry_svg);
+                        HttpResponse::Ok().json(final_response)
+                    }
+                    Err(svg_error) => {
+                        log_request_error(
+                            "synastry",
+                            &get_client_ip(),
+                            &json!(req.0).to_string(),
+                            &format!("Synastry SVG generation failed: {}", svg_error),
                     );
                     HttpResponse::InternalServerError().body(format!("Synastry SVG generation failed: {}", svg_error))
+                    }
                 }
+            } else {
+                HttpResponse::Ok().json(response)
             }
         }
         _ => {

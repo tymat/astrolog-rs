@@ -703,19 +703,28 @@ pub fn calculate_house_placements(
 
 /// Determine which house a given position falls in.
 /// Returns the house number (1-12) for the given position.
+/// Handles the 0°/360° boundary wrapping correctly, matching the
+/// reference Astrolog HousePlaceIn() implementation.
 #[allow(dead_code)]
-pub fn house_place_in(position: f64, house_cusps: &[f64; 12]) -> usize {
-    let position = normalize_angle(position);
+pub fn house_place_in(position: f64, house_cusps: &[f64]) -> u8 {
+    // Add a tiny offset to avoid exact boundary ambiguity (matches reference)
+    let position = normalize_angle(position + 0.5 / 3600.0);
 
-    // Find the first house cusp that's greater than the position
     for i in 0..12 {
         let next_i = (i + 1) % 12;
-        if position >= house_cusps[i] && position < house_cusps[next_i] {
-            return i + 1; // Houses are 1-based
+        let current = house_cusps[i];
+        let next = house_cusps[next_i];
+
+        // Normal case: current cusp < next cusp
+        // Wrapping case: current cusp > next cusp (crosses 0°/360°)
+        if (position >= current && position < next)
+            || (current > next && (position >= current || position < next))
+        {
+            return (i + 1) as u8;
         }
     }
 
-    // If we get here, the position must be in the last house
+    // Fallback (should not be reached with valid cusps)
     12
 }
 

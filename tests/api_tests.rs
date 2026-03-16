@@ -18,7 +18,8 @@ async fn test_natal_chart_endpoint() {
         "latitude": 40.7128,
         "longitude": -74.0060,
         "house_system": "placidus",
-        "ayanamsa": "tropical"
+        "ayanamsa": "tropical",
+        "svg_chart": true
     });
 
     let resp = test::TestRequest::post()
@@ -108,7 +109,8 @@ async fn test_transit_chart_endpoint() {
         "latitude": 40.7128,
         "longitude": -74.0060,
         "house_system": "placidus",
-        "ayanamsa": "tropical"
+        "ayanamsa": "tropical",
+        "svg_chart": true
     });
 
     let resp = test::TestRequest::post()
@@ -214,7 +216,8 @@ async fn test_synastry_chart_endpoint() {
             "longitude": -118.2437,
             "house_system": "placidus",
             "ayanamsa": "tropical"
-        }
+        },
+        "svg_chart": true
     });
 
     let resp = test::TestRequest::post()
@@ -435,6 +438,7 @@ async fn test_chart_endpoint_with_transits() {
         "longitude": 121.0508,
         "house_system": "placidus",
         "ayanamsa": "tropical",
+        "svg_chart": true,
         "transit": {
             "date": "2025-05-27T12:00:00Z",
             "latitude": 19.49,
@@ -558,11 +562,8 @@ async fn test_chart_endpoint_without_transits() {
     let transit_planets = transit["planets"].as_array().unwrap();
     assert!(!transit_planets.is_empty());
 
-    // Check that SVG chart is generated
-    assert!(response.get("svg_chart").is_some());
-    let svg_chart = response["svg_chart"].as_str().unwrap();
-    assert!(svg_chart.contains("<svg"));
-    assert!(svg_chart.contains("</svg>"));
+    // Check that SVG chart is NOT generated when svg_chart is not set (defaults to false)
+    assert!(response.get("svg_chart").is_none() || response["svg_chart"].is_null());
 
     println!("Chart with default transits response: {}", serde_json::to_string_pretty(&response).unwrap());
 }

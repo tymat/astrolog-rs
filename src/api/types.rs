@@ -2,6 +2,18 @@ use crate::calc::planets::PlanetPosition;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+/// Convert a zodiac longitude (0-360) to the sign name.
+/// Each sign spans 30 degrees: 0-30 = Aries, 30-60 = Taurus, etc.
+pub fn longitude_to_sign(longitude: f64) -> String {
+    const SIGNS: [&str; 12] = [
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces",
+    ];
+    let normalized = longitude.rem_euclid(360.0);
+    let index = (normalized / 30.0) as usize;
+    SIGNS[index.min(11)].to_string()
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransitInfo {
     pub date: DateTime<Utc>,
@@ -30,6 +42,8 @@ pub struct ChartRequest {
     pub transit: Option<TransitInfo>,
     #[serde(default)]
     pub include_minor_aspects: bool,
+    #[serde(default)]
+    pub svg_chart: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -38,16 +52,24 @@ pub struct TransitRequest {
     pub transit_date: DateTime<Utc>,
     pub latitude: f64,
     pub longitude: f64,
+    #[serde(default)]
+    pub transit_latitude: Option<f64>,
+    #[serde(default)]
+    pub transit_longitude: Option<f64>,
     pub house_system: String,
     pub ayanamsa: String,
     #[serde(default)]
     pub include_minor_aspects: bool,
+    #[serde(default)]
+    pub svg_chart: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SynastryRequest {
     pub chart1: ChartRequest,
     pub chart2: ChartRequest,
+    #[serde(default)]
+    pub svg_chart: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -57,7 +79,10 @@ pub struct PlanetInfo {
     pub latitude: f64,
     pub speed: f64,
     pub is_retrograde: bool,
+    pub sign: String,
     pub house: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transit_house: Option<u8>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -124,6 +149,7 @@ pub struct TransitResponse {
     pub houses: Vec<HouseInfo>,
     pub natal_aspects: Vec<AspectInfo>,
     pub transit_aspects: Vec<AspectInfo>,
+    pub transit_to_natal_aspects: Vec<AspectInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub svg_chart: Option<String>,
 }
@@ -146,7 +172,9 @@ impl From<PlanetPosition> for PlanetInfo {
             latitude: position.latitude,
             speed: position.speed,
             is_retrograde: position.is_retrograde,
+            sign: longitude_to_sign(position.longitude),
             house: position.house,
+            transit_house: None,
         }
     }
 }
