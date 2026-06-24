@@ -4,7 +4,7 @@ use crate::api::types::{
 };
 use crate::calc::aspects::{calculate_aspects_with_options, calculate_transit_aspects_with_options, calculate_cross_aspects_with_options, calculate_synastry_aspects};
 use crate::calc::houses::{calculate_houses, house_place_in};
-use crate::calc::planets::calculate_planet_positions;
+use crate::calc::planets::{calculate_planet_positions, planet_name_for_index};
 use crate::calc::utils::date_to_julian;
 use crate::core::types::HouseSystem;
 use crate::utils::logging::log_request_error;
@@ -128,19 +128,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();
@@ -194,19 +182,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                             .enumerate()
                             .map(|(i, pos)| {
                                 let mut info: PlanetInfo = (*pos).into();
-                                info.name = match i {
-                                    0 => "Sun".to_string(),
-                                    1 => "Moon".to_string(),
-                                    2 => "Mercury".to_string(),
-                                    3 => "Venus".to_string(),
-                                    4 => "Mars".to_string(),
-                                    5 => "Jupiter".to_string(),
-                                    6 => "Saturn".to_string(),
-                                    7 => "Uranus".to_string(),
-                                    8 => "Neptune".to_string(),
-                                    9 => "Pluto".to_string(),
-                                    _ => format!("Planet {}", i + 1),
-                                };
+                                info.name = planet_name_for_index(i);
                                 info
                             })
                             .collect();
@@ -277,19 +253,7 @@ async fn generate_chart_with_transits(req: web::Json<ChartRequest>) -> impl Resp
                             .enumerate()
                             .map(|(i, pos)| {
                                 let mut info: PlanetInfo = (*pos).into();
-                                info.name = match i {
-                                    0 => "Sun".to_string(),
-                                    1 => "Moon".to_string(),
-                                    2 => "Mercury".to_string(),
-                                    3 => "Venus".to_string(),
-                                    4 => "Mars".to_string(),
-                                    5 => "Jupiter".to_string(),
-                                    6 => "Saturn".to_string(),
-                                    7 => "Uranus".to_string(),
-                                    8 => "Neptune".to_string(),
-                                    9 => "Pluto".to_string(),
-                                    _ => format!("Planet {}", i + 1),
-                                };
+                                info.name = planet_name_for_index(i);
                                 info
                             })
                             .collect();
@@ -409,19 +373,7 @@ async fn generate_natal_chart(req: web::Json<ChartRequest>) -> impl Responder {
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();
@@ -527,19 +479,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();
@@ -549,19 +489,7 @@ async fn generate_transit_chart(req: web::Json<TransitRequest>) -> impl Responde
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();
@@ -706,19 +634,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();
@@ -728,19 +644,7 @@ async fn generate_synastry_chart(req: web::Json<SynastryRequest>) -> impl Respon
                 .enumerate()
                 .map(|(i, pos)| {
                     let mut info: PlanetInfo = (*pos).into();
-                    info.name = match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet {}", i + 1),
-                    };
+                    info.name = planet_name_for_index(i);
                     info
                 })
                 .collect();

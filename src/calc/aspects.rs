@@ -1,4 +1,5 @@
 // use crate::calc::utils::normalize_angle;
+use crate::calc::planets::planet_name_for_index;
 use crate::calc::PlanetPosition;
 
 /// Aspect types
@@ -339,32 +340,8 @@ fn calculate_aspects_with_orb_type(positions: &[PlanetPosition], include_minor_a
             // Add only the closest aspect if one was found
             if let Some((aspect_type, orb_diff)) = closest_aspect {
                 aspects.push(Aspect {
-                    planet1: match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", i + 1),
-                    },
-                    planet2: match j {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", j + 1),
-                    },
+                    planet1: planet_name_for_index(i),
+                    planet2: planet_name_for_index(j),
                     aspect_type,
                     orb: orb_diff,
                 });
@@ -417,32 +394,8 @@ pub fn calculate_cross_aspects_with_options(natal_positions: &[PlanetPosition], 
             // Add only the closest aspect if one was found
             if let Some((aspect_type, orb_diff)) = closest_aspect {
                 aspects.push(Aspect {
-                    planet1: format!("Natal {}", match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", i + 1),
-                    }),
-                    planet2: format!("Transit {}", match j {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", j + 1),
-                    }),
+                    planet1: format!("Natal {}", planet_name_for_index(i)),
+                    planet2: format!("Transit {}", planet_name_for_index(j)),
                     aspect_type,
                     orb: orb_diff,
                 });
@@ -490,32 +443,8 @@ pub fn calculate_synastry_aspects(chart1_positions: &[PlanetPosition], chart2_po
             // Add only the closest aspect if one was found
             if let Some((aspect_type, orb_diff)) = closest_aspect {
                 aspects.push(Aspect {
-                    planet1: match i {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", i + 1),
-                    },
-                    planet2: match j {
-                        0 => "Sun".to_string(),
-                        1 => "Moon".to_string(),
-                        2 => "Mercury".to_string(),
-                        3 => "Venus".to_string(),
-                        4 => "Mars".to_string(),
-                        5 => "Jupiter".to_string(),
-                        6 => "Saturn".to_string(),
-                        7 => "Uranus".to_string(),
-                        8 => "Neptune".to_string(),
-                        9 => "Pluto".to_string(),
-                        _ => format!("Planet{}", j + 1),
-                    },
+                    planet1: planet_name_for_index(i),
+                    planet2: planet_name_for_index(j),
                     aspect_type,
                     orb: orb_diff,
                 });

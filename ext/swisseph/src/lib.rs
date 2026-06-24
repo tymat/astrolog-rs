@@ -25,6 +25,7 @@ pub const SE_TRUE_NODE: i32 = 11;
 pub const SE_MEAN_APOG: i32 = 12;
 pub const SE_OSCU_APOG: i32 = 13;
 pub const SE_EARTH: i32 = 14;
+pub const SE_CHIRON: i32 = 15;
 
 // Calculation flags
 pub const SEFLG_SWIEPH: i32 = 2;
@@ -67,6 +68,7 @@ pub enum Planet {
     MeanApogee = SE_MEAN_APOG as isize,
     OscuApogee = SE_OSCU_APOG as isize,
     Earth = SE_EARTH as isize,
+    Chiron = SE_CHIRON as isize,
 }
 
 #[derive(Debug, Clone, Copy)]

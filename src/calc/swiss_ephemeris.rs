@@ -257,6 +257,7 @@ pub fn map_planet_to_swe(planet: crate::calc::planets::Planet) -> Option<SwePlan
         crate::calc::planets::Planet::Pluto => Some(SwePlanet::Pluto),
         crate::calc::planets::Planet::MeanNode => Some(SwePlanet::MeanNode),
         crate::calc::planets::Planet::TrueNode => Some(SwePlanet::TrueNode),
+        crate::calc::planets::Planet::Chiron => Some(SwePlanet::Chiron),
         _ => None,
     }
 }

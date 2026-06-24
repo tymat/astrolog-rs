@@ -30,8 +30,10 @@ pub enum Planet {
     Neptune,
     /// Pluto - represents transformation, power, and regeneration
     Pluto,
-    /// Mean Lunar Node - represents karmic lessons and life path
+    /// Mean Lunar Node (North Node) - represents karmic lessons and life path
     MeanNode,
+    /// South Node - derived as the point opposite the North Node (Mean Node + 180°)
+    SouthNode,
     /// True Lunar Node - more accurate position of the lunar node
     TrueNode,
     /// Mean Black Moon Lilith - represents primal instincts and hidden desires
@@ -96,6 +98,48 @@ impl PlanetPosition {
     }
 }
 
+/// Canonical ordering of bodies returned by `calculate_planet_positions`.
+///
+/// The index of a body in this array is the contract used throughout the API
+/// and aspect layers to attach a human-readable name to each position. Append
+/// new bodies at the end so existing indices (and thus names) stay stable.
+pub const PLANET_ORDER: [Planet; 13] = [
+    Planet::Sun,
+    Planet::Moon,
+    Planet::Mercury,
+    Planet::Venus,
+    Planet::Mars,
+    Planet::Jupiter,
+    Planet::Saturn,
+    Planet::Uranus,
+    Planet::Neptune,
+    Planet::Pluto,
+    Planet::MeanNode,  // exposed as "North Node"
+    Planet::SouthNode, // derived: Mean Node + 180°
+    Planet::Chiron,
+];
+
+/// Human-readable name for the body at `index` within a `calculate_planet_positions`
+/// result. Centralizes the index→name mapping that the API/aspect layers rely on.
+pub fn planet_name_for_index(index: usize) -> String {
+    match PLANET_ORDER.get(index) {
+        Some(Planet::Sun) => "Sun".to_string(),
+        Some(Planet::Moon) => "Moon".to_string(),
+        Some(Planet::Mercury) => "Mercury".to_string(),
+        Some(Planet::Venus) => "Venus".to_string(),
+        Some(Planet::Mars) => "Mars".to_string(),
+        Some(Planet::Jupiter) => "Jupiter".to_string(),
+        Some(Planet::Saturn) => "Saturn".to_string(),
+        Some(Planet::Uranus) => "Uranus".to_string(),
+        Some(Planet::Neptune) => "Neptune".to_string(),
+        Some(Planet::Pluto) => "Pluto".to_string(),
+        Some(Planet::MeanNode) => "North Node".to_string(),
+        Some(Planet::SouthNode) => "South Node".to_string(),
+        Some(Planet::Chiron) => "Chiron".to_string(),
+        _ => format!("Planet {}", index + 1),
+    }
+}
+
 /// Normalize longitude to 0-360 degrees
 fn normalize_longitude(longitude: f64) -> f64 {
     let mut normalized = longitude % 360.0;
@@ -108,7 +152,7 @@ fn normalize_longitude(longitude: f64) -> f64 {
 /// Calculate planetary positions for a given Julian date
 #[allow(dead_code)]
 pub fn calculate_planet_positions(jd: f64) -> Result<Vec<PlanetPosition>, AstrologError> {
-    let mut positions = Vec::with_capacity(10);
+    let mut positions = Vec::with_capacity(PLANET_ORDER.len());
 
     // Convert Julian date to DateTime
     let jd_epoch = 2440587.5; // Unix epoch in Julian days
@@ -120,21 +164,11 @@ pub fn calculate_planet_positions(jd: f64) -> Result<Vec<PlanetPosition>, Astrol
     })?;
     let datetime: DateTime<Utc> = Utc.from_utc_datetime(&naive);
 
-    // Calculate positions for each planet
-    for planet in [
-        Planet::Sun,
-        Planet::Moon,
-        Planet::Mercury,
-        Planet::Venus,
-        Planet::Mars,
-        Planet::Jupiter,
-        Planet::Saturn,
-        Planet::Uranus,
-        Planet::Neptune,
-        Planet::Pluto,
-    ]
-    .iter()
-    {
+    // Calculate positions for each planet.
+    // NOTE: this ordering is load-bearing — the API/aspect layers derive the
+    // human-readable planet name from the index of each position in this Vec
+    // (see `planet_name_for_index`). Keep it in sync with that helper.
+    for planet in PLANET_ORDER.iter() {
         match calculate_planet_position(
             *planet,
             datetime.year(),
@@ -160,6 +194,19 @@ pub fn calculate_planet_position(
     day: i32,
     hour: f64,
 ) -> Result<PlanetPosition, String> {
+    // The South Node is not a Swiss Ephemeris body. It is exactly opposite the
+    // (Mean) North Node: longitude + 180° (mod 360), latitude negated, same speed.
+    if planet == Planet::SouthNode {
+        let north = calculate_planet_position(Planet::MeanNode, year, month, day, hour)?;
+        let longitude = (north.longitude + 180.0).rem_euclid(360.0);
+        return Ok(PlanetPosition::new(
+            longitude,
+            -north.latitude,
+            north.speed,
+            north.is_retrograde,
+        ));
+    }
+
     // Convert date and time to Julian date using Swiss Ephemeris
     let swe_planet = map_planet_to_swe(planet).ok_or_else(|| "Invalid planet".to_string())?;
 
